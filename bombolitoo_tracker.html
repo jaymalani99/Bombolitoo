@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Bombolitoo Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #FF6B8A; --pink-light: #FFE8ED; --pink-dark: #E8506E;
+    --dark: #1A1A1A; --mid: #666; --light: #F7F7F7; --white: #FFFFFF;
+    --green: #27AE60; --green-light: #E8F8EF;
+    --red: #E74C3C; --red-light: #FDECEA;
+    --border: #EFEFEF; --shadow: 0 2px 16px rgba(255,107,138,0.10); --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; padding-bottom: 80px; max-width: 480px; margin: 0 auto; }
+
+  .header { background: var(--pink); padding: 20px 20px 16px; position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: white; letter-spacing: -0.5px; }
+  .logo span { opacity: 0.7; font-weight: 400; font-size: 13px; display: block; margin-top: 1px; }
+  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .week-badge { background: rgba(255,255,255,0.25); color: white; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+  .user-badge { background: rgba(255,255,255,0.9); color: var(--pink); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; cursor: pointer; }
+
+  .user-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .user-overlay.show { opacity: 1; pointer-events: all; }
+  .user-sheet { background: white; width: 100%; max-width: 480px; margin: 0 auto; border-radius: 20px 20px 0 0; padding: 24px 20px 40px; transform: translateY(100%); transition: transform 0.3s ease; }
+  .user-overlay.show .user-sheet { transform: translateY(0); }
+  .user-sheet-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 20px; }
+  .user-btn { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid var(--border); background: white; font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif; color: var(--dark); cursor: pointer; margin-bottom: 10px; text-align: left; transition: all 0.15s; }
+  .user-btn:active, .user-btn.selected { border-color: var(--pink); background: var(--pink-light); color: var(--pink); }
+  .user-btn .user-role { font-size: 11px; font-weight: 400; color: var(--mid); display: block; margin-top: 2px; }
+
+  .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: white; border-top: 1px solid var(--border); display: flex; z-index: 200; padding-bottom: env(safe-area-inset-bottom); }
+  .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 0 8px; border: none; background: none; cursor: pointer; color: #AAA; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; gap: 3px; transition: color 0.2s; }
+  .nav-btn.active { color: var(--pink); }
+  .nav-btn svg { width: 22px; height: 22px; }
+  .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--pink); margin-top: 2px; opacity: 0; transition: opacity 0.2s; }
+  .nav-btn.active .nav-dot { opacity: 1; }
+
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  .card { background: white; border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+
+  .form-row { margin-bottom: 12px; }
+  .form-label { font-size: 11px; font-weight: 600; color: var(--mid); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.3px; }
+  .input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; font-family: 'DM Sans', sans-serif; color: var(--dark); background: var(--light); outline: none; transition: border-color 0.2s; }
+  .input:focus { border-color: var(--pink); background: white; }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 8px 14px; border-radius: 30px; border: 1.5px solid var(--border); background: white; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--dark); cursor: pointer; transition: all 0.15s; }
+  .chip.selected { background: var(--pink); border-color: var(--pink); color: white; }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+  .toggle-label { font-size: 14px; font-weight: 500; color: var(--dark); }
+  .toggle-sub { font-size: 11px; color: var(--mid); margin-top: 1px; }
+  .toggle { width: 44px; height: 26px; border-radius: 13px; background: var(--border); cursor: pointer; position: relative; transition: background 0.2s; border: none; outline: none; }
+  .toggle.on { background: var(--pink); }
+  .toggle::after { content: ''; position: absolute; width: 20px; height: 20px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: transform 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+  .toggle.on::after { transform: translateX(18px); }
+
+  .btn { width: 100%; padding: 15px; background: var(--pink); color: white; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; font-family: 'Syne', sans-serif; cursor: pointer; transition: all 0.15s; letter-spacing: 0.2px; }
+  .btn:active { transform: scale(0.98); background: var(--pink-dark); }
+  .btn.loading { opacity: 0.6; pointer-events: none; }
+
+  .log-entry { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; animation: slideIn 0.3s ease; }
+  .log-entry:last-child { border-bottom: none; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .log-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .log-body { flex: 1; min-width: 0; }
+  .log-title { font-size: 14px; font-weight: 600; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .log-sub { font-size: 11px; color: var(--mid); margin-top: 1px; }
+  .log-amount { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+  .log-amount.neg { color: var(--red); }
+  .log-amount.pos { color: var(--green); }
+  .setup-tag { font-size: 9px; font-weight: 700; background: var(--pink-light); color: var(--pink); padding: 2px 6px; border-radius: 6px; margin-left: 6px; text-transform: uppercase; }
+  .delete-btn { background: none; border: none; cursor: pointer; color: #CCC; font-size: 18px; padding: 4px; transition: color 0.15s; line-height: 1; }
+  .delete-btn:active { color: var(--red); }
+
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .stat-box { background: white; border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+  .stat-box.full { grid-column: 1 / -1; }
+  .stat-label { font-size: 10px; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+  .stat-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--dark); }
+  .stat-value.green { color: var(--green); }
+  .stat-value.red { color: var(--red); }
+  .stat-value.pink { color: var(--pink); }
+
+  .qty-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .qty-row:last-child { border-bottom: none; }
+  .qty-info { font-size: 13px; font-weight: 500; }
+  .qty-info span { font-size: 11px; color: var(--mid); display: block; }
+  .qty-controls { display: flex; align-items: center; gap: 12px; }
+  .qty-btn { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); background: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--dark); transition: all 0.15s; }
+  .qty-btn:active { background: var(--pink-light); border-color: var(--pink); }
+  .qty-num { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; min-width: 24px; text-align: center; }
+
+  .week-tabs { display: flex; background: var(--border); border-radius: 10px; padding: 3px; margin-bottom: 14px; }
+  .week-tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; background: none; font-family: 'DM Sans', sans-serif; color: var(--mid); }
+  .week-tab.active { background: white; color: var(--dark); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+  .recovery-bar { background: white; border-radius: var(--radius); padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .bar-track { height: 8px; background: var(--border); border-radius: 4px; margin: 10px 0 6px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+  .bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--mid); }
+
+  .section-divider { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--mid); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 0 6px; }
+  .empty-state { text-align: center; padding: 32px 16px; color: var(--mid); }
+  .empty-state .emoji { font-size: 32px; margin-bottom: 8px; }
+  .empty-state p { font-size: 13px; }
+
+  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.3s; white-space: nowrap; z-index: 999; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="user-overlay" id="userOverlay">
+  <div class="user-sheet">
+    <div class="user-sheet-title">Who are you? 👋</div>
+    <button class="user-btn" onclick="setUser('Malani')">Malani<span class="user-role">Strategy & Finance</span></button>
+    <button class="user-btn" onclick="setUser('Priyanka')">Priyanka<span class="user-role">Operator</span></button>
+    <button class="user-btn" onclick="setUser('Vikas')">Vikas<span class="user-role">Sales</span></button>
+    <button class="user-btn" onclick="setUser('Monica')">Monica<span class="user-role">Partner</span></button>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">Bombolitoo 🍩<span>Business Tracker</span></div>
+    <div class="header-right">
+      <div class="week-badge" id="currentWeekBadge">Week —</div>
+      <div class="user-badge" id="userBadge" onclick="showUserSelector()">Select User</div>
+    </div>
+  </div>
+</div>
+
+<div class="page active" id="page-expense">
+  <div class="card">
+    <div class="card-title">Log Expense</div>
+    <div class="form-row"><label class="form-label">Date</label><input type="date" class="input" id="expDate"></div>
+    <div class="form-row">
+      <label class="form-label">Source</label>
+      <div class="chip-group" id="expSource">
+        <div class="chip selected" data-val="Blinkit">Blinkit</div>
+        <div class="chip" data-val="D-Mart">D-Mart</div>
+        <div class="chip" data-val="General Store">General Store</div>
+        <div class="chip" data-val="Other">Other</div>
+      </div>
+    </div>
+    <div class="form-row"><label class="form-label">Amount (Rs)</label><input type="number" class="input" id="expAmount" placeholder="0" inputmode="decimal"></div>
+    <div class="form-row">
+      <label class="form-label">Paid By</label>
+      <div class="chip-group" id="expPaidBy">
+        <div class="chip selected" data-val="Malani">Malani</div>
+        <div class="chip" data-val="Priyanka">Priyanka</div>
+        <div class="chip" data-val="Vikas">Vikas</div>
+        <div class="chip" data-val="Monica">Monica</div>
+      </div>
+    </div>
+    <div class="form-row"><label class="form-label">Note (optional)</label><input type="text" class="input" id="expNote" placeholder="e.g. Nutella, maida, yeast"></div>
+    <div class="toggle-row">
+      <div><div class="toggle-label">One-time / Setup cost</div><div class="toggle-sub">Won't count in weekly operating P&L</div></div>
+      <button class="toggle" id="setupToggle" onclick="toggleSetup()"></button>
+    </div>
+    <button class="btn" id="expBtn" onclick="logExpense()">Log Expense</button>
+  </div>
+  <div class="section-divider">Recent Expenses</div>
+  <div class="card" id="expenseLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+</div>
+
+<div class="page" id="page-revenue">
+  <div class="card">
+    <div class="card-title">Log Sale</div>
+    <div class="form-row"><label class="form-label">Date</label><input type="date" class="input" id="revDate"></div>
+    <div class="form-row"><label class="form-label">What did they buy?</label><div id="qtyList"></div></div>
+    <div style="background:var(--pink-light);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:600;">Sale Total</div>
+      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--pink);" id="salePreview">Rs 0</div>
+    </div>
+    <button class="btn" id="revBtn" onclick="logSale()">Log Sale</button>
+  </div>
+  <div class="section-divider">Sales Summary</div>
+  <div class="stat-grid">
+    <div class="stat-box full"><div class="stat-label">Total Revenue (All Time)</div><div class="stat-value green" id="totalRevenue">Rs —</div></div>
+    <div class="stat-box"><div class="stat-label">Units Sold</div><div class="stat-value pink" id="totalUnits">—</div></div>
+    <div class="stat-box"><div class="stat-label">Transactions</div><div class="stat-value" id="totalTxns">—</div></div>
+  </div>
+  <div class="card"><div class="card-title">By Flavour</div><div id="flavourStats"></div></div>
+  <div class="section-divider">Recent Sales</div>
+  <div class="card" id="revenueLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+</div>
+
+<div class="page" id="page-pnl">
+  <div class="week-tabs">
+    <button class="week-tab active" data-week="all" onclick="switchPnlView('all')">All Time</button>
+    <button class="week-tab" data-week="current" onclick="switchPnlView('current')">This Week</button>
+  </div>
+  <div id="pnlContent"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="switchPage('expense')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    Expenses<div class="nav-dot"></div>
+  </button>
+  <button class="nav-btn" onclick="switchPage('revenue')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    Revenue<div class="nav-dot"></div>
+  </button>
+  <button class="nav-btn" onclick="switchPage('pnl')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    P&L<div class="nav-dot"></div>
+  </button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://lcgfjvtalbuauqdtdfsf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_H7tphASdS9hVTdDgnSEZ3g_8jjI2DWa';
+
+const COMBOS = [
+  { id: 'single_nutella', type: 'single', flavor: 'Nutella', label: 'Single', price: 95, units: 1 },
+  { id: 'single_custard', type: 'single', flavor: 'Custard', label: 'Single', price: 95, units: 1 },
+  { id: 'pair_nutella', type: 'pair', flavor: 'Nutella', label: 'Pair', price: 180, units: 2 },
+  { id: 'pair_custard', type: 'pair', flavor: 'Custard', label: 'Pair', price: 180, units: 2 },
+  { id: 'pair_mixed', type: 'pair', flavor: 'Mixed', label: 'Pair', price: 180, units: 2 },
+  { id: 'trio_nutella', type: 'trio', flavor: 'Nutella', label: 'Trio', price: 250, units: 3 },
+  { id: 'trio_custard', type: 'trio', flavor: 'Custard', label: 'Trio', price: 250, units: 3 },
+  { id: 'trio_mixed', type: 'trio', flavor: 'Mixed', label: 'Trio', price: 250, units: 3 },
+];
+
+let expenses = [], sales = [], isSetup = false, saleQtys = {}, pnlView = 'all';
+let currentUser = localStorage.getItem('bb_user') || null;
+
+// ── Supabase ──────────────────────────────────────────────────
+const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
+
+async function dbGet(table, order) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=${order}`, { headers: H });
+  return r.json();
+}
+async function dbInsert(table, data) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, { method: 'POST', headers: { ...H, Prefer: 'return=representation' }, body: JSON.stringify(data) });
+  return r.json();
+}
+async function dbDelete(table, id) {
+  await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: H });
+}
+
+// ── Utils ──────────────────────────────────────────────────────
+const fmt = n => 'Rs ' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const fmtDate = s => new Date(s).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+function getWeekKey(dateStr) {
+  const d = new Date(dateStr), day = d.getDay();
+  const mon = new Date(d); mon.setDate(d.getDate() - day + (day === 0 ? -6 : 1));
+  return mon.toISOString().split('T')[0];
+}
+const getCWK = () => getWeekKey(new Date().toISOString().split('T')[0]);
+function getWeekLabel(key) {
+  const d = new Date(key), sun = new Date(d); sun.setDate(d.getDate() + 6);
+  return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + ' – ' + sun.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg;
+  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2400);
+}
+function setBtn(id, loading, label) {
+  const b = document.getElementById(id);
+  b.innerHTML = loading ? `<span class="spinner"></span>${label}` : label;
+  b.classList.toggle('loading', loading);
+}
+function getChip(gid) { const s = document.querySelector(`#${gid} .chip.selected`); return s ? s.dataset.val : null; }
+
+// ── User ──────────────────────────────────────────────────────
+function showUserSelector() { document.getElementById('userOverlay').classList.add('show'); }
+document.getElementById('userOverlay').addEventListener('click', e => { if (e.target === document.getElementById('userOverlay')) document.getElementById('userOverlay').classList.remove('show'); });
+function setUser(name) {
+  currentUser = name; localStorage.setItem('bb_user', name);
+  document.getElementById('userBadge').textContent = name;
+  document.getElementById('userOverlay').classList.remove('show');
+  document.querySelectorAll('#expPaidBy .chip').forEach(c => c.classList.toggle('selected', c.dataset.val === name));
+  showToast(`Welcome, ${name} 👋`);
+}
+
+// ── Chips ──────────────────────────────────────────────────────
+document.querySelectorAll('.chip-group').forEach(g => g.addEventListener('click', e => {
+  const c = e.target.closest('.chip'); if (!c) return;
+  g.querySelectorAll('.chip').forEach(x => x.classList.remove('selected')); c.classList.add('selected');
+}));
+
+function toggleSetup() { isSetup = !isSetup; document.getElementById('setupToggle').classList.toggle('on', isSetup); }
+
+// ── Load ──────────────────────────────────────────────────────
+async function loadAll() {
+  try {
+    [expenses, sales] = await Promise.all([
+      dbGet('expenses', 'date.desc,created_at.desc'),
+      dbGet('sales', 'date.desc,created_at.desc')
+    ]);
+    if (!Array.isArray(expenses)) expenses = [];
+    if (!Array.isArray(sales)) sales = [];
+    renderAll();
+  } catch(e) { showToast('Connection error'); }
+}
+
+function renderAll() { renderExpenseLog(); renderRevenueLog(); renderPnl(); updateWeekBadge(); }
+
+// ── Expense ───────────────────────────────────────────────────
+async function logExpense() {
+  const date = document.getElementById('expDate').value;
+  const amount = parseFloat(document.getElementById('expAmount').value);
+  const source = getChip('expSource'), paidBy = getChip('expPaidBy');
+  const note = document.getElementById('expNote').value.trim();
+  if (!date || !amount || amount <= 0 || !source || !paidBy) { showToast('Fill all fields'); return; }
+  setBtn('expBtn', true, 'Logging...');
+  try {
+    const res = await dbInsert('expenses', { date, amount, source, paid_by: paidBy, note, is_setup: isSetup, week_key: getWeekKey(date) });
+    if (res && res[0]) {
+      expenses.unshift(res[0]);
+      document.getElementById('expAmount').value = '';
+      document.getElementById('expNote').value = '';
+      isSetup = false; document.getElementById('setupToggle').classList.remove('on');
+      renderAll(); showToast('Expense logged ✓');
+    } else showToast('Save failed — try again');
+  } catch(e) { showToast('Error saving'); }
+  setBtn('expBtn', false, 'Log Expense');
+}
+
+async function deleteExpense(id) {
+  await dbDelete('expenses', id); expenses = expenses.filter(e => e.id !== id); renderAll(); showToast('Deleted');
+}
+
+function renderExpenseLog() {
+  const el = document.getElementById('expenseLog');
+  if (!expenses.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">🧾</div><p>No expenses yet</p></div>'; return; }
+  el.innerHTML = expenses.slice(0,30).map(e => `
+    <div class="log-entry">
+      <div class="log-icon" style="background:var(--red-light)">${e.source==='Blinkit'?'🛵':e.source==='D-Mart'?'🏪':'🛍️'}</div>
+      <div class="log-body">
+        <div class="log-title">${e.source}${e.is_setup?'<span class="setup-tag">Setup</span>':''}</div>
+        <div class="log-sub">${e.paid_by} · ${fmtDate(e.date)}${e.note?' · '+e.note:''}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <div class="log-amount neg">${fmt(e.amount)}</div>
+        <button class="delete-btn" onclick="deleteExpense(${e.id})">×</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── Revenue ───────────────────────────────────────────────────
+function buildQtyList() {
+  saleQtys = {}; COMBOS.forEach(c => saleQtys[c.id] = 0);
+  document.getElementById('qtyList').innerHTML = COMBOS.map(c => `
+    <div class="qty-row">
+      <div class="qty-info">${c.label} – ${c.flavor}<span>${fmt(c.price)}</span></div>
+      <div class="qty-controls">
+        <button class="qty-btn" onclick="chgQty('${c.id}',-1)">−</button>
+        <div class="qty-num" id="qty_${c.id}">0</div>
+        <button class="qty-btn" onclick="chgQty('${c.id}',1)">+</button>
+      </div>
+    </div>`).join('');
+}
+
+function chgQty(id, d) {
+  saleQtys[id] = Math.max(0, (saleQtys[id]||0)+d);
+  document.getElementById('qty_'+id).textContent = saleQtys[id];
+  let t = 0; COMBOS.forEach(c => t += (saleQtys[c.id]||0)*c.price);
+  document.getElementById('salePreview').textContent = fmt(t);
+}
+
+async function logSale() {
+  const date = document.getElementById('revDate').value;
+  let total = 0, items = [], totalUnits = 0;
+  COMBOS.forEach(c => { const q = saleQtys[c.id]||0; if(q>0){total+=q*c.price;totalUnits+=q*c.units;items.push({...c,qty:q});} });
+  if (!date || total === 0) { showToast('Add at least one item'); return; }
+  setBtn('revBtn', true, 'Logging...');
+  try {
+    const res = await dbInsert('sales', { date, total, items: JSON.stringify(items), total_units: totalUnits, week_key: getWeekKey(date) });
+    if (res && res[0]) {
+      sales.unshift({ ...res[0], items });
+      buildQtyList();
+      document.getElementById('salePreview').textContent = fmt(0);
+      renderAll(); showToast('Sale logged ✓');
+    } else showToast('Save failed');
+  } catch(e) { showToast('Error saving'); }
+  setBtn('revBtn', false, 'Log Sale');
+}
+
+async function deleteSale(id) {
+  await dbDelete('sales', id); sales = sales.filter(s => s.id !== id); renderAll(); showToast('Deleted');
+}
+
+function renderRevenueLog() {
+  document.getElementById('totalRevenue').textContent = fmt(sales.reduce((a,s)=>a+Number(s.total),0));
+  document.getElementById('totalUnits').textContent = sales.reduce((a,s)=>a+Number(s.total_units),0);
+  document.getElementById('totalTxns').textContent = sales.length;
+
+  const flavors = {};
+  sales.forEach(s => {
+    const items = typeof s.items==='string'?JSON.parse(s.items):s.items;
+    if(!Array.isArray(items)) return;
+    items.forEach(i => { if(!flavors[i.flavor]) flavors[i.flavor]={units:0,revenue:0}; flavors[i.flavor].units+=i.qty*i.units; flavors[i.flavor].revenue+=i.qty*i.price; });
+  });
+  document.getElementById('flavourStats').innerHTML = !Object.keys(flavors).length
+    ? '<div class="empty-state" style="padding:12px 0"><p>No sales yet</p></div>'
+    : Object.entries(flavors).map(([k,v])=>`
+      <div class="log-entry">
+        <div class="log-icon" style="background:var(--green-light)">${k==='Nutella'?'🍫':k==='Custard'?'🍮':'🍩'}</div>
+        <div class="log-body"><div class="log-title">${k}</div><div class="log-sub">${v.units} units sold</div></div>
+        <div class="log-amount pos">${fmt(v.revenue)}</div>
+      </div>`).join('');
+
+  const el = document.getElementById('revenueLog');
+  if (!sales.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">💰</div><p>No sales yet</p></div>'; return; }
+  el.innerHTML = sales.slice(0,30).map(s => {
+    const items = typeof s.items==='string'?JSON.parse(s.items):s.items;
+    const lbl = Array.isArray(items)?items.map(i=>`${i.qty}× ${i.label} ${i.flavor}`).join(', '):'—';
+    return `<div class="log-entry">
+      <div class="log-icon" style="background:var(--green-light)">💰</div>
+      <div class="log-body"><div class="log-title">${lbl}</div><div class="log-sub">${fmtDate(s.date)} · ${s.total_units} units</div></div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <div class="log-amount pos">${fmt(s.total)}</div>
+        <button class="delete-btn" onclick="deleteSale(${s.id})">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── P&L ──────────────────────────────────────────────────────
+function switchPnlView(v) {
+  pnlView = v;
+  document.querySelectorAll('.week-tab').forEach(t => t.classList.toggle('active', t.dataset.week===v));
+  renderPnl();
+}
+
+function renderPnl() {
+  const cwk = getCWK(), isAll = pnlView==='all';
+  const exp = expenses.filter(isAll?()=>true:e=>e.week_key===cwk);
+  const rev = sales.filter(isAll?()=>true:s=>s.week_key===cwk);
+  const operating = exp.filter(e=>!e.is_setup).reduce((a,e)=>a+Number(e.amount),0);
+  const setup = exp.filter(e=>e.is_setup).reduce((a,e)=>a+Number(e.amount),0);
+  const revenue = rev.reduce((a,s)=>a+Number(s.total),0);
+  const netOp = revenue - operating, netTotal = revenue - operating - setup;
+  const setupItems = exp.filter(e=>e.is_setup);
+  const totalSpentEver = expenses.reduce((a,e)=>a+Number(e.amount),0);
+  const totalRevEver = sales.reduce((a,s)=>a+Number(s.total),0);
+  const recPct = totalSpentEver>0?Math.min(100,Math.round((totalRevEver/totalSpentEver)*100)):0;
+  const nc = netTotal>=0?'green':'red';
+
+  let html = `
+    <div class="stat-box full" style="background:${netTotal>=0?'var(--green-light)':'var(--red-light)'};border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:10px;">
+      <div class="stat-label">${isAll?'Net Profit — All Time':'Net Profit — This Week'}</div>
+      <div class="stat-value ${nc}" style="font-size:28px;">${netTotal<0?'−':''}${fmt(Math.abs(netTotal))}</div>
+      <div style="font-size:10px;color:var(--mid);margin-top:2px;">${netTotal>=0?'✓ Profitable':'↓ In loss'} · ${isAll?'All Time':getWeekLabel(cwk)}</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box" style="background:var(--green-light)"><div class="stat-label">Revenue</div><div class="stat-value green">${fmt(revenue)}</div></div>
+      <div class="stat-box" style="background:var(--red-light)"><div class="stat-label">Operating Costs</div><div class="stat-value red">${fmt(operating)}</div></div>
+      <div class="stat-box"><div class="stat-label">Net (Operating)</div><div class="stat-value ${netOp>=0?'green':'red'}">${netOp<0?'−':''}${fmt(Math.abs(netOp))}</div></div>
+      <div class="stat-box" style="background:var(--pink-light)"><div class="stat-label">Setup Costs</div><div class="stat-value pink">${fmt(setup)}</div></div>
+    </div>`;
+
+  if (setupItems.length) {
+    html += `<div class="card" style="margin-top:4px"><div class="card-title">Setup Breakdown</div>
+      ${setupItems.map(e=>`<div class="log-entry">
+        <div class="log-icon" style="background:var(--pink-light)">🔧</div>
+        <div class="log-body"><div class="log-title">${e.source}${e.note?' – '+e.note:''}</div><div class="log-sub">${e.paid_by} · ${fmtDate(e.date)}</div></div>
+        <div class="log-amount neg">${fmt(e.amount)}</div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  if (isAll) {
+    html += `<div class="recovery-bar">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:13px;font-weight:600">Have we recovered all costs?</div>
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:${recPct>=100?'var(--green)':'var(--pink)'}">${recPct}%</div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${recPct}%;background:${recPct>=100?'var(--green)':'var(--pink)'}"></div></div>
+      <div class="bar-labels"><span>Spent: ${fmt(totalSpentEver)}</span><span>Revenue: ${fmt(totalRevEver)}</span></div>
+      <div style="font-size:12px;color:${recPct>=100?'var(--green)':'var(--mid)'};font-weight:600;margin-top:6px">
+        ${recPct>=100?'✓ Every rupee recovered. You\'re in profit.':`Need ${fmt(totalSpentEver-totalRevEver)} more to break even.`}
+      </div>
+    </div>`;
+  }
+
+  const payerMap = {};
+  exp.forEach(e => { payerMap[e.paid_by] = (payerMap[e.paid_by]||0)+Number(e.amount); });
+  if (Object.keys(payerMap).length) {
+    html += `<div class="card" style="margin-top:4px"><div class="card-title">Spent By Person</div>
+      ${Object.entries(payerMap).sort((a,b)=>b[1]-a[1]).map(([n,a])=>`
+        <div class="log-entry">
+          <div class="log-icon" style="background:var(--pink-light)">👤</div>
+          <div class="log-body"><div class="log-title">${n}</div></div>
+          <div class="log-amount neg">${fmt(a)}</div>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  document.getElementById('pnlContent').innerHTML = html;
+}
+
+function updateWeekBadge() {
+  const weeks = [...new Set([...expenses.map(e=>e.week_key),...sales.map(s=>s.week_key)])].sort();
+  const cwk = getCWK(), idx = weeks.indexOf(cwk);
+  document.getElementById('currentWeekBadge').textContent = idx>=0?`Week ${idx+1}`:weeks.length>0?`Week ${weeks.length+1}`:'Week 1';
+}
+
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===['expense','revenue','pnl'].indexOf(name)));
+  window.scrollTo(0,0);
+}
+
+// ── Init ──────────────────────────────────────────────────────
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('expDate').value = today;
+document.getElementById('revDate').value = today;
+buildQtyList();
+if (currentUser) {
+  document.getElementById('userBadge').textContent = currentUser;
+  document.querySelectorAll('#expPaidBy .chip').forEach(c=>c.classList.toggle('selected',c.dataset.val===currentUser));
+} else { showUserSelector(); }
+loadAll();
+</script>
+</body>
+</html>

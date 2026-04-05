@@ -337,6 +337,29 @@
 
 <script>
   const INSTAGRAM_URL = 'https://www.instagram.com/bombolitoo?igsh=MXN5cTkxOG1qdTJoOQ==';
+  const SUPABASE_URL = 'https://lcgfjvtalbuauqdtdfsf.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZ2ZqdnRhbGJ1YXVxZHRkZnNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTgyMjgsImV4cCI6MjA5MDQzNDIyOH0.z1z0aoz_dyWHb6jcZHPk-9dcvUKvCnGV7BTe8L5chnA';
+
+  async function logToSupabase(offer, customerName) {
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/easter_eggs`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          offer_type: offer.type,
+          offer_headline: offer.headline,
+          customer_name: customerName || null
+        })
+      });
+    } catch(e) {
+      console.log('Log failed silently:', e);
+    }
+  }
 
   const offers = [
     {
@@ -419,6 +442,7 @@
     document.getElementById('screenshot-note').classList.toggle('visible', !o.isToday);
     showScreen('screen-offer');
     launchConfetti();
+    logToSupabase(o, null); // log scan silently
   }
 
   function openInstagram() { window.open(INSTAGRAM_URL, '_blank'); }
@@ -430,6 +454,7 @@
     document.querySelector('.name-skip').style.display = 'none';
     document.getElementById('name-input').disabled = true;
     document.querySelector('.name-submit').disabled = true;
+    logToSupabase(assignedOffer, name); // log with name
   }
 
   function skipName() {

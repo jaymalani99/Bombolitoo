@@ -12,6 +12,7 @@
     --green: #27AE60; --green-light: #E8F8EF;
     --red: #E74C3C; --red-light: #FDECEA;
     --border: #EFEFEF; --shadow: 0 2px 16px rgba(255,107,138,0.10); --radius: 16px;
+    --easter: #DB2777; --easter-light: #FCE7F3;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; padding-bottom: 80px; max-width: 480px; margin: 0 auto; }
@@ -39,6 +40,8 @@
   .nav-btn svg { width: 22px; height: 22px; }
   .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--pink); margin-top: 2px; opacity: 0; transition: opacity 0.2s; }
   .nav-btn.active .nav-dot { opacity: 1; }
+  .nav-btn.easter-nav.active { color: var(--easter); }
+  .nav-btn.easter-nav.active .nav-dot { background: var(--easter); }
 
   .page { display: none; padding: 16px; }
   .page.active { display: block; }
@@ -89,6 +92,7 @@
   .stat-value.green { color: var(--green); }
   .stat-value.red { color: var(--red); }
   .stat-value.pink { color: var(--pink); }
+  .stat-value.easter { color: var(--easter); }
 
   .qty-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); }
   .qty-row:last-child { border-bottom: none; }
@@ -98,6 +102,12 @@
   .qty-btn { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); background: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--dark); transition: all 0.15s; }
   .qty-btn:active { background: var(--pink-light); border-color: var(--pink); }
   .qty-num { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; min-width: 24px; text-align: center; }
+
+  /* Discount chips */
+  .discount-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .disc-chip { padding: 8px 14px; border-radius: 30px; border: 1.5px solid var(--border); background: white; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--dark); cursor: pointer; transition: all 0.15s; }
+  .disc-chip.selected { background: var(--easter); border-color: var(--easter); color: white; }
+  .discount-preview { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--easter-light); border-radius: 12px; margin-bottom: 12px; font-size: 13px; font-weight: 600; color: var(--easter); }
 
   .week-tabs { display: flex; background: var(--border); border-radius: 10px; padding: 3px; margin-bottom: 14px; }
   .week-tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; background: none; font-family: 'DM Sans', sans-serif; color: var(--mid); }
@@ -112,6 +122,19 @@
   .empty-state { text-align: center; padding: 32px 16px; color: var(--mid); }
   .empty-state .emoji { font-size: 32px; margin-bottom: 8px; }
   .empty-state p { font-size: 13px; }
+
+  /* Easter page */
+  .easter-header { background: linear-gradient(135deg, #DB2777, #F472B6); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; color: white; text-align: center; }
+  .easter-header h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .easter-header p { font-size: 12px; opacity: 0.8; }
+  .easter-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .easter-stat { background: white; border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); border-left: 4px solid var(--easter); }
+  .easter-stat.full { grid-column: 1 / -1; }
+  .easter-egg-entry { display: flex; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+  .easter-egg-entry:last-child { border-bottom: none; }
+  .egg-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+  .egg-badge.today { background: #D1FAE5; color: #065F46; }
+  .egg-badge.next { background: var(--easter-light); color: var(--easter); }
 
   .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.3s; white-space: nowrap; z-index: 999; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -141,6 +164,7 @@
   </div>
 </div>
 
+<!-- EXPENSES PAGE -->
 <div class="page active" id="page-expense">
   <div class="card">
     <div class="card-title">Log Expense</div>
@@ -175,15 +199,40 @@
   <div class="card" id="expenseLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
 </div>
 
+<!-- REVENUE PAGE -->
 <div class="page" id="page-revenue">
   <div class="card">
     <div class="card-title">Log Sale</div>
     <div class="form-row"><label class="form-label">Date</label><input type="date" class="input" id="revDate"></div>
     <div class="form-row"><label class="form-label">What did they buy?</label><div id="qtyList"></div></div>
-    <div style="background:var(--pink-light);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div style="font-size:13px;font-weight:600;">Sale Total</div>
-      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--pink);" id="salePreview">Rs 0</div>
+
+    <!-- DISCOUNT SECTION -->
+    <div class="form-row">
+      <label class="form-label">Discount Given (Easter Egg / Other)</label>
+      <div class="discount-chips" id="discountChips">
+        <div class="disc-chip" data-val="0">None</div>
+        <div class="disc-chip" data-val="10">Rs 10</div>
+        <div class="disc-chip" data-val="15">Rs 15</div>
+        <div class="disc-chip" data-val="27">Free Bomboloni</div>
+      </div>
+      <input type="number" class="input" id="customDiscount" placeholder="Or enter custom amount..." inputmode="decimal" style="margin-top:8px;" oninput="updateDiscount()">
     </div>
+
+    <div style="background:var(--pink-light);border-radius:12px;padding:12px 14px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <div style="font-size:13px;font-weight:600;">Sale Total</div>
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--pink);" id="salePreview">Rs 0</div>
+      </div>
+      <div id="discountPreview" style="display:none;justify-content:space-between;align-items:center;">
+        <div style="font-size:11px;color:var(--easter);font-weight:600;">Discount Applied</div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--easter);" id="discountAmt">− Rs 0</div>
+      </div>
+      <div id="netPreviewRow" style="display:none;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,107,138,0.2);margin-top:6px;padding-top:6px;">
+        <div style="font-size:12px;font-weight:600;">Net Collected</div>
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--green);" id="netPreview">Rs 0</div>
+      </div>
+    </div>
+
     <button class="btn" id="revBtn" onclick="logSale()">Log Sale</button>
   </div>
   <div class="section-divider">Sales Summary</div>
@@ -191,18 +240,33 @@
     <div class="stat-box full"><div class="stat-label">Total Revenue (All Time)</div><div class="stat-value green" id="totalRevenue">Rs —</div></div>
     <div class="stat-box"><div class="stat-label">Units Sold</div><div class="stat-value pink" id="totalUnits">—</div></div>
     <div class="stat-box"><div class="stat-label">Transactions</div><div class="stat-value" id="totalTxns">—</div></div>
+    <div class="stat-box full"><div class="stat-label">Total Discounts Given</div><div class="stat-value easter" id="totalDiscounts">Rs —</div></div>
   </div>
   <div class="card"><div class="card-title">By Flavour</div><div id="flavourStats"></div></div>
   <div class="section-divider">Recent Sales</div>
   <div class="card" id="revenueLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
 </div>
 
+<!-- P&L PAGE -->
 <div class="page" id="page-pnl">
   <div class="week-tabs">
     <button class="week-tab active" data-week="all" onclick="switchPnlView('all')">All Time</button>
     <button class="week-tab" data-week="current" onclick="switchPnlView('current')">This Week</button>
   </div>
   <div id="pnlContent"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+</div>
+
+<!-- EASTER PAGE -->
+<div class="page" id="page-easter">
+  <div class="easter-header">
+    <h2>🐣 Easter Pop-Up</h2>
+    <p>April 6, 2026 · Church Location · 30 units</p>
+  </div>
+  <div class="easter-stat-grid" id="easterStats">
+    <div class="easter-stat full"><div class="stat-label">Loading Easter data...</div></div>
+  </div>
+  <div class="section-divider">Egg Offers Given</div>
+  <div class="card" id="easterLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
 </div>
 
 <nav class="nav">
@@ -218,12 +282,16 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     P&L<div class="nav-dot"></div>
   </button>
+  <button class="nav-btn easter-nav" onclick="switchPage('easter')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="13" rx="7" ry="9"/><path d="M8 10 Q12 6 16 10"/></svg>
+    Easter<div class="nav-dot"></div>
+  </button>
 </nav>
 <div class="toast" id="toast"></div>
 
 <script>
 const SUPABASE_URL = 'https://lcgfjvtalbuauqdtdfsf.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_H7tphASdS9hVTdDgnSEZ3g_8jjI2DWa';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZ2ZqdnRhbGJ1YXVxZHRkZnNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTgyMjgsImV4cCI6MjA5MDQzNDIyOH0.z1z0aoz_dyWHb6jcZHPk-9dcvUKvCnGV7BTe8L5chnA';
 
 const COMBOS = [
   { id: 'single_nutella', type: 'single', flavor: 'Nutella', label: 'Single', price: 95, units: 1 },
@@ -236,10 +304,10 @@ const COMBOS = [
   { id: 'trio_mixed', type: 'trio', flavor: 'Mixed', label: 'Trio', price: 250, units: 3 },
 ];
 
-let expenses = [], sales = [], isSetup = false, saleQtys = {}, pnlView = 'all';
+let expenses = [], sales = [], easterEggs = [], isSetup = false, saleQtys = {}, pnlView = 'all';
 let currentUser = localStorage.getItem('bb_user') || null;
+let currentDiscount = 0;
 
-// ── Supabase ──────────────────────────────────────────────────
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
 
 async function dbGet(table, order) {
@@ -254,9 +322,9 @@ async function dbDelete(table, id) {
   await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: H });
 }
 
-// ── Utils ──────────────────────────────────────────────────────
 const fmt = n => 'Rs ' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 const fmtDate = s => new Date(s).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+const fmtTime = s => new Date(s).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
 function getWeekKey(dateStr) {
   const d = new Date(dateStr), day = d.getDay();
@@ -280,7 +348,7 @@ function setBtn(id, loading, label) {
 }
 function getChip(gid) { const s = document.querySelector(`#${gid} .chip.selected`); return s ? s.dataset.val : null; }
 
-// ── User ──────────────────────────────────────────────────────
+// User
 function showUserSelector() { document.getElementById('userOverlay').classList.add('show'); }
 document.getElementById('userOverlay').addEventListener('click', e => { if (e.target === document.getElementById('userOverlay')) document.getElementById('userOverlay').classList.remove('show'); });
 function setUser(name) {
@@ -291,30 +359,49 @@ function setUser(name) {
   showToast(`Welcome, ${name} 👋`);
 }
 
-// ── Chips ──────────────────────────────────────────────────────
+// Chips
 document.querySelectorAll('.chip-group').forEach(g => g.addEventListener('click', e => {
   const c = e.target.closest('.chip'); if (!c) return;
   g.querySelectorAll('.chip').forEach(x => x.classList.remove('selected')); c.classList.add('selected');
 }));
 
+// Discount chips
+document.getElementById('discountChips').addEventListener('click', e => {
+  const c = e.target.closest('.disc-chip'); if (!c) return;
+  document.querySelectorAll('.disc-chip').forEach(x => x.classList.remove('selected'));
+  c.classList.add('selected');
+  currentDiscount = parseFloat(c.dataset.val) || 0;
+  document.getElementById('customDiscount').value = '';
+  updateSalePreview();
+});
+
+function updateDiscount() {
+  const val = parseFloat(document.getElementById('customDiscount').value) || 0;
+  currentDiscount = val;
+  document.querySelectorAll('.disc-chip').forEach(x => x.classList.remove('selected'));
+  updateSalePreview();
+}
+
 function toggleSetup() { isSetup = !isSetup; document.getElementById('setupToggle').classList.toggle('on', isSetup); }
 
-// ── Load ──────────────────────────────────────────────────────
+// Load
 async function loadAll() {
   try {
-    [expenses, sales] = await Promise.all([
+    [expenses, sales, easterEggs] = await Promise.all([
       dbGet('expenses', 'date.desc,created_at.desc'),
-      dbGet('sales', 'date.desc,created_at.desc')
+      dbGet('sales', 'date.desc,created_at.desc'),
+      dbGet('easter_eggs', 'created_at.desc')
     ]);
     if (!Array.isArray(expenses)) expenses = [];
     if (!Array.isArray(sales)) sales = [];
+    if (!Array.isArray(easterEggs)) easterEggs = [];
     renderAll();
   } catch(e) { showToast('Connection error'); }
 }
 
-function renderAll() { renderExpenseLog(); renderRevenueLog(); renderPnl(); updateWeekBadge(); }
+function renderAll() { renderExpenseLog(); renderRevenueLog(); renderPnl(); renderEaster(); updateWeekBadge(); }
 
-// ── Expense ───────────────────────────────────────────────────
+// Expense
 async function logExpense() {
   const date = document.getElementById('expDate').value;
   const amount = parseFloat(document.getElementById('expAmount').value);
@@ -356,7 +443,7 @@ function renderExpenseLog() {
     </div>`).join('');
 }
 
-// ── Revenue ───────────────────────────────────────────────────
+// Revenue
 function buildQtyList() {
   saleQtys = {}; COMBOS.forEach(c => saleQtys[c.id] = 0);
   document.getElementById('qtyList').innerHTML = COMBOS.map(c => `
@@ -370,25 +457,51 @@ function buildQtyList() {
     </div>`).join('');
 }
 
+function getSaleTotal() {
+  let t = 0; COMBOS.forEach(c => t += (saleQtys[c.id]||0)*c.price); return t;
+}
+
+function updateSalePreview() {
+  const total = getSaleTotal();
+  const disc = Math.min(currentDiscount, total);
+  const net = total - disc;
+  document.getElementById('salePreview').textContent = fmt(total);
+  const discRow = document.getElementById('discountPreview');
+  const netRow = document.getElementById('netPreviewRow');
+  if (disc > 0) {
+    discRow.style.display = 'flex';
+    netRow.style.display = 'flex';
+    document.getElementById('discountAmt').textContent = `− ${fmt(disc)}`;
+    document.getElementById('netPreview').textContent = fmt(net);
+  } else {
+    discRow.style.display = 'none';
+    netRow.style.display = 'none';
+  }
+}
+
 function chgQty(id, d) {
   saleQtys[id] = Math.max(0, (saleQtys[id]||0)+d);
   document.getElementById('qty_'+id).textContent = saleQtys[id];
-  let t = 0; COMBOS.forEach(c => t += (saleQtys[c.id]||0)*c.price);
-  document.getElementById('salePreview').textContent = fmt(t);
+  updateSalePreview();
 }
 
 async function logSale() {
   const date = document.getElementById('revDate').value;
-  let total = 0, items = [], totalUnits = 0;
-  COMBOS.forEach(c => { const q = saleQtys[c.id]||0; if(q>0){total+=q*c.price;totalUnits+=q*c.units;items.push({...c,qty:q});} });
+  let total = getSaleTotal(), items = [], totalUnits = 0;
+  COMBOS.forEach(c => { const q = saleQtys[c.id]||0; if(q>0){totalUnits+=q*c.units;items.push({...c,qty:q});} });
   if (!date || total === 0) { showToast('Add at least one item'); return; }
+  const disc = Math.min(currentDiscount, total);
+  const netTotal = total - disc;
   setBtn('revBtn', true, 'Logging...');
   try {
-    const res = await dbInsert('sales', { date, total, items: JSON.stringify(items), total_units: totalUnits, week_key: getWeekKey(date) });
+    const res = await dbInsert('sales', { date, total: netTotal, gross_total: total, discount: disc, items: JSON.stringify(items), total_units: totalUnits, week_key: getWeekKey(date) });
     if (res && res[0]) {
       sales.unshift({ ...res[0], items });
       buildQtyList();
-      document.getElementById('salePreview').textContent = fmt(0);
+      currentDiscount = 0;
+      document.querySelectorAll('.disc-chip').forEach(x => x.classList.remove('selected'));
+      document.getElementById('customDiscount').value = '';
+      updateSalePreview();
       renderAll(); showToast('Sale logged ✓');
     } else showToast('Save failed');
   } catch(e) { showToast('Error saving'); }
@@ -400,9 +513,12 @@ async function deleteSale(id) {
 }
 
 function renderRevenueLog() {
-  document.getElementById('totalRevenue').textContent = fmt(sales.reduce((a,s)=>a+Number(s.total),0));
+  const totalRev = sales.reduce((a,s)=>a+Number(s.total),0);
+  const totalDisc = sales.reduce((a,s)=>a+Number(s.discount||0),0);
+  document.getElementById('totalRevenue').textContent = fmt(totalRev);
   document.getElementById('totalUnits').textContent = sales.reduce((a,s)=>a+Number(s.total_units),0);
   document.getElementById('totalTxns').textContent = sales.length;
+  document.getElementById('totalDiscounts').textContent = fmt(totalDisc);
 
   const flavors = {};
   sales.forEach(s => {
@@ -424,9 +540,13 @@ function renderRevenueLog() {
   el.innerHTML = sales.slice(0,30).map(s => {
     const items = typeof s.items==='string'?JSON.parse(s.items):s.items;
     const lbl = Array.isArray(items)?items.map(i=>`${i.qty}× ${i.label} ${i.flavor}`).join(', '):'—';
+    const disc = Number(s.discount||0);
     return `<div class="log-entry">
       <div class="log-icon" style="background:var(--green-light)">💰</div>
-      <div class="log-body"><div class="log-title">${lbl}</div><div class="log-sub">${fmtDate(s.date)} · ${s.total_units} units</div></div>
+      <div class="log-body">
+        <div class="log-title">${lbl}</div>
+        <div class="log-sub">${fmtDate(s.date)} · ${s.total_units} units${disc>0?' · Disc: '+fmt(disc):''}</div>
+      </div>
       <div style="display:flex;align-items:center;gap:4px">
         <div class="log-amount pos">${fmt(s.total)}</div>
         <button class="delete-btn" onclick="deleteSale(${s.id})">×</button>
@@ -435,7 +555,7 @@ function renderRevenueLog() {
   }).join('');
 }
 
-// ── P&L ──────────────────────────────────────────────────────
+// P&L
 function switchPnlView(v) {
   pnlView = v;
   document.querySelectorAll('.week-tab').forEach(t => t.classList.toggle('active', t.dataset.week===v));
@@ -449,6 +569,7 @@ function renderPnl() {
   const operating = exp.filter(e=>!e.is_setup).reduce((a,e)=>a+Number(e.amount),0);
   const setup = exp.filter(e=>e.is_setup).reduce((a,e)=>a+Number(e.amount),0);
   const revenue = rev.reduce((a,s)=>a+Number(s.total),0);
+  const totalDiscount = rev.reduce((a,s)=>a+Number(s.discount||0),0);
   const netOp = revenue - operating, netTotal = revenue - operating - setup;
   const setupItems = exp.filter(e=>e.is_setup);
   const totalSpentEver = expenses.reduce((a,e)=>a+Number(e.amount),0);
@@ -467,6 +588,7 @@ function renderPnl() {
       <div class="stat-box" style="background:var(--red-light)"><div class="stat-label">Operating Costs</div><div class="stat-value red">${fmt(operating)}</div></div>
       <div class="stat-box"><div class="stat-label">Net (Operating)</div><div class="stat-value ${netOp>=0?'green':'red'}">${netOp<0?'−':''}${fmt(Math.abs(netOp))}</div></div>
       <div class="stat-box" style="background:var(--pink-light)"><div class="stat-label">Setup Costs</div><div class="stat-value pink">${fmt(setup)}</div></div>
+      ${totalDiscount>0?`<div class="stat-box full" style="background:var(--easter-light)"><div class="stat-label">Discounts Given</div><div class="stat-value easter">${fmt(totalDiscount)}</div></div>`:''}
     </div>`;
 
   if (setupItems.length) {
@@ -509,6 +631,39 @@ function renderPnl() {
   document.getElementById('pnlContent').innerHTML = html;
 }
 
+// Easter
+function renderEaster() {
+  const total = easterEggs.length;
+  const cashback = easterEggs.filter(e => e.offer_type === 'TODAY ONLY').length;
+  const freeBom = easterEggs.filter(e => e.headline && e.offer_headline && e.offer_headline.includes('Free')).length;
+  const discount = easterEggs.filter(e => e.offer_type === 'NEXT VISIT').length;
+  const named = easterEggs.filter(e => e.customer_name).length;
+  const cashbackCost = cashback * 10;
+
+  document.getElementById('easterStats').innerHTML = `
+    <div class="easter-stat"><div class="stat-label">Total Scans</div><div class="stat-value easter">${total}</div></div>
+    <div class="easter-stat"><div class="stat-label">Named Customers</div><div class="stat-value">${named}</div></div>
+    <div class="easter-stat"><div class="stat-label">Rs 10 Cashback</div><div class="stat-value red">${cashback} people</div></div>
+    <div class="easter-stat"><div class="stat-label">Cash Given Away</div><div class="stat-value red">${fmt(cashbackCost)}</div></div>
+    <div class="easter-stat full"><div class="stat-label">Next Visit Offers Given</div><div class="stat-value easter">${discount} people to follow up</div></div>
+  `;
+
+  const el = document.getElementById('easterLog');
+  if (!easterEggs.length) {
+    el.innerHTML = '<div class="empty-state"><div class="emoji">🥚</div><p>No eggs cracked yet</p></div>';
+    return;
+  }
+  el.innerHTML = easterEggs.map(e => `
+    <div class="easter-egg-entry">
+      <div class="log-icon" style="background:var(--easter-light)">🥚</div>
+      <div class="log-body">
+        <div class="log-title">${e.offer_headline || e.offer_type || 'Unknown offer'}</div>
+        <div class="log-sub">${e.customer_name ? '👤 ' + e.customer_name + ' · ' : ''}${fmtTime(e.created_at)}</div>
+      </div>
+      <span class="egg-badge ${e.offer_type==='TODAY ONLY'?'today':'next'}">${e.offer_type==='TODAY ONLY'?'Today':'Next Visit'}</span>
+    </div>`).join('');
+}
+
 function updateWeekBadge() {
   const weeks = [...new Set([...expenses.map(e=>e.week_key),...sales.map(s=>s.week_key)])].sort();
   const cwk = getCWK(), idx = weeks.indexOf(cwk);
@@ -518,11 +673,12 @@ function updateWeekBadge() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===['expense','revenue','pnl'].indexOf(name)));
+  const pages = ['expense','revenue','pnl','easter'];
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===pages.indexOf(name)));
   window.scrollTo(0,0);
 }
 
-// ── Init ──────────────────────────────────────────────────────
+// Init
 const today = new Date().toISOString().split('T')[0];
 document.getElementById('expDate').value = today;
 document.getElementById('revDate').value = today;

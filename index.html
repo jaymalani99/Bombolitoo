@@ -32,7 +32,6 @@
   .user-sheet-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 20px; }
   .user-btn { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid var(--border); background: white; font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif; color: var(--dark); cursor: pointer; margin-bottom: 10px; text-align: left; transition: all 0.15s; }
   .user-btn:active, .user-btn.selected { border-color: var(--pink); background: var(--pink-light); color: var(--pink); }
-  .user-btn .user-role { font-size: 11px; font-weight: 400; color: var(--mid); display: block; margin-top: 2px; }
 
   .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: white; border-top: 1px solid var(--border); display: flex; z-index: 200; padding-bottom: env(safe-area-inset-bottom); }
   .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 0 8px; border: none; background: none; cursor: pointer; color: #AAA; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; gap: 3px; transition: color 0.2s; }
@@ -40,8 +39,8 @@
   .nav-btn svg { width: 22px; height: 22px; }
   .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--pink); margin-top: 2px; opacity: 0; transition: opacity 0.2s; }
   .nav-btn.active .nav-dot { opacity: 1; }
-  .nav-btn.easter-nav.active { color: var(--easter); }
-  .nav-btn.easter-nav.active .nav-dot { background: var(--easter); }
+  .nav-btn.popup-nav.active { color: var(--easter); }
+  .nav-btn.popup-nav.active .nav-dot { background: var(--easter); }
 
   .page { display: none; padding: 16px; }
   .page.active { display: block; }
@@ -69,6 +68,7 @@
   .btn { width: 100%; padding: 15px; background: var(--pink); color: white; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; font-family: 'Syne', sans-serif; cursor: pointer; transition: all 0.15s; letter-spacing: 0.2px; }
   .btn:active { transform: scale(0.98); background: var(--pink-dark); }
   .btn.loading { opacity: 0.6; pointer-events: none; }
+  .btn.secondary { background: white; color: var(--pink); border: 2px solid var(--pink); margin-top: 8px; }
 
   .log-entry { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; animation: slideIn 0.3s ease; }
   .log-entry:last-child { border-bottom: none; }
@@ -103,11 +103,9 @@
   .qty-btn:active { background: var(--pink-light); border-color: var(--pink); }
   .qty-num { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; min-width: 24px; text-align: center; }
 
-  /* Discount chips */
   .discount-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
   .disc-chip { padding: 8px 14px; border-radius: 30px; border: 1.5px solid var(--border); background: white; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--dark); cursor: pointer; transition: all 0.15s; }
   .disc-chip.selected { background: var(--easter); border-color: var(--easter); color: white; }
-  .discount-preview { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--easter-light); border-radius: 12px; margin-bottom: 12px; font-size: 13px; font-weight: 600; color: var(--easter); }
 
   .week-tabs { display: flex; background: var(--border); border-radius: 10px; padding: 3px; margin-bottom: 14px; }
   .week-tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; background: none; font-family: 'DM Sans', sans-serif; color: var(--mid); }
@@ -123,18 +121,20 @@
   .empty-state .emoji { font-size: 32px; margin-bottom: 8px; }
   .empty-state p { font-size: 13px; }
 
-  /* Easter page */
-  .easter-header { background: linear-gradient(135deg, #DB2777, #F472B6); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; color: white; text-align: center; }
-  .easter-header h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
-  .easter-header p { font-size: 12px; opacity: 0.8; }
-  .easter-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .easter-stat { background: white; border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); border-left: 4px solid var(--easter); }
-  .easter-stat.full { grid-column: 1 / -1; }
-  .easter-egg-entry { display: flex; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); gap: 12px; }
-  .easter-egg-entry:last-child { border-bottom: none; }
-  .egg-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+  /* Popup/Easter page */
+  .popup-header { background: linear-gradient(135deg, #DB2777, #F472B6); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; color: white; }
+  .popup-header h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 2px; }
+  .popup-header p { font-size: 12px; opacity: 0.8; }
+  .popup-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .popup-stat { background: white; border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); border-left: 4px solid var(--easter); }
+  .popup-stat.full { grid-column: 1 / -1; }
+  .egg-entry { display: flex; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+  .egg-entry:last-child { border-bottom: none; }
+  .egg-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
   .egg-badge.today { background: #D1FAE5; color: #065F46; }
   .egg-badge.next { background: var(--easter-light); color: var(--easter); }
+
+
 
   .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.3s; white-space: nowrap; z-index: 999; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -147,10 +147,10 @@
 <div class="user-overlay" id="userOverlay">
   <div class="user-sheet">
     <div class="user-sheet-title">Who are you? 👋</div>
-    <button class="user-btn" onclick="setUser('Malani')">Malani<span class="user-role">Strategy & Finance</span></button>
-    <button class="user-btn" onclick="setUser('Priyanka')">Priyanka<span class="user-role">Operator</span></button>
-    <button class="user-btn" onclick="setUser('Vikas')">Vikas<span class="user-role">Sales</span></button>
-    <button class="user-btn" onclick="setUser('Monica')">Monica<span class="user-role">Partner</span></button>
+    <button class="user-btn" onclick="setUser('Jay')">Jay</button>
+    <button class="user-btn" onclick="setUser('Priyanka')">Priyanka</button>
+    <button class="user-btn" onclick="setUser('Vikas')">Vikas</button>
+    <button class="user-btn" onclick="setUser('Monica')">Monica</button>
   </div>
 </div>
 
@@ -166,7 +166,7 @@
 
 <!-- EXPENSES PAGE -->
 <div class="page active" id="page-expense">
-  <div class="card">
+  <div class="card" id="expForm">
     <div class="card-title">Log Expense</div>
     <div class="form-row"><label class="form-label">Date</label><input type="date" class="input" id="expDate"></div>
     <div class="form-row">
@@ -182,7 +182,7 @@
     <div class="form-row">
       <label class="form-label">Paid By</label>
       <div class="chip-group" id="expPaidBy">
-        <div class="chip selected" data-val="Malani">Malani</div>
+        <div class="chip selected" data-val="Jay">Jay</div>
         <div class="chip" data-val="Priyanka">Priyanka</div>
         <div class="chip" data-val="Vikas">Vikas</div>
         <div class="chip" data-val="Monica">Monica</div>
@@ -205,19 +205,16 @@
     <div class="card-title">Log Sale</div>
     <div class="form-row"><label class="form-label">Date</label><input type="date" class="input" id="revDate"></div>
     <div class="form-row"><label class="form-label">What did they buy?</label><div id="qtyList"></div></div>
-
-    <!-- DISCOUNT SECTION -->
     <div class="form-row">
-      <label class="form-label">Discount Given (Easter Egg / Other)</label>
+      <label class="form-label">Discount Given</label>
       <div class="discount-chips" id="discountChips">
-        <div class="disc-chip" data-val="0">None</div>
+        <div class="disc-chip selected" data-val="0">None</div>
         <div class="disc-chip" data-val="10">Rs 10</div>
         <div class="disc-chip" data-val="15">Rs 15</div>
         <div class="disc-chip" data-val="27">Free Bomboloni</div>
       </div>
       <input type="number" class="input" id="customDiscount" placeholder="Or enter custom amount..." inputmode="decimal" style="margin-top:8px;" oninput="updateDiscount()">
     </div>
-
     <div style="background:var(--pink-light);border-radius:12px;padding:12px 14px;margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
         <div style="font-size:13px;font-weight:600;">Sale Total</div>
@@ -232,7 +229,6 @@
         <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--green);" id="netPreview">Rs 0</div>
       </div>
     </div>
-
     <button class="btn" id="revBtn" onclick="logSale()">Log Sale</button>
   </div>
   <div class="section-divider">Sales Summary</div>
@@ -256,17 +252,17 @@
   <div id="pnlContent"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
 </div>
 
-<!-- EASTER PAGE -->
-<div class="page" id="page-easter">
-  <div class="easter-header">
-    <h2>🐣 Easter Pop-Up</h2>
-    <p>April 6, 2026 · Church Location · 30 units</p>
+<!-- POP-UP TRACKER PAGE -->
+<div class="page" id="page-popup">
+  <div class="popup-header">
+    <h2>🥚 Pop-Up Tracker</h2>
+    <p id="popupSubtitle">QR scans & offer data from all pop-ups</p>
   </div>
-  <div class="easter-stat-grid" id="easterStats">
-    <div class="easter-stat full"><div class="stat-label">Loading Easter data...</div></div>
+  <div class="popup-stat-grid" id="popupStats">
+    <div class="popup-stat full"><div class="stat-label">Loading...</div></div>
   </div>
-  <div class="section-divider">Egg Offers Given</div>
-  <div class="card" id="easterLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+  <div class="section-divider">Recent Scans</div>
+  <div class="card" id="popupLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
 </div>
 
 <nav class="nav">
@@ -282,9 +278,9 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     P&L<div class="nav-dot"></div>
   </button>
-  <button class="nav-btn easter-nav" onclick="switchPage('easter')">
+  <button class="nav-btn popup-nav" onclick="switchPage('popup')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="13" rx="7" ry="9"/><path d="M8 10 Q12 6 16 10"/></svg>
-    Easter<div class="nav-dot"></div>
+    Pop-Ups<div class="nav-dot"></div>
   </button>
 </nav>
 <div class="toast" id="toast"></div>
@@ -308,6 +304,8 @@ let expenses = [], sales = [], easterEggs = [], isSetup = false, saleQtys = {}, 
 let currentUser = localStorage.getItem('bb_user') || null;
 let currentDiscount = 0;
 
+const isJay = () => currentUser === 'Jay';
+
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
 
 async function dbGet(table, order) {
@@ -325,6 +323,10 @@ async function dbDelete(table, id) {
 const fmt = n => 'Rs ' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 const fmtDate = s => new Date(s).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 const fmtTime = s => new Date(s).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+const fmtDateTime = s => {
+  const d = new Date(s);
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' · ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+};
 
 function getWeekKey(dateStr) {
   const d = new Date(dateStr), day = d.getDay();
@@ -348,18 +350,33 @@ function setBtn(id, loading, label) {
 }
 function getChip(gid) { const s = document.querySelector(`#${gid} .chip.selected`); return s ? s.dataset.val : null; }
 
-// User
+// ── User & access control ──
 function showUserSelector() { document.getElementById('userOverlay').classList.add('show'); }
-document.getElementById('userOverlay').addEventListener('click', e => { if (e.target === document.getElementById('userOverlay')) document.getElementById('userOverlay').classList.remove('show'); });
+document.getElementById('userOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('userOverlay')) document.getElementById('userOverlay').classList.remove('show');
+});
+
 function setUser(name) {
-  currentUser = name; localStorage.setItem('bb_user', name);
+  currentUser = name;
+  localStorage.setItem('bb_user', name);
   document.getElementById('userBadge').textContent = name;
   document.getElementById('userOverlay').classList.remove('show');
+
+  // Sync paid by chip
   document.querySelectorAll('#expPaidBy .chip').forEach(c => c.classList.toggle('selected', c.dataset.val === name));
+
+  applyAccessControl();
   showToast(`Welcome, ${name} 👋`);
+  renderAll();
 }
 
-// Chips
+function applyAccessControl() {
+  const jay = isJay();
+  // Expense form — Jay only, silently hidden for others
+  document.getElementById('expForm').style.display = jay ? 'block' : 'none';
+}
+
+// ── Chips ──
 document.querySelectorAll('.chip-group').forEach(g => g.addEventListener('click', e => {
   const c = e.target.closest('.chip'); if (!c) return;
   g.querySelectorAll('.chip').forEach(x => x.classList.remove('selected')); c.classList.add('selected');
@@ -384,7 +401,7 @@ function updateDiscount() {
 
 function toggleSetup() { isSetup = !isSetup; document.getElementById('setupToggle').classList.toggle('on', isSetup); }
 
-// Load
+// ── Load ──
 async function loadAll() {
   try {
     [expenses, sales, easterEggs] = await Promise.all([
@@ -399,10 +416,11 @@ async function loadAll() {
   } catch(e) { showToast('Connection error'); }
 }
 
-function renderAll() { renderExpenseLog(); renderRevenueLog(); renderPnl(); renderEaster(); updateWeekBadge(); }
+function renderAll() { renderExpenseLog(); renderRevenueLog(); renderPnl(); renderPopup(); updateWeekBadge(); }
 
-// Expense
+// ── Expense ──
 async function logExpense() {
+  if (!isJay()) { showToast('Only Jay can log expenses'); return; }
   const date = document.getElementById('expDate').value;
   const amount = parseFloat(document.getElementById('expAmount').value);
   const source = getChip('expSource'), paidBy = getChip('expPaidBy');
@@ -423,6 +441,7 @@ async function logExpense() {
 }
 
 async function deleteExpense(id) {
+  if (!isJay()) { showToast('Only Jay can delete expenses'); return; }
   await dbDelete('expenses', id); expenses = expenses.filter(e => e.id !== id); renderAll(); showToast('Deleted');
 }
 
@@ -438,12 +457,12 @@ function renderExpenseLog() {
       </div>
       <div style="display:flex;align-items:center;gap:4px">
         <div class="log-amount neg">${fmt(e.amount)}</div>
-        <button class="delete-btn" onclick="deleteExpense(${e.id})">×</button>
+        ${isJay() ? `<button class="delete-btn" onclick="deleteExpense(${e.id})">×</button>` : ''}
       </div>
     </div>`).join('');
 }
 
-// Revenue
+// ── Revenue ──
 function buildQtyList() {
   saleQtys = {}; COMBOS.forEach(c => saleQtys[c.id] = 0);
   document.getElementById('qtyList').innerHTML = COMBOS.map(c => `
@@ -500,6 +519,7 @@ async function logSale() {
       buildQtyList();
       currentDiscount = 0;
       document.querySelectorAll('.disc-chip').forEach(x => x.classList.remove('selected'));
+      document.querySelector('.disc-chip[data-val="0"]').classList.add('selected');
       document.getElementById('customDiscount').value = '';
       updateSalePreview();
       renderAll(); showToast('Sale logged ✓');
@@ -509,6 +529,7 @@ async function logSale() {
 }
 
 async function deleteSale(id) {
+  if (!isJay()) { showToast('Only Jay can delete sales'); return; }
   await dbDelete('sales', id); sales = sales.filter(s => s.id !== id); renderAll(); showToast('Deleted');
 }
 
@@ -549,13 +570,13 @@ function renderRevenueLog() {
       </div>
       <div style="display:flex;align-items:center;gap:4px">
         <div class="log-amount pos">${fmt(s.total)}</div>
-        <button class="delete-btn" onclick="deleteSale(${s.id})">×</button>
+        ${isJay() ? `<button class="delete-btn" onclick="deleteSale(${s.id})">×</button>` : ''}
       </div>
     </div>`;
   }).join('');
 }
 
-// P&L
+// ── P&L ──
 function switchPnlView(v) {
   pnlView = v;
   document.querySelectorAll('.week-tab').forEach(t => t.classList.toggle('active', t.dataset.week===v));
@@ -631,37 +652,53 @@ function renderPnl() {
   document.getElementById('pnlContent').innerHTML = html;
 }
 
-// Easter
-function renderEaster() {
+// ── Pop-Up Tracker (replaces hardcoded Easter) ──
+function renderPopup() {
   const total = easterEggs.length;
-  const cashback = easterEggs.filter(e => e.offer_type === 'TODAY ONLY').length;
-  const freeBom = easterEggs.filter(e => e.headline && e.offer_headline && e.offer_headline.includes('Free')).length;
-  const discount = easterEggs.filter(e => e.offer_type === 'NEXT VISIT').length;
-  const named = easterEggs.filter(e => e.customer_name).length;
-  const cashbackCost = cashback * 10;
-
-  document.getElementById('easterStats').innerHTML = `
-    <div class="easter-stat"><div class="stat-label">Total Scans</div><div class="stat-value easter">${total}</div></div>
-    <div class="easter-stat"><div class="stat-label">Named Customers</div><div class="stat-value">${named}</div></div>
-    <div class="easter-stat"><div class="stat-label">Rs 10 Cashback</div><div class="stat-value red">${cashback} people</div></div>
-    <div class="easter-stat"><div class="stat-label">Cash Given Away</div><div class="stat-value red">${fmt(cashbackCost)}</div></div>
-    <div class="easter-stat full"><div class="stat-label">Next Visit Offers Given</div><div class="stat-value easter">${discount} people to follow up</div></div>
-  `;
-
-  const el = document.getElementById('easterLog');
-  if (!easterEggs.length) {
-    el.innerHTML = '<div class="empty-state"><div class="emoji">🥚</div><p>No eggs cracked yet</p></div>';
+  if (!total) {
+    document.getElementById('popupStats').innerHTML = `<div class="popup-stat full"><div class="stat-label">No scans yet</div><div class="stat-value">0</div></div>`;
+    document.getElementById('popupLog').innerHTML = '<div class="empty-state"><div class="emoji">🥚</div><p>No eggs cracked yet</p></div>';
     return;
   }
-  el.innerHTML = easterEggs.map(e => `
-    <div class="easter-egg-entry">
-      <div class="log-icon" style="background:var(--easter-light)">🥚</div>
-      <div class="log-body">
-        <div class="log-title">${e.offer_headline || e.offer_type || 'Unknown offer'}</div>
-        <div class="log-sub">${e.customer_name ? '👤 ' + e.customer_name + ' · ' : ''}${fmtTime(e.created_at)}</div>
-      </div>
-      <span class="egg-badge ${e.offer_type==='TODAY ONLY'?'today':'next'}">${e.offer_type==='TODAY ONLY'?'Today':'Next Visit'}</span>
-    </div>`).join('');
+
+  // Group by offer_type correctly using offer_headline field
+  const cashbackEggs = easterEggs.filter(e => e.offer_type === 'TODAY ONLY');
+  const nextVisitEggs = easterEggs.filter(e => e.offer_type === 'NEXT VISIT');
+  const freeEggs = nextVisitEggs.filter(e => (e.offer_headline || '').includes('Free'));
+  const discountEggs = nextVisitEggs.filter(e => (e.offer_headline || '').includes('15'));
+  const named = easterEggs.filter(e => e.customer_name && e.customer_name.trim());
+  const cashbackCost = cashbackEggs.length * 10;
+
+  // Date range
+  const dates = easterEggs.map(e => new Date(e.created_at));
+  const earliest = new Date(Math.min(...dates));
+  const latest = new Date(Math.max(...dates));
+  const dateLabel = earliest.toDateString() === latest.toDateString()
+    ? earliest.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    : earliest.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' – ' + latest.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  document.getElementById('popupSubtitle').textContent = `${total} scan${total!==1?'s':''} · ${dateLabel}`;
+
+  document.getElementById('popupStats').innerHTML = `
+    <div class="popup-stat"><div class="stat-label">Total Scans</div><div class="stat-value easter">${total}</div></div>
+    <div class="popup-stat"><div class="stat-label">Named Customers</div><div class="stat-value">${named.length}</div></div>
+    <div class="popup-stat"><div class="stat-label">Rs 10 Cashback</div><div class="stat-value red">${cashbackEggs.length} people</div></div>
+    <div class="popup-stat"><div class="stat-label">Cash Out Today</div><div class="stat-value red">${fmt(cashbackCost)}</div></div>
+    <div class="popup-stat"><div class="stat-label">Free Bomboloni Offers</div><div class="stat-value easter">${freeEggs.length} next visit</div></div>
+    <div class="popup-stat"><div class="stat-label">Rs 15 Off Offers</div><div class="stat-value easter">${discountEggs.length} next visit</div></div>
+  `;
+
+  document.getElementById('popupLog').innerHTML = easterEggs.length
+    ? easterEggs.map(e => `
+      <div class="egg-entry">
+        <div class="log-icon" style="background:var(--easter-light)">🥚</div>
+        <div class="log-body">
+          <div class="log-title">${e.offer_headline || e.offer_type || 'Unknown offer'}</div>
+          <div class="log-sub">${e.customer_name ? '👤 ' + e.customer_name + ' · ' : ''}${fmtDateTime(e.created_at)}</div>
+        </div>
+        <span class="egg-badge ${e.offer_type==='TODAY ONLY'?'today':'next'}">${e.offer_type==='TODAY ONLY'?'Today':'Next Visit'}</span>
+      </div>`).join('')
+    : '<div class="empty-state"><div class="emoji">🥚</div><p>No eggs cracked yet</p></div>';
 }
 
 function updateWeekBadge() {
@@ -673,20 +710,24 @@ function updateWeekBadge() {
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  const pages = ['expense','revenue','pnl','easter'];
+  const pages = ['expense','revenue','pnl','popup'];
   document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===pages.indexOf(name)));
   window.scrollTo(0,0);
 }
 
-// Init
+// ── Init ──
 const today = new Date().toISOString().split('T')[0];
 document.getElementById('expDate').value = today;
 document.getElementById('revDate').value = today;
 buildQtyList();
+
 if (currentUser) {
   document.getElementById('userBadge').textContent = currentUser;
   document.querySelectorAll('#expPaidBy .chip').forEach(c=>c.classList.toggle('selected',c.dataset.val===currentUser));
-} else { showUserSelector(); }
+  applyAccessControl();
+} else {
+  showUserSelector();
+}
 loadAll();
 </script>
 </body>

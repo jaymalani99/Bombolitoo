@@ -201,7 +201,7 @@
 
 <!-- REVENUE PAGE -->
 <div class="page" id="page-revenue">
-  <div class="card">
+  <div class="card" id="saleForm">
     <div class="card-title">Log Sale</div>
     <div class="form-row"><label class="form-label">Date</label><input type="date" class="input" id="revDate"></div>
     <div class="form-row"><label class="form-label">What did they buy?</label><div id="qtyList"></div></div>
@@ -372,8 +372,8 @@ function setUser(name) {
 
 function applyAccessControl() {
   const jay = isJay();
-  // Expense form — Jay only, silently hidden for others
   document.getElementById('expForm').style.display = jay ? 'block' : 'none';
+  document.getElementById('saleForm').style.display = jay ? 'block' : 'none';
 }
 
 // ── Chips ──
@@ -505,6 +505,7 @@ function chgQty(id, d) {
 }
 
 async function logSale() {
+  if (!isJay()) { showToast('View only'); return; }
   const date = document.getElementById('revDate').value;
   let total = getSaleTotal(), items = [], totalUnits = 0;
   COMBOS.forEach(c => { const q = saleQtys[c.id]||0; if(q>0){totalUnits+=q*c.units;items.push({...c,qty:q});} });

@@ -301,7 +301,7 @@ const COMBOS = [
 ];
 
 let expenses = [], sales = [], easterEggs = [], isSetup = false, saleQtys = {}, pnlView = 'all';
-let currentUser = localStorage.getItem('bb_user') || null;
+let currentUser = null;
 let currentDiscount = 0;
 
 const isJay = () => currentUser === 'Jay';
@@ -721,13 +721,10 @@ document.getElementById('expDate').value = today;
 document.getElementById('revDate').value = today;
 buildQtyList();
 
-if (currentUser) {
-  document.getElementById('userBadge').textContent = currentUser;
-  document.querySelectorAll('#expPaidBy .chip').forEach(c=>c.classList.toggle('selected',c.dataset.val===currentUser));
-  applyAccessControl();
-} else {
-  showUserSelector();
-}
+// Always ask who you are on load — no persistence
+currentUser = null;
+localStorage.removeItem('bb_user');
+showUserSelector();
 loadAll();
 </script>
 </body>

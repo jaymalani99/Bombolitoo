@@ -621,13 +621,14 @@ let currentPnlWeek='all';
 const fmt=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2});
 const today=()=>new Date().toISOString().split('T')[0];
 function getWeekKey(date){
-  const d=date?new Date(date):new Date();
+  const d=date?new Date(date+'T12:00:00'):new Date();
   const day=d.getDay();
   const diff=d.getDate()-day+(day===0?-6:1);
   const mon=new Date(d); mon.setDate(diff);
-  return mon.toISOString().split('T')[0];
+  const y=mon.getFullYear(), m=String(mon.getMonth()+1).padStart(2,'0'), dd=String(mon.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
 }
-function getWeekLabel(wk){const d=new Date(wk);return `${d.getDate()}/${d.getMonth()+1}`;}
+function getWeekLabel(wk){const p=wk.split('-');return `${parseInt(p[2])}/${parseInt(p[1])}`;}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 
 // ── SIDEBAR ──

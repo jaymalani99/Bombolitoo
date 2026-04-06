@@ -243,6 +243,13 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 .admin-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--mid); padding: 8px 0; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
 .mt-16 { margin-top: 16px; }
 .pop-placeholder { background: var(--pink-light); border-radius: var(--radius); padding: 40px 24px; text-align: center; border: 2px dashed var(--pink-mid); }
+
+/* ── ACCORDION ── */
+.accordion-item { background: white; border-radius: 14px; margin-bottom: 8px; box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
+.accordion-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; cursor: pointer; transition: background 0.15s; }
+.accordion-head:active { background: var(--light); }
+.accordion-arrow { font-size: 11px; color: var(--mid); transition: transform 0.25s; }
+.accordion-body { padding: 0 16px 14px; }
 </style>
 </head>
 <body>
@@ -334,8 +341,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 <!-- ══ HOME ══ -->
 <div class="page active" id="page-home">
   <div style="margin-top:8px">
-    <div class="s-title">This Week</div>
-    <div class="s-sub" id="homeWeekSub">Loading...</div>
+    <div class="s-title">All Time</div>
+    <div class="s-sub" id="homeWeekSub">Every pop-up since day one</div>
     <div class="stat-grid">
       <div class="stat-cell"><div class="stat-label">Revenue</div><div class="stat-val green" id="homeRevenue">₹0</div></div>
       <div class="stat-cell"><div class="stat-label">Profit</div><div class="stat-val" id="homeProfit">₹0</div></div>
@@ -370,24 +377,22 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 <div class="page" id="page-pnl">
   <div style="margin-top:8px">
     <div class="s-title">P&L</div>
+    <div class="s-sub">All time performance</div>
+    <div class="card" style="background:var(--pink);border:none">
+      <div class="card-label" style="color:rgba(255,255,255,0.7)">All Time</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+        <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Revenue</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white" id="summaryRev">₹0</div></div>
+        <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Profit</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white" id="summaryProfit">₹0</div></div>
+        <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Units Sold</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white" id="summaryUnits">0</div></div>
+        <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Expenses</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:rgba(255,255,255,0.8)" id="summaryExp">₹0</div></div>
+      </div>
+    </div>
     <div class="chart-wrap"><div class="chart-label">Revenue vs Expenses</div><canvas id="chartRevExp" height="200"></canvas></div>
     <div class="chart-wrap"><div class="chart-label">Revenue vs Profit</div><canvas id="chartRevProfit" height="200"></canvas></div>
     <div class="chart-wrap"><div class="chart-label">Cost Per Bombolini</div><canvas id="chartCPB" height="180"></canvas></div>
-
-    <div class="s-title" style="font-size:17px;margin-top:4px">Week Filter</div>
-    <div class="week-filter" id="pnlWeekFilter">
-      <div class="wf-btn active" data-week="all" onclick="setPnlWeek(this,'all')">All</div>
-    </div>
-    <div id="pnlCards"><div class="loading">Loading...</div></div>
-
-    <div class="card" id="allTimeSummary" style="background:var(--pink);border:none;display:none">
-      <div class="card-label" style="color:rgba(255,255,255,0.7)">All Time</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px">
-        <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Revenue</div><div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:white" id="summaryRev">₹0</div></div>
-        <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Expenses</div><div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:rgba(255,255,255,0.8)" id="summaryExp">₹0</div></div>
-        <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Profit</div><div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:white" id="summaryProfit">₹0</div></div>
-      </div>
-    </div>
+    <div class="s-title" style="font-size:17px;margin-top:4px">Week Breakdown</div>
+    <div class="s-sub">Tap to expand</div>
+    <div id="pnlAccordion"><div class="loading">Loading...</div></div>
   </div>
 </div>
 
@@ -719,16 +724,14 @@ function updateTopbarWeek(){
   document.getElementById('topbarWeek').textContent=`${d.getDate()}/${d.getMonth()+1}`;
 }
 
-// ══ HOME ══
+// ══ HOME — ALL TIME ══
 async function loadHome(){
-  const wk=getWeekKey();
-  const d=new Date(wk);
-  document.getElementById('homeWeekSub').textContent=`Week of ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}`;
+  document.getElementById('homeWeekSub').textContent='All time · every pop-up';
   const [{data:sales},{data:purchases},{data:otherExp},{data:batches}]=await Promise.all([
-    sb.from('sales').select('*').eq('week_key',wk),
-    sb.from('inventory_purchases').select('*').eq('week_key',wk),
-    sb.from('expenses').select('*').eq('week_key',wk),
-    sb.from('recipe_logs').select('*').eq('week_key',wk).order('batch_date',{ascending:false})
+    sb.from('sales').select('*').order('sale_date',{ascending:false}),
+    sb.from('inventory_purchases').select('*'),
+    sb.from('expenses').select('*'),
+    sb.from('recipe_logs').select('*').order('batch_date',{ascending:false})
   ]);
   let revenue=0,units=0;
   (sales||[]).forEach(s=>{revenue+=Number(s.revenue_after_discount||s.total_revenue||0);units+=Number(s.singles||0)+Number(s.pairs||0)*2+Number(s.trios||0)*3;});
@@ -736,12 +739,11 @@ async function loadHome(){
   const otherSpend=(otherExp||[]).reduce((a,e)=>a+Number(e.amount||0),0);
   const totalSpend=ingSpend+otherSpend;
   const profit=revenue-totalSpend;
-  let cpbs=(batches||[]).filter(b=>b.cost_per_unit).map(b=>Number(b.cost_per_unit));
+  const cpbs=(batches||[]).filter(b=>b.cost_per_unit).map(b=>Number(b.cost_per_unit));
   const avgCPB=cpbs.length?cpbs.reduce((a,b)=>a+b,0)/cpbs.length:null;
-
   document.getElementById('homeRevenue').textContent=fmt(revenue);
   const pe=document.getElementById('homeProfit');
-  pe.textContent=fmt(profit); pe.className='stat-val '+(profit>=0?'green':'red');
+  pe.textContent=fmt(profit);pe.className='stat-val '+(profit>=0?'green':'red');
   document.getElementById('homeUnits').textContent=units;
   document.getElementById('homeBatches').textContent=(batches||[]).length;
   document.getElementById('homeCPB').textContent=avgCPB?fmt(avgCPB):'₹—';
@@ -751,25 +753,21 @@ async function loadHome(){
   document.getElementById('homeSpendBar').style.width=(100-pct)+'%';
   document.getElementById('homeSpendL').textContent='Spend '+fmt(totalSpend);
   document.getElementById('homeSpendR').textContent='Revenue '+fmt(revenue);
-
   // CPB trend
-  const {data:allBatches}=await sb.from('recipe_logs').select('week_key,cost_per_unit').order('batch_date');
   const weekMap={};
-  (allBatches||[]).forEach(b=>{if(!weekMap[b.week_key])weekMap[b.week_key]=[];if(b.cost_per_unit)weekMap[b.week_key].push(Number(b.cost_per_unit));});
-  const weeks=Object.keys(weekMap).sort();
-  if(weeks.length>1){
-    const maxCPB=Math.max(...weeks.flatMap(w=>weekMap[w]||[0]));
-    document.getElementById('homeCPBTrend').innerHTML=weeks.map((w,i)=>{
-      const avg=weekMap[w].length?weekMap[w].reduce((a,b)=>a+b,0)/weekMap[w].length:0;
-      const pct=maxCPB>0?(avg/maxCPB)*100:0;
-      const isFirst=i===0; const isLast=i===weeks.length-1;
-      const col=isFirst?'var(--red)':isLast&&avg<(weekMap[weeks[0]].reduce((a,b)=>a+b,0)/weekMap[weeks[0]].length)?'var(--green)':'var(--gold)';
-      return `<div class="cpb-row"><div class="cpb-wk">W${i+1}</div><div class="cpb-bar-wrap"><div class="cpb-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="cpb-val" style="color:${col}">${fmt(avg)}</div></div>`;
+  (batches||[]).forEach(b=>{if(!weekMap[b.week_key])weekMap[b.week_key]=[];if(b.cost_per_unit)weekMap[b.week_key].push(Number(b.cost_per_unit));});
+  const wks=Object.keys(weekMap).sort();
+  if(wks.length>0){
+    const maxCPB=Math.max(...wks.flatMap(w=>weekMap[w]||[0]));
+    document.getElementById('homeCPBTrend').innerHTML=wks.map((w,i)=>{
+      const avg=weekMap[w].reduce((a,b)=>a+b,0)/weekMap[w].length;
+      const p=maxCPB>0?(avg/maxCPB)*100:0;
+      const col=i===0?'var(--red)':i===wks.length-1?'var(--green)':'var(--gold)';
+      return `<div class="cpb-row"><div class="cpb-wk">W${i+1}</div><div class="cpb-bar-wrap"><div class="cpb-bar-fill" style="width:${p}%;background:${col}"></div></div><div class="cpb-val" style="color:${col}">${fmt(avg)}</div></div>`;
     }).join('');
   } else document.getElementById('homeCPBTrend').innerHTML='';
-
   const rb=document.getElementById('homeRecentBatches');
-  if(!batches||!batches.length){rb.innerHTML='<div class="empty"><div class="empty-icon">🍩</div><div class="empty-text">No batches this week</div></div>';return;}
+  if(!batches||!batches.length){rb.innerHTML='<div class="empty"><div class="empty-icon">🍩</div><div class="empty-text">No batches yet</div></div>';return;}
   rb.innerHTML=batches.slice(0,3).map(b=>`<div class="log-item"><div class="log-icon">${b.flavour==='Nutella'?'🍫':b.flavour==='Custard'?'🍮':'🍩'}</div><div class="log-body"><div class="log-title">${b.flavour} · ${b.units_made} units</div><div class="log-sub">${b.batch_date} · ${b.logged_by||'—'}</div></div><div class="log-right"><div class="log-amount neutral">${b.cost_per_unit?fmt(b.cost_per_unit)+'/u':'—'}</div></div></div>`).join('');
 }
 
@@ -785,14 +783,10 @@ async function loadPnl(){
   const weekSet=new Set([...(sales||[]).map(s=>s.week_key),...(purchases||[]).map(p=>p.week_key),...(otherExp||[]).map(e=>e.week_key),...(batches||[]).map(b=>b.week_key)]);
   const weeks=[...weekSet].filter(Boolean).sort();
 
-  // Rebuild week filter
-  const pf=document.getElementById('pnlWeekFilter');
-  pf.innerHTML='<div class="wf-btn active" data-week="all" onclick="setPnlWeek(this,\'all\')">All</div>';
-  weeks.forEach((wk,i)=>{const b=document.createElement('div');b.className='wf-btn';b.dataset.week=wk;b.textContent=`W${i+1} (${getWeekLabel(wk)})`;b.onclick=()=>setPnlWeek(b,wk);pf.appendChild(b);});
-
-  const rev={},exp={},prof={},cpbMap={};
+  const rev={},exp={},prof={},unitsByWk={},cpbMap={};
   weeks.forEach(wk=>{
     rev[wk]=(sales||[]).filter(s=>s.week_key===wk).reduce((a,s)=>a+Number(s.revenue_after_discount||s.total_revenue||0),0);
+    unitsByWk[wk]=(sales||[]).filter(s=>s.week_key===wk).reduce((a,s)=>a+Number(s.singles||0)+Number(s.pairs||0)*2+Number(s.trios||0)*3,0);
     const ingExp=(purchases||[]).filter(p=>p.week_key===wk).reduce((a,p)=>a+Number(p.price_paid||0),0);
     const othExp=(otherExp||[]).filter(e=>e.week_key===wk).reduce((a,e)=>a+Number(e.amount||0),0);
     exp[wk]=ingExp+othExp;
@@ -801,59 +795,63 @@ async function loadPnl(){
     cpbMap[wk]=cpbs.length?cpbs.reduce((a,b)=>a+b,0)/cpbs.length:null;
   });
 
+  // All time summary
+  const totalRev=weeks.reduce((a,w)=>a+(rev[w]||0),0);
+  const totalExp=weeks.reduce((a,w)=>a+(exp[w]||0),0);
+  const totalUnits=weeks.reduce((a,w)=>a+(unitsByWk[w]||0),0);
+  document.getElementById('summaryRev').textContent=fmt(totalRev);
+  document.getElementById('summaryExp').textContent=fmt(totalExp);
+  document.getElementById('summaryProfit').textContent=fmt(totalRev-totalExp);
+  document.getElementById('summaryUnits').textContent=totalUnits;
+
+  // Charts
   const labels=weeks.map((wk,i)=>`W${i+1}`);
   const chartOpts={responsive:true,plugins:{legend:{display:true,labels:{font:{family:'DM Sans',size:11},color:'#6B6B7B',boxWidth:12,padding:16}}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:10},color:'#6B6B7B'}},y:{grid:{color:'rgba(255,107,138,0.06)'},ticks:{font:{family:'DM Sans',size:10},color:'#6B6B7B',callback:v=>'₹'+v.toLocaleString('en-IN')}}}};
-
   ['chartRevExp','chartRevProfit','chartCPB'].forEach(id=>{if(charts[id])charts[id].destroy();});
   charts.chartRevExp=new Chart(document.getElementById('chartRevExp'),{type:'line',data:{labels,datasets:[{label:'Revenue',data:weeks.map(w=>rev[w]),borderColor:'#27AE60',backgroundColor:'rgba(39,174,96,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#27AE60',pointRadius:5},{label:'Expenses',data:weeks.map(w=>exp[w]),borderColor:'#FF6B8A',backgroundColor:'rgba(255,107,138,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#FF6B8A',pointRadius:5}]},options:chartOpts});
   charts.chartRevProfit=new Chart(document.getElementById('chartRevProfit'),{type:'line',data:{labels,datasets:[{label:'Revenue',data:weeks.map(w=>rev[w]),borderColor:'#27AE60',backgroundColor:'rgba(39,174,96,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#27AE60',pointRadius:5},{label:'Profit',data:weeks.map(w=>prof[w]),borderColor:'#F39C12',backgroundColor:'rgba(243,156,18,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#F39C12',pointRadius:5}]},options:chartOpts});
   charts.chartCPB=new Chart(document.getElementById('chartCPB'),{type:'line',data:{labels,datasets:[{label:'₹/Bombolini',data:weeks.map(w=>cpbMap[w]),borderColor:'#FF6B8A',backgroundColor:'rgba(255,107,138,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#FF6B8A',pointRadius:5,spanGaps:true}]},options:{...chartOpts,scales:{...chartOpts.scales,y:{...chartOpts.scales.y,ticks:{...chartOpts.scales.y.ticks,callback:v=>'₹'+v}}}}});
 
-  const totalRev=weeks.reduce((a,w)=>a+(rev[w]||0),0);
-  const totalExp=weeks.reduce((a,w)=>a+(exp[w]||0),0);
-  if(weeks.length>0){
-    document.getElementById('allTimeSummary').style.display='block';
-    document.getElementById('summaryRev').textContent=fmt(totalRev);
-    document.getElementById('summaryExp').textContent=fmt(totalExp);
-    document.getElementById('summaryProfit').textContent=fmt(totalRev-totalExp);
-  }
-  renderPnlCards(weeks,rev,exp,prof,'all');
-}
-
-function setPnlWeek(el,wk){
-  document.querySelectorAll('#pnlWeekFilter .wf-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active'); currentPnlWeek=wk;
-  loadPnlForWeek(wk);
-}
-
-async function loadPnlForWeek(filterWk){
-  const [{data:sales},{data:purchases},{data:otherExp}]=await Promise.all([
-    sb.from('sales').select('*').order('week_key'),
-    sb.from('inventory_purchases').select('*').order('week_key'),
-    sb.from('expenses').select('*').order('week_key')
-  ]);
-  const weekSet=new Set([...(sales||[]).map(s=>s.week_key),...(purchases||[]).map(p=>p.week_key),...(otherExp||[]).map(e=>e.week_key)]);
-  const weeks=[...weekSet].filter(Boolean).sort();
-  const rev={},exp={},prof={};
-  weeks.forEach(wk=>{
-    rev[wk]=(sales||[]).filter(s=>s.week_key===wk).reduce((a,s)=>a+Number(s.revenue_after_discount||s.total_revenue||0),0);
-    const ingExp=(purchases||[]).filter(p=>p.week_key===wk).reduce((a,p)=>a+Number(p.price_paid||0),0);
-    const othExp=(otherExp||[]).filter(e=>e.week_key===wk).reduce((a,e)=>a+Number(e.amount||0),0);
-    exp[wk]=ingExp+othExp; prof[wk]=rev[wk]-exp[wk];
-  });
-  renderPnlCards(weeks,rev,exp,prof,filterWk);
-}
-
-function renderPnlCards(weeks,rev,exp,prof,filterWk){
-  const el=document.getElementById('pnlCards');
-  const toShow=filterWk==='all'?weeks:weeks.filter(w=>w===filterWk);
-  if(!toShow.length){el.innerHTML='<div class="empty"><div class="empty-text">No data yet</div></div>';return;}
-  el.innerHTML=toShow.map(wk=>{
-    const widx=weeks.indexOf(wk);
+  // Accordion week breakdown
+  const el=document.getElementById('pnlAccordion');
+  if(!weeks.length){el.innerHTML='<div class="empty"><div class="empty-text">No data yet</div></div>';return;}
+  el.innerHTML=weeks.map((wk,i)=>{
     const margin=rev[wk]>0?((prof[wk]/rev[wk])*100).toFixed(0):0;
-    return `<div class="card"><div class="flex-between" style="margin-bottom:12px"><div><div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800">Week ${widx+1}</div><div style="font-size:11px;color:var(--mid)">w/c ${getWeekLabel(wk)}</div></div><div style="text-align:right"><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mid)">Margin</div><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:${Number(margin)>=0?'var(--green)':'var(--red)'}">${margin}%</div></div></div><div class="stat-grid" style="margin-bottom:0"><div class="stat-cell"><div class="stat-label">Revenue</div><div class="stat-val green">${fmt(rev[wk])}</div></div><div class="stat-cell"><div class="stat-label">Expenses</div><div class="stat-val red">${fmt(exp[wk])}</div></div></div><div style="margin-top:10px;padding:12px;background:var(--pink-light);border-radius:12px;display:flex;justify-content:space-between;align-items:center"><div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mid)">Net Profit</div><div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:${prof[wk]>=0?'var(--pink)':'var(--red)'}">${fmt(prof[wk])}</div></div></div>`;
+    return `<div class="accordion-item" id="acc_${i}">
+      <div class="accordion-head" onclick="toggleAccordion(${i})">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700">Week ${i+1} <span style="font-size:11px;font-weight:400;color:var(--mid)">w/c ${getWeekLabel(wk)}</span></div>
+          <div style="font-size:11px;color:var(--mid);margin-top:2px">${fmt(rev[wk])} · ${unitsByWk[wk]} units</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:${Number(margin)>=0?'var(--green)':'var(--red)'}">${margin}%</div>
+          <div class="accordion-arrow" id="arrow_${i}">▼</div>
+        </div>
+      </div>
+      <div class="accordion-body" id="body_${i}" style="display:none">
+        <div class="stat-grid" style="margin-bottom:10px">
+          <div class="stat-cell"><div class="stat-label">Revenue</div><div class="stat-val green">${fmt(rev[wk])}</div></div>
+          <div class="stat-cell"><div class="stat-label">Expenses</div><div class="stat-val red">${fmt(exp[wk])}</div></div>
+          <div class="stat-cell"><div class="stat-label">Units</div><div class="stat-val pink">${unitsByWk[wk]}</div></div>
+          <div class="stat-cell"><div class="stat-label">CPB</div><div class="stat-val">${cpbMap[wk]?fmt(cpbMap[wk]):'—'}</div></div>
+        </div>
+        <div style="padding:12px;background:var(--pink-light);border-radius:12px;display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mid)">Net Profit</div>
+          <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:${prof[wk]>=0?'var(--pink)':'var(--red)'}">${fmt(prof[wk])}</div>
+        </div>
+      </div>
+    </div>`;
   }).join('');
 }
+
+function toggleAccordion(i){
+  const body=document.getElementById('body_'+i);
+  const arrow=document.getElementById('arrow_'+i);
+  const open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  arrow.style.transform=open?'':'rotate(180deg)';
+}
+
 
 // ══ NOTES ══
 async function loadNotes(){

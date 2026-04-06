@@ -2,731 +2,1791 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Bombolitoo Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bombolitoo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  :root {
-    --pink: #FF6B8A; --pink-light: #FFE8ED; --pink-dark: #E8506E;
-    --dark: #1A1A1A; --mid: #666; --light: #F7F7F7; --white: #FFFFFF;
-    --green: #27AE60; --green-light: #E8F8EF;
-    --red: #E74C3C; --red-light: #FDECEA;
-    --border: #EFEFEF; --shadow: 0 2px 16px rgba(255,107,138,0.10); --radius: 16px;
-    --easter: #DB2777; --easter-light: #FCE7F3;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; padding-bottom: 80px; max-width: 480px; margin: 0 auto; }
+:root {
+  --cream: #FAF6F0;
+  --warm: #F5EDE0;
+  --brown: #2C1810;
+  --brown-mid: #6B3D2E;
+  --brown-light: #C4956A;
+  --gold: #E8A838;
+  --gold-light: #FDF3DC;
+  --pink: #F2816B;
+  --pink-light: #FDF0ED;
+  --green: #4A7C59;
+  --green-light: #EAF2EC;
+  --red: #C0392B;
+  --red-light: #FDECEA;
+  --border: rgba(44,24,16,0.10);
+  --shadow: 0 4px 24px rgba(44,24,16,0.08);
+  --radius: 20px;
+}
 
-  .header { background: var(--pink); padding: 20px 20px 16px; position: sticky; top: 0; z-index: 100; }
-  .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
-  .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: white; letter-spacing: -0.5px; }
-  .logo span { opacity: 0.7; font-weight: 400; font-size: 13px; display: block; margin-top: 1px; }
-  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-  .week-badge { background: rgba(255,255,255,0.25); color: white; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
-  .user-badge { background: rgba(255,255,255,0.9); color: var(--pink); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; cursor: pointer; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  .user-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-  .user-overlay.show { opacity: 1; pointer-events: all; }
-  .user-sheet { background: white; width: 100%; max-width: 480px; margin: 0 auto; border-radius: 20px 20px 0 0; padding: 24px 20px 40px; transform: translateY(100%); transition: transform 0.3s ease; }
-  .user-overlay.show .user-sheet { transform: translateY(0); }
-  .user-sheet-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 20px; }
-  .user-btn { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid var(--border); background: white; font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif; color: var(--dark); cursor: pointer; margin-bottom: 10px; text-align: left; transition: all 0.15s; }
-  .user-btn:active, .user-btn.selected { border-color: var(--pink); background: var(--pink-light); color: var(--pink); }
+body {
+  font-family: 'DM Mono', monospace;
+  background: var(--cream);
+  color: var(--brown);
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 90px;
+}
 
-  .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: white; border-top: 1px solid var(--border); display: flex; z-index: 200; padding-bottom: env(safe-area-inset-bottom); }
-  .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 0 8px; border: none; background: none; cursor: pointer; color: #AAA; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; gap: 3px; transition: color 0.2s; }
-  .nav-btn.active { color: var(--pink); }
-  .nav-btn svg { width: 22px; height: 22px; }
-  .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--pink); margin-top: 2px; opacity: 0; transition: opacity 0.2s; }
-  .nav-btn.active .nav-dot { opacity: 1; }
-  .nav-btn.popup-nav.active { color: var(--easter); }
-  .nav-btn.popup-nav.active .nav-dot { background: var(--easter); }
+/* ── HEADER ── */
+.header {
+  background: var(--brown);
+  padding: 20px 20px 0;
+  position: sticky; top: 0; z-index: 200;
+}
+.header-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding-bottom: 16px;
+}
+.logo {
+  font-family: 'Fraunces', serif;
+  font-size: 26px; font-weight: 900;
+  color: var(--cream); letter-spacing: -1px; line-height: 1;
+}
+.logo-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--brown-light);
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-top: 3px;
+}
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.week-pill {
+  background: var(--gold); color: var(--brown);
+  font-size: 10px; font-weight: 500; padding: 4px 10px;
+  border-radius: 20px; letter-spacing: 1px; text-transform: uppercase;
+}
+.user-pill {
+  background: rgba(255,255,255,0.12); color: var(--cream);
+  font-size: 10px; font-weight: 500; padding: 4px 10px;
+  border-radius: 20px; letter-spacing: 1px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: background 0.2s;
+}
+.user-pill:active { background: rgba(255,255,255,0.2); }
 
-  .page { display: none; padding: 16px; }
-  .page.active { display: block; }
+/* ── NAV TABS ── */
+.nav {
+  display: flex; overflow-x: auto; gap: 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav-btn {
+  flex: 0 0 auto; padding: 12px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  color: rgba(250,246,240,0.45);
+  background: none; border: none; cursor: pointer;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s; white-space: nowrap;
+}
+.nav-btn.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
 
-  .card { background: white; border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
-  .card-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+/* ── PAGES ── */
+.page { display: none; padding: 20px; }
+.page.active { display: block; }
 
-  .form-row { margin-bottom: 12px; }
-  .form-label { font-size: 11px; font-weight: 600; color: var(--mid); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.3px; }
-  .input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; font-family: 'DM Sans', sans-serif; color: var(--dark); background: var(--light); outline: none; transition: border-color 0.2s; }
-  .input:focus { border-color: var(--pink); background: white; }
+/* ── SECTION TITLE ── */
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 700; font-style: italic;
+  color: var(--brown); margin-bottom: 16px; line-height: 1.1;
+}
+.section-sub {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--brown-light); margin-bottom: 20px; margin-top: -10px;
+}
 
-  .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip { padding: 8px 14px; border-radius: 30px; border: 1.5px solid var(--border); background: white; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--dark); cursor: pointer; transition: all 0.15s; }
-  .chip.selected { background: var(--pink); border-color: var(--pink); color: white; }
+/* ── CARDS ── */
+.card {
+  background: white; border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.card-label {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--brown-light); margin-bottom: 8px;
+}
+.card-value {
+  font-family: 'Fraunces', serif;
+  font-size: 32px; font-weight: 700; color: var(--brown);
+  line-height: 1;
+}
+.card-value.green { color: var(--green); }
+.card-value.red { color: var(--red); }
+.card-value.gold { color: var(--gold); }
 
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
-  .toggle-label { font-size: 14px; font-weight: 500; color: var(--dark); }
-  .toggle-sub { font-size: 11px; color: var(--mid); margin-top: 1px; }
-  .toggle { width: 44px; height: 26px; border-radius: 13px; background: var(--border); cursor: pointer; position: relative; transition: background 0.2s; border: none; outline: none; }
-  .toggle.on { background: var(--pink); }
-  .toggle::after { content: ''; position: absolute; width: 20px; height: 20px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: transform 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
-  .toggle.on::after { transform: translateX(18px); }
+/* ── STAT ROW ── */
+.stat-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 12px;
+}
+.stat-card {
+  background: white; border-radius: 16px; padding: 14px;
+  box-shadow: var(--shadow); border: 1px solid var(--border);
+}
+.stat-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--brown-light); margin-bottom: 6px; }
+.stat-val { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--brown); }
+.stat-val.green { color: var(--green); }
+.stat-val.red { color: var(--red); }
+.stat-val.gold { color: var(--gold); }
 
-  .btn { width: 100%; padding: 15px; background: var(--pink); color: white; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; font-family: 'Syne', sans-serif; cursor: pointer; transition: all 0.15s; letter-spacing: 0.2px; }
-  .btn:active { transform: scale(0.98); background: var(--pink-dark); }
-  .btn.loading { opacity: 0.6; pointer-events: none; }
-  .btn.secondary { background: white; color: var(--pink); border: 2px solid var(--pink); margin-top: 8px; }
+/* ── FORM ── */
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--brown-light); margin-bottom: 6px; display: block; }
+.form-input, .form-select {
+  width: 100%; padding: 12px 14px;
+  background: var(--warm); border: 1.5px solid transparent;
+  border-radius: 12px; font-family: 'DM Mono', monospace;
+  font-size: 13px; color: var(--brown);
+  transition: border-color 0.2s; outline: none;
+  appearance: none; -webkit-appearance: none;
+}
+.form-input:focus, .form-select:focus { border-color: var(--gold); background: white; }
+.form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B3D2E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 
-  .log-entry { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; animation: slideIn 0.3s ease; }
-  .log-entry:last-child { border-bottom: none; }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-  .log-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-  .log-body { flex: 1; min-width: 0; }
-  .log-title { font-size: 14px; font-weight: 600; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .log-sub { font-size: 11px; color: var(--mid); margin-top: 1px; }
-  .log-amount { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; flex-shrink: 0; }
-  .log-amount.neg { color: var(--red); }
-  .log-amount.pos { color: var(--green); }
-  .setup-tag { font-size: 9px; font-weight: 700; background: var(--pink-light); color: var(--pink); padding: 2px 6px; border-radius: 6px; margin-left: 6px; text-transform: uppercase; }
-  .delete-btn { background: none; border: none; cursor: pointer; color: #CCC; font-size: 18px; padding: 4px; transition: color 0.15s; line-height: 1; }
-  .delete-btn:active { color: var(--red); }
+.chip-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  padding: 8px 14px; border-radius: 20px;
+  background: var(--warm); border: 1.5px solid transparent;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--brown-mid); cursor: pointer; transition: all 0.15s;
+}
+.chip.selected {
+  background: var(--brown); color: var(--cream);
+  border-color: var(--brown);
+}
 
-  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .stat-box { background: white; border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
-  .stat-box.full { grid-column: 1 / -1; }
-  .stat-label { font-size: 10px; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
-  .stat-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--dark); }
-  .stat-value.green { color: var(--green); }
-  .stat-value.red { color: var(--red); }
-  .stat-value.pink { color: var(--pink); }
-  .stat-value.easter { color: var(--easter); }
+/* ── BUTTONS ── */
+.btn {
+  width: 100%; padding: 15px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase;
+  border: none; border-radius: 14px; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: var(--brown); color: var(--cream);
+}
+.btn-primary:active { background: var(--brown-mid); transform: scale(0.98); }
+.btn-gold {
+  background: var(--gold); color: var(--brown);
+}
+.btn-gold:active { opacity: 0.85; transform: scale(0.98); }
+.btn-outline {
+  background: transparent; color: var(--brown);
+  border: 1.5px solid var(--border);
+}
+.btn-sm {
+  width: auto; padding: 8px 14px; font-size: 10px;
+  border-radius: 10px; display: inline-block;
+}
+.btn-danger { background: var(--red-light); color: var(--red); }
 
-  .qty-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); }
-  .qty-row:last-child { border-bottom: none; }
-  .qty-info { font-size: 13px; font-weight: 500; }
-  .qty-info span { font-size: 11px; color: var(--mid); display: block; }
-  .qty-controls { display: flex; align-items: center; gap: 12px; }
-  .qty-btn { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); background: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--dark); transition: all 0.15s; }
-  .qty-btn:active { background: var(--pink-light); border-color: var(--pink); }
-  .qty-num { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; min-width: 24px; text-align: center; }
+/* ── LOG LIST ── */
+.log-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.log-item:last-child { border-bottom: none; }
+.log-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--warm); display: flex; align-items: center;
+  justify-content: center; font-size: 16px; flex-shrink: 0;
+}
+.log-body { flex: 1; min-width: 0; }
+.log-title { font-size: 12px; font-weight: 500; color: var(--brown); }
+.log-sub { font-size: 10px; color: var(--brown-light); margin-top: 2px; }
+.log-amount { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; }
+.log-amount.pos { color: var(--green); }
+.log-amount.neg { color: var(--red); }
+.log-amount.neutral { color: var(--brown); }
 
-  .discount-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
-  .disc-chip { padding: 8px 14px; border-radius: 30px; border: 1.5px solid var(--border); background: white; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--dark); cursor: pointer; transition: all 0.15s; }
-  .disc-chip.selected { background: var(--easter); border-color: var(--easter); color: white; }
+/* ── INGREDIENT ROW (recipe log) ── */
+.ing-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.ing-row:last-child { border-bottom: none; }
+.ing-name { flex: 1; font-size: 12px; color: var(--brown); }
+.ing-unit { font-size: 10px; color: var(--brown-light); width: 28px; text-align: right; }
+.ing-input {
+  width: 80px; padding: 8px 10px;
+  background: var(--warm); border: 1.5px solid transparent;
+  border-radius: 10px; font-family: 'DM Mono', monospace;
+  font-size: 12px; color: var(--brown); text-align: right;
+  outline: none; transition: border-color 0.2s;
+}
+.ing-input:focus { border-color: var(--gold); background: white; }
+.ing-cost { font-size: 11px; color: var(--brown-light); width: 50px; text-align: right; font-family: 'Fraunces', serif; }
 
-  .week-tabs { display: flex; background: var(--border); border-radius: 10px; padding: 3px; margin-bottom: 14px; }
-  .week-tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; background: none; font-family: 'DM Sans', sans-serif; color: var(--mid); }
-  .week-tab.active { background: white; color: var(--dark); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+/* ── PROGRESS BAR ── */
+.progress-wrap { margin-top: 8px; }
+.progress-track {
+  height: 6px; background: var(--warm); border-radius: 3px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 3px;
+  background: var(--gold); transition: width 0.4s ease;
+}
+.progress-fill.green { background: var(--green); }
+.progress-fill.red { background: var(--red); }
+.progress-labels {
+  display: flex; justify-content: space-between;
+  font-size: 9px; color: var(--brown-light); margin-top: 4px;
+}
 
-  .recovery-bar { background: white; border-radius: var(--radius); padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow); }
-  .bar-track { height: 8px; background: var(--border); border-radius: 4px; margin: 10px 0 6px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
-  .bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--mid); }
+/* ── WEEK FILTER ── */
+.week-filter {
+  display: flex; gap: 6px; overflow-x: auto;
+  padding-bottom: 4px; margin-bottom: 16px;
+  scrollbar-width: none;
+}
+.week-filter::-webkit-scrollbar { display: none; }
+.wf-btn {
+  flex: 0 0 auto; padding: 7px 14px;
+  border-radius: 20px; font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 1px;
+  background: white; color: var(--brown-mid);
+  border: 1.5px solid var(--border); cursor: pointer;
+  transition: all 0.15s;
+}
+.wf-btn.active {
+  background: var(--brown); color: var(--cream); border-color: var(--brown);
+}
 
-  .section-divider { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--mid); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 0 6px; }
-  .empty-state { text-align: center; padding: 32px 16px; color: var(--mid); }
-  .empty-state .emoji { font-size: 32px; margin-bottom: 8px; }
-  .empty-state p { font-size: 13px; }
+/* ── CHART ── */
+.chart-wrap {
+  background: white; border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px;
+  box-shadow: var(--shadow); border: 1px solid var(--border);
+}
+.chart-title { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--brown-light); margin-bottom: 12px; }
 
-  /* Popup/Easter page */
-  .popup-header { background: linear-gradient(135deg, #DB2777, #F472B6); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; color: white; }
-  .popup-header h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 2px; }
-  .popup-header p { font-size: 12px; opacity: 0.8; }
-  .popup-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .popup-stat { background: white; border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); border-left: 4px solid var(--easter); }
-  .popup-stat.full { grid-column: 1 / -1; }
-  .egg-entry { display: flex; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); gap: 12px; }
-  .egg-entry:last-child { border-bottom: none; }
-  .egg-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
-  .egg-badge.today { background: #D1FAE5; color: #065F46; }
-  .egg-badge.next { background: var(--easter-light); color: var(--easter); }
+/* ── INVENTORY TABLE ── */
+.inv-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 0; border-bottom: 1px solid var(--border);
+}
+.inv-row:last-child { border-bottom: none; }
+.inv-name { flex: 1; font-size: 12px; }
+.inv-stock { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; color: var(--brown); text-align: right; min-width: 70px; }
+.inv-runway { font-size: 10px; color: var(--brown-light); text-align: right; min-width: 60px; }
+.inv-low { color: var(--red); }
+.inv-ok { color: var(--green); }
 
+/* ── ADMIN ── */
+.admin-section { margin-bottom: 20px; }
+.admin-title {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--brown-light); padding: 8px 0;
+  border-bottom: 1px solid var(--border); margin-bottom: 12px;
+}
 
+/* ── USER OVERLAY ── */
+.overlay {
+  position: fixed; inset: 0; background: rgba(44,24,16,0.6);
+  z-index: 500; display: flex; align-items: flex-end;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.overlay.show { opacity: 1; pointer-events: all; }
+.overlay-sheet {
+  background: var(--cream); border-radius: 24px 24px 0 0;
+  padding: 28px 24px 40px; width: 100%;
+  transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.overlay.show .overlay-sheet { transform: translateY(0); }
+.overlay-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 700; font-style: italic;
+  margin-bottom: 6px;
+}
+.overlay-sub { font-size: 10px; letter-spacing: 1.5px; color: var(--brown-light); text-transform: uppercase; margin-bottom: 24px; }
+.user-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.user-card {
+  background: white; border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 16px; text-align: center;
+  cursor: pointer; transition: all 0.2s;
+}
+.user-card:active { background: var(--warm); transform: scale(0.97); }
+.user-card.jay { border-color: var(--gold); background: var(--gold-light); }
+.user-emoji { font-size: 28px; margin-bottom: 6px; }
+.user-name { font-size: 13px; font-weight: 500; }
+.user-role { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--brown-light); margin-top: 2px; }
 
-  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.3s; white-space: nowrap; z-index: 999; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--brown); color: var(--cream);
+  padding: 10px 20px; border-radius: 20px;
+  font-size: 11px; letter-spacing: 1px;
+  opacity: 0; transition: all 0.3s; z-index: 999;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── LOADING ── */
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px; color: var(--brown-light);
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center; padding: 40px 20px;
+  color: var(--brown-light);
+}
+.empty-icon { font-size: 36px; margin-bottom: 10px; }
+.empty-text { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ── COST SUMMARY (recipe) ── */
+.cost-bar {
+  background: var(--gold-light); border-radius: 14px;
+  padding: 14px 16px; margin-top: 12px;
+  border: 1px solid rgba(232,168,56,0.25);
+}
+.cost-bar-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.cost-bar-row:last-child { margin-bottom: 0; padding-top: 8px; border-top: 1px dashed rgba(232,168,56,0.4); }
+.cost-bar-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--brown-mid); }
+.cost-bar-val { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; color: var(--brown); }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+/* ── FLAVOUR TAG ── */
+.flavour-tag {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 20px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+}
+.flavour-tag.nutella { background: #FDF3DC; color: #8B5E0A; }
+.flavour-tag.custard { background: #FFF5E6; color: #A0622A; }
+.flavour-tag.mixed { background: var(--pink-light); color: var(--pink); }
+
+/* ── PIN OVERLAY ── */
+.pin-dots { display: flex; gap: 12px; justify-content: center; margin: 20px 0; }
+.pin-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid var(--brown-light); background: transparent;
+  transition: background 0.15s;
+}
+.pin-dot.filled { background: var(--brown); border-color: var(--brown); }
+.pin-keypad { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 8px; }
+.pin-key {
+  padding: 16px; border-radius: 14px; background: white;
+  border: 1.5px solid var(--border); font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 600; cursor: pointer;
+  text-align: center; transition: all 0.15s;
+}
+.pin-key:active { background: var(--warm); transform: scale(0.94); }
+.pin-key.del { font-size: 14px; font-family: 'DM Mono', monospace; color: var(--brown-light); }
+
+/* ── MISC ── */
+.text-muted { color: var(--brown-light); }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
 </style>
 </head>
 <body>
 
-<div class="user-overlay" id="userOverlay">
-  <div class="user-sheet">
-    <div class="user-sheet-title">Who are you? 👋</div>
-    <button class="user-btn" onclick="setUser('Jay')">Jay</button>
-    <button class="user-btn" onclick="setUser('Priyanka')">Priyanka</button>
-    <button class="user-btn" onclick="setUser('Vikas')">Vikas</button>
-    <button class="user-btn" onclick="setUser('Monica')">Monica</button>
+<!-- USER OVERLAY -->
+<div class="overlay" id="userOverlay">
+  <div class="overlay-sheet">
+    <div class="overlay-title">Who's logging?</div>
+    <div class="overlay-sub">Select to continue</div>
+    <div class="user-grid">
+      <div class="user-card jay" onclick="selectUser('Jay')">
+        <div class="user-emoji">👑</div>
+        <div class="user-name">Jay</div>
+        <div class="user-role">Admin</div>
+      </div>
+      <div class="user-card" onclick="selectUser('Priyanka')">
+        <div class="user-emoji">👩‍🍳</div>
+        <div class="user-name">Priyanka</div>
+        <div class="user-role">Baker</div>
+      </div>
+      <div class="user-card" onclick="selectUser('Monica')">
+        <div class="user-emoji">🛒</div>
+        <div class="user-name">Monica</div>
+        <div class="user-role">Shopper</div>
+      </div>
+      <div class="user-card" onclick="selectUser('Vikas')">
+        <div class="user-emoji">💰</div>
+        <div class="user-name">Vikas</div>
+        <div class="user-role">Sales</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="header">
-  <div class="header-top">
-    <div class="logo">Bombolitoo 🍩<span>Business Tracker</span></div>
-    <div class="header-right">
-      <div class="week-badge" id="currentWeekBadge">Week —</div>
-      <div class="user-badge" id="userBadge" onclick="showUserSelector()">Select User</div>
+<!-- PIN OVERLAY (Admin) -->
+<div class="overlay" id="pinOverlay">
+  <div class="overlay-sheet">
+    <div class="overlay-title">Admin Access</div>
+    <div class="overlay-sub">Enter Jay's PIN</div>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div id="pinError" style="text-align:center;font-size:11px;color:var(--red);min-height:16px;margin-bottom:8px;letter-spacing:1px;"></div>
+    <div class="pin-keypad" id="pinKeypad">
+      <div class="pin-key" onclick="pinPress('1')">1</div>
+      <div class="pin-key" onclick="pinPress('2')">2</div>
+      <div class="pin-key" onclick="pinPress('3')">3</div>
+      <div class="pin-key" onclick="pinPress('4')">4</div>
+      <div class="pin-key" onclick="pinPress('5')">5</div>
+      <div class="pin-key" onclick="pinPress('6')">6</div>
+      <div class="pin-key" onclick="pinPress('7')">7</div>
+      <div class="pin-key" onclick="pinPress('8')">8</div>
+      <div class="pin-key" onclick="pinPress('9')">9</div>
+      <div class="pin-key" onclick="pinPress('0')" style="grid-column:2">0</div>
+      <div class="pin-key del" onclick="pinDel()">⌫</div>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn btn-outline" onclick="closePinOverlay()">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- EXPENSES PAGE -->
-<div class="page active" id="page-expense">
-  <div class="card" id="expForm">
-    <div class="card-title">Log Expense</div>
-    <div class="form-row"><label class="form-label">Date</label><input type="date" class="input" id="expDate"></div>
-    <div class="form-row">
-      <label class="form-label">Source</label>
-      <div class="chip-group" id="expSource">
-        <div class="chip selected" data-val="Blinkit">Blinkit</div>
-        <div class="chip" data-val="D-Mart">D-Mart</div>
-        <div class="chip" data-val="General Store">General Store</div>
-        <div class="chip" data-val="Other">Other</div>
-      </div>
-    </div>
-    <div class="form-row"><label class="form-label">Amount (Rs)</label><input type="number" class="input" id="expAmount" placeholder="0" inputmode="decimal"></div>
-    <div class="form-row">
-      <label class="form-label">Paid By</label>
-      <div class="chip-group" id="expPaidBy">
-        <div class="chip selected" data-val="Jay">Jay</div>
-        <div class="chip" data-val="Priyanka">Priyanka</div>
-        <div class="chip" data-val="Vikas">Vikas</div>
-        <div class="chip" data-val="Monica">Monica</div>
-      </div>
-    </div>
-    <div class="form-row"><label class="form-label">Note (optional)</label><input type="text" class="input" id="expNote" placeholder="e.g. Nutella, maida, yeast"></div>
-    <div class="toggle-row">
-      <div><div class="toggle-label">One-time / Setup cost</div><div class="toggle-sub">Won't count in weekly operating P&L</div></div>
-      <button class="toggle" id="setupToggle" onclick="toggleSetup()"></button>
-    </div>
-    <button class="btn" id="expBtn" onclick="logExpense()">Log Expense</button>
-  </div>
-  <div class="section-divider">Recent Expenses</div>
-  <div class="card" id="expenseLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
-</div>
-
-<!-- REVENUE PAGE -->
-<div class="page" id="page-revenue">
-  <div class="card" id="saleForm">
-    <div class="card-title">Log Sale</div>
-    <div class="form-row"><label class="form-label">Date</label><input type="date" class="input" id="revDate"></div>
-    <div class="form-row"><label class="form-label">What did they buy?</label><div id="qtyList"></div></div>
-    <div class="form-row">
-      <label class="form-label">Discount Given</label>
-      <div class="discount-chips" id="discountChips">
-        <div class="disc-chip selected" data-val="0">None</div>
-        <div class="disc-chip" data-val="10">Rs 10</div>
-        <div class="disc-chip" data-val="15">Rs 15</div>
-        <div class="disc-chip" data-val="27">Free Bomboloni</div>
-      </div>
-      <input type="number" class="input" id="customDiscount" placeholder="Or enter custom amount..." inputmode="decimal" style="margin-top:8px;" oninput="updateDiscount()">
-    </div>
-    <div style="background:var(--pink-light);border-radius:12px;padding:12px 14px;margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <div style="font-size:13px;font-weight:600;">Sale Total</div>
-        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--pink);" id="salePreview">Rs 0</div>
-      </div>
-      <div id="discountPreview" style="display:none;justify-content:space-between;align-items:center;">
-        <div style="font-size:11px;color:var(--easter);font-weight:600;">Discount Applied</div>
-        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--easter);" id="discountAmt">− Rs 0</div>
-      </div>
-      <div id="netPreviewRow" style="display:none;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,107,138,0.2);margin-top:6px;padding-top:6px;">
-        <div style="font-size:12px;font-weight:600;">Net Collected</div>
-        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--green);" id="netPreview">Rs 0</div>
-      </div>
-    </div>
-    <button class="btn" id="revBtn" onclick="logSale()">Log Sale</button>
-  </div>
-  <div class="section-divider">Sales Summary</div>
-  <div class="stat-grid">
-    <div class="stat-box full"><div class="stat-label">Total Revenue (All Time)</div><div class="stat-value green" id="totalRevenue">Rs —</div></div>
-    <div class="stat-box"><div class="stat-label">Units Sold</div><div class="stat-value pink" id="totalUnits">—</div></div>
-    <div class="stat-box"><div class="stat-label">Transactions</div><div class="stat-value" id="totalTxns">—</div></div>
-    <div class="stat-box full"><div class="stat-label">Total Discounts Given</div><div class="stat-value easter" id="totalDiscounts">Rs —</div></div>
-  </div>
-  <div class="card"><div class="card-title">By Flavour</div><div id="flavourStats"></div></div>
-  <div class="section-divider">Recent Sales</div>
-  <div class="card" id="revenueLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
-</div>
-
-<!-- P&L PAGE -->
-<div class="page" id="page-pnl">
-  <div class="week-tabs">
-    <button class="week-tab active" data-week="all" onclick="switchPnlView('all')">All Time</button>
-    <button class="week-tab" data-week="current" onclick="switchPnlView('current')">This Week</button>
-  </div>
-  <div id="pnlContent"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
-</div>
-
-<!-- POP-UP TRACKER PAGE -->
-<div class="page" id="page-popup">
-  <div class="popup-header">
-    <h2>🥚 Pop-Up Tracker</h2>
-    <p id="popupSubtitle">QR scans & offer data from all pop-ups</p>
-  </div>
-  <div class="popup-stat-grid" id="popupStats">
-    <div class="popup-stat full"><div class="stat-label">Loading...</div></div>
-  </div>
-  <div class="section-divider">Recent Scans</div>
-  <div class="card" id="popupLog"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
-</div>
-
-<nav class="nav">
-  <button class="nav-btn active" onclick="switchPage('expense')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-    Expenses<div class="nav-dot"></div>
-  </button>
-  <button class="nav-btn" onclick="switchPage('revenue')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-    Revenue<div class="nav-dot"></div>
-  </button>
-  <button class="nav-btn" onclick="switchPage('pnl')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    P&L<div class="nav-dot"></div>
-  </button>
-  <button class="nav-btn popup-nav" onclick="switchPage('popup')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="13" rx="7" ry="9"/><path d="M8 10 Q12 6 16 10"/></svg>
-    Pop-Ups<div class="nav-dot"></div>
-  </button>
-</nav>
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script>
-const SUPABASE_URL = 'https://lcgfjvtalbuauqdtdfsf.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZ2ZqdnRhbGJ1YXVxZHRkZnNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTgyMjgsImV4cCI6MjA5MDQzNDIyOH0.z1z0aoz_dyWHb6jcZHPk-9dcvUKvCnGV7BTe8L5chnA';
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="logo">Bombolitoo</div>
+      <div class="logo-sub">Business Tracker</div>
+    </div>
+    <div class="header-right">
+      <div class="week-pill" id="weekPill">Week 1</div>
+      <div class="user-pill" id="userPill" onclick="showUserOverlay()">— Select —</div>
+    </div>
+  </div>
+  <div class="nav" id="mainNav">
+    <button class="nav-btn active" onclick="switchPage('home')">Home</button>
+    <button class="nav-btn" onclick="switchPage('shop')">Shop</button>
+    <button class="nav-btn" onclick="switchPage('batch')">Batch</button>
+    <button class="nav-btn" onclick="switchPage('sales')">Sales</button>
+    <button class="nav-btn" onclick="switchPage('runway')">Runway</button>
+    <button class="nav-btn" onclick="switchPage('charts')">Charts</button>
+    <button class="nav-btn" onclick="handleAdminNav()">Admin</button>
+  </div>
+</div>
 
-const COMBOS = [
-  { id: 'single_nutella', type: 'single', flavor: 'Nutella', label: 'Single', price: 95, units: 1 },
-  { id: 'single_custard', type: 'single', flavor: 'Custard', label: 'Single', price: 95, units: 1 },
-  { id: 'pair_nutella', type: 'pair', flavor: 'Nutella', label: 'Pair', price: 180, units: 2 },
-  { id: 'pair_custard', type: 'pair', flavor: 'Custard', label: 'Pair', price: 180, units: 2 },
-  { id: 'pair_mixed', type: 'pair', flavor: 'Mixed', label: 'Pair', price: 180, units: 2 },
-  { id: 'trio_nutella', type: 'trio', flavor: 'Nutella', label: 'Trio', price: 250, units: 3 },
-  { id: 'trio_custard', type: 'trio', flavor: 'Custard', label: 'Trio', price: 250, units: 3 },
-  { id: 'trio_mixed', type: 'trio', flavor: 'Mixed', label: 'Trio', price: 250, units: 3 },
+<!-- ══════════════ HOME PAGE ══════════════ -->
+<div class="page active" id="page-home">
+  <div style="margin-top:20px">
+    <div class="section-title">This Week</div>
+    <div class="section-sub" id="homeWeekLabel">Loading...</div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-val green" id="homeRevenue">₹0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Profit</div>
+        <div class="stat-val" id="homeProfit">₹0</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">Units Sold</div>
+        <div class="stat-val gold" id="homeUnits">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Batches Made</div>
+        <div class="stat-val" id="homeBatches">0</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Cost Per Bombolini</div>
+      <div class="card-value gold" id="homeCPB">₹—</div>
+      <div class="progress-wrap" id="cpbTrend" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Ingredient Spend This Week</div>
+      <div class="card-value" id="homeIngSpend">₹0</div>
+    </div>
+
+    <!-- Recent batches -->
+    <div class="card">
+      <div class="card-label">Recent Batches</div>
+      <div id="homeRecentBatches"><div class="loading">Loading...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SHOP PAGE ══════════════ -->
+<div class="page" id="page-shop">
+  <div style="margin-top:20px">
+    <div class="section-title">Log a Purchase</div>
+    <div class="section-sub">Update inventory when you shop</div>
+
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label">Ingredient</label>
+        <select class="form-select" id="shopIngredient">
+          <option value="">Select ingredient...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Quantity Bought</label>
+        <input class="form-input" type="number" id="shopQty" placeholder="e.g. 1000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Unit</label>
+        <select class="form-select" id="shopUnit">
+          <option value="g">grams (g)</option>
+          <option value="ml">millilitres (ml)</option>
+          <option value="tsp">teaspoons (tsp)</option>
+          <option value="pcs">pieces (pcs)</option>
+          <option value="kg">kg</option>
+          <option value="L">litres (L)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Total Price Paid (₹)</label>
+        <input class="form-input" type="number" id="shopPrice" placeholder="e.g. 60">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" type="date" id="shopDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bought by</label>
+        <div class="chip-group" id="shopBoughtBy">
+          <div class="chip" data-val="Jay" onclick="selectChip(this,'shopBoughtBy')">Jay</div>
+          <div class="chip" data-val="Priyanka" onclick="selectChip(this,'shopBoughtBy')">Priyanka</div>
+          <div class="chip" data-val="Monica" onclick="selectChip(this,'shopBoughtBy')">Monica</div>
+          <div class="chip" data-val="Vikas" onclick="selectChip(this,'shopBoughtBy')">Vikas</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="logPurchase()">Log Purchase</button>
+    </div>
+
+    <div class="section-title mt-12" style="font-size:18px">Purchase History</div>
+    <div class="card">
+      <div id="shopHistory"><div class="loading">Loading...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ BATCH PAGE ══════════════ -->
+<div class="page" id="page-batch">
+  <div style="margin-top:20px">
+    <div class="section-title">Log a Batch</div>
+    <div class="section-sub">Enter quantities used per ingredient</div>
+
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label">Flavour</label>
+        <div class="chip-group" id="batchFlavour">
+          <div class="chip selected" data-val="Nutella" onclick="selectChip(this,'batchFlavour');loadLastBatch()">Nutella</div>
+          <div class="chip" data-val="Custard" onclick="selectChip(this,'batchFlavour');loadLastBatch()">Custard</div>
+          <div class="chip" data-val="Mixed" onclick="selectChip(this,'batchFlavour');loadLastBatch()">Mixed</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Units Made</label>
+        <input class="form-input" type="number" id="batchUnits" placeholder="e.g. 15" value="15">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" type="date" id="batchDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Logged by</label>
+        <div class="chip-group" id="batchLoggedBy">
+          <div class="chip" data-val="Jay" onclick="selectChip(this,'batchLoggedBy')">Jay</div>
+          <div class="chip" data-val="Priyanka" onclick="selectChip(this,'batchLoggedBy')">Priyanka</div>
+          <div class="chip" data-val="Monica" onclick="selectChip(this,'batchLoggedBy')">Monica</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Ingredient Quantities Used</div>
+      <div id="batchIngredients"><div class="loading">Loading ingredients...</div></div>
+
+      <div class="cost-bar" id="batchCostBar" style="display:none">
+        <div class="cost-bar-row">
+          <div class="cost-bar-label">Batch Cost</div>
+          <div class="cost-bar-val" id="batchTotalCost">₹0</div>
+        </div>
+        <div class="cost-bar-row">
+          <div class="cost-bar-label">Per Bombolini</div>
+          <div class="cost-bar-val" id="batchCPB">₹0</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-gold" onclick="logBatch()">Save Batch</button>
+
+    <div class="section-title mt-12" style="font-size:18px;margin-top:20px">Batch History</div>
+    <div id="batchHistory"><div class="loading">Loading...</div></div>
+  </div>
+</div>
+
+<!-- ══════════════ SALES PAGE ══════════════ -->
+<div class="page" id="page-sales">
+  <div style="margin-top:20px">
+    <div class="section-title">Log Sales</div>
+    <div class="section-sub">Record what you sold at pop-up</div>
+
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" type="date" id="salesDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pop-up / Location</label>
+        <input class="form-input" type="text" id="salesLocation" placeholder="e.g. Mira Road Church">
+      </div>
+
+      <div class="card-label" style="margin-top:4px">Units Sold</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+        <div>
+          <div style="font-size:10px;color:var(--brown-light);margin-bottom:6px;letter-spacing:1px">SINGLE — ₹95</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn btn-outline btn-sm" onclick="adjustSale('single',-1)">−</button>
+            <span style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;flex:1;text-align:center" id="saleSingle">0</span>
+            <button class="btn btn-outline btn-sm" onclick="adjustSale('single',1)">+</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--brown-light);margin-bottom:6px;letter-spacing:1px">PAIR — ₹180</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn btn-outline btn-sm" onclick="adjustSale('pair',-1)">−</button>
+            <span style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;flex:1;text-align:center" id="salePair">0</span>
+            <button class="btn btn-outline btn-sm" onclick="adjustSale('pair',1)">+</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--brown-light);margin-bottom:6px;letter-spacing:1px">TRIO — ₹250</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn btn-outline btn-sm" onclick="adjustSale('trio',-1)">−</button>
+            <span style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;flex:1;text-align:center" id="saleTrio">0</span>
+            <button class="btn btn-outline btn-sm" onclick="adjustSale('trio',1)">+</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:flex-end">
+          <div style="font-size:10px;color:var(--brown-light);margin-bottom:6px;letter-spacing:1px">TOTAL REVENUE</div>
+          <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--green)" id="saleTotal">₹0</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="form-group">
+        <label class="form-label">Discount Applied (₹)</label>
+        <input class="form-input" type="number" id="salesDiscount" placeholder="0" value="0" oninput="calcSaleTotal()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Logged by</label>
+        <div class="chip-group" id="salesLoggedBy">
+          <div class="chip" data-val="Jay" onclick="selectChip(this,'salesLoggedBy')">Jay</div>
+          <div class="chip" data-val="Priyanka" onclick="selectChip(this,'salesLoggedBy')">Priyanka</div>
+          <div class="chip" data-val="Vikas" onclick="selectChip(this,'salesLoggedBy')">Vikas</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="logSale()">Save Sales Log</button>
+    </div>
+
+    <div class="section-title mt-12" style="font-size:18px;margin-top:20px">Sales History</div>
+    <div class="card">
+      <div id="salesHistory"><div class="loading">Loading...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ RUNWAY PAGE ══════════════ -->
+<div class="page" id="page-runway">
+  <div style="margin-top:20px">
+    <div class="section-title">Inventory Runway</div>
+    <div class="section-sub">Stock on hand + batches possible</div>
+
+    <div class="card" id="runwayBatchesCard">
+      <div class="card-label">Batches Possible</div>
+      <div class="card-value gold" id="runwayBatches">—</div>
+      <div style="font-size:10px;color:var(--brown-light);margin-top:6px" id="runwayBottleneck"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Stock Levels</div>
+      <div id="runwayList"><div class="loading">Loading...</div></div>
+    </div>
+
+    <div class="card" style="background:var(--gold-light);border-color:rgba(232,168,56,0.3)">
+      <div class="card-label">Standard Batch Reference</div>
+      <div style="font-size:11px;color:var(--brown-mid);line-height:1.8" id="runwayRef">
+        15 units · Nutella or Custard
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CHARTS PAGE ══════════════ -->
+<div class="page" id="page-charts">
+  <div style="margin-top:20px">
+    <div class="section-title">Trends</div>
+
+    <div class="week-filter" id="chartsWeekFilter">
+      <div class="wf-btn active" data-week="all" onclick="setChartWeek(this,'all')">All</div>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Revenue vs Expenses — Week on Week</div>
+      <canvas id="chartRevExp" height="200"></canvas>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Revenue vs Profit — Week on Week</div>
+      <canvas id="chartRevProfit" height="200"></canvas>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Cost Per Bombolini — Trend</div>
+      <canvas id="chartCPB" height="200"></canvas>
+    </div>
+
+    <!-- Week breakdown -->
+    <div class="section-title" style="font-size:18px;margin-top:8px">Week Breakdown</div>
+    <div class="week-filter" id="pnlWeekFilter">
+      <div class="wf-btn active" data-week="all" onclick="setPnlWeek(this,'all')">All Time</div>
+    </div>
+    <div id="pnlBreakdown"><div class="loading">Loading...</div></div>
+  </div>
+</div>
+
+<!-- ══════════════ ADMIN PAGE ══════════════ -->
+<div class="page" id="page-admin">
+  <div style="margin-top:20px">
+    <div class="section-title">Admin Panel</div>
+    <div class="section-sub">Jay only · Full control</div>
+
+    <!-- Flavours -->
+    <div class="admin-section">
+      <div class="admin-title">Flavours</div>
+      <div class="card">
+        <div id="adminFlavours"></div>
+        <div class="divider"></div>
+        <div class="form-group">
+          <label class="form-label">Add Flavour</label>
+          <input class="form-input" type="text" id="newFlavourInput" placeholder="e.g. Lotus Biscoff">
+        </div>
+        <button class="btn btn-outline" onclick="addFlavour()">+ Add Flavour</button>
+      </div>
+    </div>
+
+    <!-- Ingredients -->
+    <div class="admin-section">
+      <div class="admin-title">Ingredient Master List</div>
+      <div class="card">
+        <div id="adminIngredients"></div>
+        <div class="divider"></div>
+        <div class="form-group">
+          <label class="form-label">Add Ingredient</label>
+          <input class="form-input" type="text" id="newIngName" placeholder="Ingredient name">
+        </div>
+        <div class="form-group">
+          <select class="form-select" id="newIngUnit">
+            <option value="g">grams (g)</option>
+            <option value="ml">millilitres (ml)</option>
+            <option value="tsp">teaspoons (tsp)</option>
+            <option value="pcs">pieces</option>
+          </select>
+        </div>
+        <button class="btn btn-outline" onclick="addIngredient()">+ Add Ingredient</button>
+      </div>
+    </div>
+
+    <!-- Pricing -->
+    <div class="admin-section">
+      <div class="admin-title">SKU Pricing</div>
+      <div class="card">
+        <div class="ing-row">
+          <div class="ing-name">Single</div>
+          <div class="ing-input" style="background:var(--warm);border-radius:10px;padding:8px 10px;font-size:13px;width:80px;text-align:right">₹95</div>
+        </div>
+        <div class="ing-row">
+          <div class="ing-name">Pair</div>
+          <div class="ing-input" style="background:var(--warm);border-radius:10px;padding:8px 10px;font-size:13px;width:80px;text-align:right">₹180</div>
+        </div>
+        <div class="ing-row">
+          <div class="ing-name">Trio</div>
+          <div class="ing-input" style="background:var(--warm);border-radius:10px;padding:8px 10px;font-size:13px;width:80px;text-align:right">₹250</div>
+        </div>
+        <div style="font-size:10px;color:var(--brown-light);margin-top:8px;letter-spacing:1px">Pricing locked. Contact Jay to change.</div>
+      </div>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="admin-section">
+      <div class="admin-title">Recent Entries</div>
+      <div class="card">
+        <div id="adminRecent"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <button class="btn btn-outline" style="margin-top:8px" onclick="logOut()">Switch User</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// SUPABASE INIT
+// ══════════════════════════════════════════
+const SUPA_URL = 'https://lcgfjvtalbuauqdtdfsf.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZ2ZqdnRhbGJ1YXVxZHRkZnNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTgyMjgsImV4cCI6MjA5MDQzNDIyOH0.z1z0aoz_dyWHb6jcZHPk-9dcvUKvCnGV7BTe8L5chnA';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+const ADMIN_PIN = '2505';
+const PRICES = { single: 95, pair: 180, trio: 250 };
+const FLAVOURS_DEFAULT = ['Nutella', 'Custard', 'Mixed'];
+const INGREDIENTS_SEED = [
+  {name:'Maida',unit:'g'},{name:'Warm Water',unit:'ml'},
+  {name:'Instant Yeast',unit:'g'},{name:'Butter',unit:'g'},
+  {name:'Castor Sugar',unit:'g'},{name:'Milk Powder',unit:'g'},
+  {name:'Baking Powder',unit:'tsp'},{name:'Salt',unit:'g'},
+  {name:'Vanilla Extract',unit:'ml'},{name:'Oil',unit:'ml'},
+  {name:'Milk',unit:'ml'},{name:'Nutella',unit:'g'},
+  {name:'Custard Powder',unit:'g'}
 ];
 
-let expenses = [], sales = [], easterEggs = [], isSetup = false, saleQtys = {}, pnlView = 'all';
-let currentUser = null;
-let currentDiscount = 0;
-
-const isJay = () => currentUser === 'Jay';
-
-const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
-
-async function dbGet(table, order) {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=${order}`, { headers: H });
-  return r.json();
-}
-async function dbInsert(table, data) {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, { method: 'POST', headers: { ...H, Prefer: 'return=representation' }, body: JSON.stringify(data) });
-  return r.json();
-}
-async function dbDelete(table, id) {
-  await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: H });
-}
-
-const fmt = n => 'Rs ' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-const fmtDate = s => new Date(s).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-const fmtTime = s => new Date(s).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-const fmtDateTime = s => {
-  const d = new Date(s);
-  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' · ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+// Standard batch quantities (grams/ml/tsp) for runway calc
+const BATCH_RECIPE = {
+  'Maida':450,'Warm Water':225,'Instant Yeast':7,'Butter':60,
+  'Castor Sugar':50,'Milk Powder':12,'Baking Powder':1,
+  'Salt':6,'Vanilla Extract':6,'Oil':500,'Milk':100
 };
 
-function getWeekKey(dateStr) {
-  const d = new Date(dateStr), day = d.getDay();
-  const mon = new Date(d); mon.setDate(d.getDate() - day + (day === 0 ? -6 : 1));
+let currentUser = localStorage.getItem('bmb_user') || null;
+let ingredients = [];
+let flavours = [...FLAVOURS_DEFAULT];
+let saleCounts = {single:0, pair:0, trio:0};
+let pinEntry = '';
+let chartRevExp = null, chartRevProfit = null, chartCPB = null;
+let currentChartWeek = 'all';
+let currentPnlWeek = 'all';
+
+// ── WEEK KEY ──
+function getWeekKey(date) {
+  const d = date ? new Date(date) : new Date();
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  const mon = new Date(d.setDate(diff));
   return mon.toISOString().split('T')[0];
 }
-const getCWK = () => getWeekKey(new Date().toISOString().split('T')[0]);
-function getWeekLabel(key) {
-  const d = new Date(key), sun = new Date(d); sun.setDate(d.getDate() + 6);
-  return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + ' – ' + sun.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+function getWeekLabel(wk) {
+  const d = new Date(wk);
+  return `${d.getDate()}/${d.getMonth()+1}`;
 }
+function fmt(n) { return '₹' + Number(n||0).toLocaleString('en-IN', {maximumFractionDigits:2}); }
 
-function showToast(msg) {
-  const t = document.getElementById('toast'); t.textContent = msg;
-  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2400);
+// ── USER ──
+function showUserOverlay() {
+  document.getElementById('userOverlay').classList.add('show');
 }
-function setBtn(id, loading, label) {
-  const b = document.getElementById(id);
-  b.innerHTML = loading ? `<span class="spinner"></span>${label}` : label;
-  b.classList.toggle('loading', loading);
-}
-function getChip(gid) { const s = document.querySelector(`#${gid} .chip.selected`); return s ? s.dataset.val : null; }
-
-// ── User & access control ──
-function showUserSelector() { document.getElementById('userOverlay').classList.add('show'); }
-document.getElementById('userOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('userOverlay')) document.getElementById('userOverlay').classList.remove('show');
-});
-
-function setUser(name) {
+function selectUser(name) {
   currentUser = name;
-  localStorage.setItem('bb_user', name);
-  document.getElementById('userBadge').textContent = name;
+  localStorage.setItem('bmb_user', name);
+  document.getElementById('userPill').textContent = name;
   document.getElementById('userOverlay').classList.remove('show');
-
-  // Sync paid by chip
-  document.querySelectorAll('#expPaidBy .chip').forEach(c => c.classList.toggle('selected', c.dataset.val === name));
-
-  applyAccessControl();
-  showToast(`Welcome, ${name} 👋`);
-  renderAll();
+  // Auto-select chips
+  autoSelectUser();
+  loadAll();
+}
+function autoSelectUser() {
+  if (!currentUser) return;
+  ['shopBoughtBy','batchLoggedBy','salesLoggedBy'].forEach(g => {
+    document.querySelectorAll(`#${g} .chip`).forEach(c => {
+      c.classList.toggle('selected', c.dataset.val === currentUser);
+    });
+  });
+}
+function logOut() {
+  localStorage.removeItem('bmb_user');
+  currentUser = null;
+  document.getElementById('userPill').textContent = '— Select —';
+  showUserOverlay();
 }
 
-function applyAccessControl() {
-  const jay = isJay();
-  document.getElementById('expForm').style.display = jay ? 'block' : 'none';
-  document.getElementById('saleForm').style.display = jay ? 'block' : 'none';
-}
-
-// ── Chips ──
-document.querySelectorAll('.chip-group').forEach(g => g.addEventListener('click', e => {
-  const c = e.target.closest('.chip'); if (!c) return;
-  g.querySelectorAll('.chip').forEach(x => x.classList.remove('selected')); c.classList.add('selected');
-}));
-
-// Discount chips
-document.getElementById('discountChips').addEventListener('click', e => {
-  const c = e.target.closest('.disc-chip'); if (!c) return;
-  document.querySelectorAll('.disc-chip').forEach(x => x.classList.remove('selected'));
-  c.classList.add('selected');
-  currentDiscount = parseFloat(c.dataset.val) || 0;
-  document.getElementById('customDiscount').value = '';
-  updateSalePreview();
-});
-
-function updateDiscount() {
-  const val = parseFloat(document.getElementById('customDiscount').value) || 0;
-  currentDiscount = val;
-  document.querySelectorAll('.disc-chip').forEach(x => x.classList.remove('selected'));
-  updateSalePreview();
-}
-
-function toggleSetup() { isSetup = !isSetup; document.getElementById('setupToggle').classList.toggle('on', isSetup); }
-
-// ── Load ──
-async function loadAll() {
-  try {
-    [expenses, sales, easterEggs] = await Promise.all([
-      dbGet('expenses', 'date.desc,created_at.desc'),
-      dbGet('sales', 'date.desc,created_at.desc'),
-      dbGet('easter_eggs', 'created_at.desc')
-    ]);
-    if (!Array.isArray(expenses)) expenses = [];
-    if (!Array.isArray(sales)) sales = [];
-    if (!Array.isArray(easterEggs)) easterEggs = [];
-    renderAll();
-  } catch(e) { showToast('Connection error'); }
-}
-
-function renderAll() { renderExpenseLog(); renderRevenueLog(); renderPnl(); renderPopup(); updateWeekBadge(); }
-
-// ── Expense ──
-async function logExpense() {
-  if (!isJay()) { showToast('Only Jay can log expenses'); return; }
-  const date = document.getElementById('expDate').value;
-  const amount = parseFloat(document.getElementById('expAmount').value);
-  const source = getChip('expSource'), paidBy = getChip('expPaidBy');
-  const note = document.getElementById('expNote').value.trim();
-  if (!date || !amount || amount <= 0 || !source || !paidBy) { showToast('Fill all fields'); return; }
-  setBtn('expBtn', true, 'Logging...');
-  try {
-    const res = await dbInsert('expenses', { date, amount, source, paid_by: paidBy, note, is_setup: isSetup, week_key: getWeekKey(date) });
-    if (res && res[0]) {
-      expenses.unshift(res[0]);
-      document.getElementById('expAmount').value = '';
-      document.getElementById('expNote').value = '';
-      isSetup = false; document.getElementById('setupToggle').classList.remove('on');
-      renderAll(); showToast('Expense logged ✓');
-    } else showToast('Save failed — try again');
-  } catch(e) { showToast('Error saving'); }
-  setBtn('expBtn', false, 'Log Expense');
-}
-
-async function deleteExpense(id) {
-  if (!isJay()) { showToast('Only Jay can delete expenses'); return; }
-  await dbDelete('expenses', id); expenses = expenses.filter(e => e.id !== id); renderAll(); showToast('Deleted');
-}
-
-function renderExpenseLog() {
-  const el = document.getElementById('expenseLog');
-  if (!expenses.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">🧾</div><p>No expenses yet</p></div>'; return; }
-  el.innerHTML = expenses.slice(0,30).map(e => `
-    <div class="log-entry">
-      <div class="log-icon" style="background:var(--red-light)">${e.source==='Blinkit'?'🛵':e.source==='D-Mart'?'🏪':'🛍️'}</div>
-      <div class="log-body">
-        <div class="log-title">${e.source}${e.is_setup?'<span class="setup-tag">Setup</span>':''}</div>
-        <div class="log-sub">${e.paid_by} · ${fmtDate(e.date)}${e.note?' · '+e.note:''}</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:4px">
-        <div class="log-amount neg">${fmt(e.amount)}</div>
-        ${isJay() ? `<button class="delete-btn" onclick="deleteExpense(${e.id})">×</button>` : ''}
-      </div>
-    </div>`).join('');
-}
-
-// ── Revenue ──
-function buildQtyList() {
-  saleQtys = {}; COMBOS.forEach(c => saleQtys[c.id] = 0);
-  document.getElementById('qtyList').innerHTML = COMBOS.map(c => `
-    <div class="qty-row">
-      <div class="qty-info">${c.label} – ${c.flavor}<span>${fmt(c.price)}</span></div>
-      <div class="qty-controls">
-        <button class="qty-btn" onclick="chgQty('${c.id}',-1)">−</button>
-        <div class="qty-num" id="qty_${c.id}">0</div>
-        <button class="qty-btn" onclick="chgQty('${c.id}',1)">+</button>
-      </div>
-    </div>`).join('');
-}
-
-function getSaleTotal() {
-  let t = 0; COMBOS.forEach(c => t += (saleQtys[c.id]||0)*c.price); return t;
-}
-
-function updateSalePreview() {
-  const total = getSaleTotal();
-  const disc = Math.min(currentDiscount, total);
-  const net = total - disc;
-  document.getElementById('salePreview').textContent = fmt(total);
-  const discRow = document.getElementById('discountPreview');
-  const netRow = document.getElementById('netPreviewRow');
-  if (disc > 0) {
-    discRow.style.display = 'flex';
-    netRow.style.display = 'flex';
-    document.getElementById('discountAmt').textContent = `− ${fmt(disc)}`;
-    document.getElementById('netPreview').textContent = fmt(net);
+// ── PIN ──
+function handleAdminNav() {
+  if (currentUser === 'Jay') {
+    // Verify PIN
+    pinEntry = '';
+    updatePinDots();
+    document.getElementById('pinError').textContent = '';
+    document.getElementById('pinOverlay').classList.add('show');
   } else {
-    discRow.style.display = 'none';
-    netRow.style.display = 'none';
+    showToast('Admin access is Jay only');
+  }
+}
+function pinPress(n) {
+  if (pinEntry.length >= 4) return;
+  pinEntry += n;
+  updatePinDots();
+  if (pinEntry.length === 4) {
+    setTimeout(() => {
+      if (pinEntry === ADMIN_PIN) {
+        document.getElementById('pinOverlay').classList.remove('show');
+        switchPage('admin');
+        loadAdmin();
+      } else {
+        document.getElementById('pinError').textContent = 'Wrong PIN';
+        pinEntry = '';
+        updatePinDots();
+      }
+    }, 200);
+  }
+}
+function pinDel() {
+  pinEntry = pinEntry.slice(0,-1);
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+}
+function updatePinDots() {
+  for (let i=0;i<4;i++) {
+    document.getElementById('d'+i).classList.toggle('filled', i < pinEntry.length);
+  }
+}
+function closePinOverlay() {
+  document.getElementById('pinOverlay').classList.remove('show');
+  pinEntry = '';
+}
+
+// ── NAV ──
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const pages = ['home','shop','batch','sales','runway','charts','admin'];
+  const idx = pages.indexOf(name);
+  if (idx >= 0) document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  window.scrollTo(0,0);
+  // Load page data
+  if (name === 'home') loadHome();
+  if (name === 'shop') loadShop();
+  if (name === 'batch') loadBatch();
+  if (name === 'sales') loadSales();
+  if (name === 'runway') loadRunway();
+  if (name === 'charts') loadCharts();
+}
+
+// ── CHIP SELECT ──
+function selectChip(el, groupId) {
+  document.querySelectorAll(`#${groupId} .chip`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function getChip(groupId) {
+  const sel = document.querySelector(`#${groupId} .chip.selected`);
+  return sel ? sel.dataset.val : null;
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ══════════════════════════════════════════
+// SEED INGREDIENTS (run once)
+// ══════════════════════════════════════════
+async function seedIngredients() {
+  const { data } = await sb.from('ingredients').select('id').limit(1);
+  if (data && data.length > 0) return; // already seeded
+  for (const ing of INGREDIENTS_SEED) {
+    await sb.from('ingredients').insert({ name: ing.name, unit: ing.unit });
   }
 }
 
-function chgQty(id, d) {
-  saleQtys[id] = Math.max(0, (saleQtys[id]||0)+d);
-  document.getElementById('qty_'+id).textContent = saleQtys[id];
-  updateSalePreview();
+// ══════════════════════════════════════════
+// LOAD ALL DATA
+// ══════════════════════════════════════════
+async function loadAll() {
+  // Load ingredients globally
+  const { data } = await sb.from('ingredients').select('*').order('name');
+  ingredients = data || [];
+  updateWeekPill();
+  loadHome();
+  loadShopDropdown();
+  loadBatch();
+  loadSales();
+}
+
+function updateWeekPill() {
+  const wk = getWeekKey();
+  const d = new Date(wk);
+  document.getElementById('weekPill').textContent = `W/C ${d.getDate()}/${d.getMonth()+1}`;
+}
+
+// ══════════════════════════════════════════
+// HOME
+// ══════════════════════════════════════════
+async function loadHome() {
+  const wk = getWeekKey();
+  const wkLabel = new Date(wk);
+  document.getElementById('homeWeekLabel').textContent =
+    `Week of ${wkLabel.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}`;
+
+  // Sales this week
+  const { data: sales } = await sb.from('sales')
+    .select('*').eq('week_key', wk);
+
+  let revenue = 0, units = 0;
+  (sales||[]).forEach(s => {
+    revenue += Number(s.revenue_after_discount || s.total_revenue || 0);
+    units += Number(s.singles||0) + Number(s.pairs||0)*2 + Number(s.trios||0)*3;
+  });
+
+  // Purchases this week
+  const { data: purchases } = await sb.from('inventory_purchases')
+    .select('*').eq('week_key', wk);
+  let ingSpend = (purchases||[]).reduce((a,p) => a + Number(p.price_paid||0), 0);
+
+  // Batches this week
+  const { data: batches } = await sb.from('recipe_logs')
+    .select('*').eq('week_key', wk).order('batch_date', {ascending:false});
+
+  // Avg CPB this week
+  let cpbTotal = 0, cpbCount = 0;
+  (batches||[]).forEach(b => {
+    if (b.cost_per_unit) { cpbTotal += Number(b.cost_per_unit); cpbCount++; }
+  });
+  const avgCPB = cpbCount > 0 ? cpbTotal/cpbCount : null;
+
+  const profit = revenue - ingSpend;
+
+  document.getElementById('homeRevenue').textContent = fmt(revenue);
+  const profEl = document.getElementById('homeProfit');
+  profEl.textContent = fmt(profit);
+  profEl.className = 'stat-val ' + (profit >= 0 ? 'green' : 'red');
+  document.getElementById('homeUnits').textContent = units;
+  document.getElementById('homeBatches').textContent = (batches||[]).length;
+  document.getElementById('homeCPB').textContent = avgCPB ? fmt(avgCPB) : '₹—';
+  document.getElementById('homeIngSpend').textContent = fmt(ingSpend);
+
+  // Recent batches
+  const rb = document.getElementById('homeRecentBatches');
+  if (!batches || batches.length === 0) {
+    rb.innerHTML = '<div class="empty"><div class="empty-icon">🍩</div><div class="empty-text">No batches this week</div></div>';
+  } else {
+    rb.innerHTML = batches.slice(0,3).map(b => `
+      <div class="log-item">
+        <div class="log-icon">${b.flavour==='Nutella'?'🍫':b.flavour==='Custard'?'🍮':'🍩'}</div>
+        <div class="log-body">
+          <div class="log-title">${b.flavour} · ${b.units_made} units</div>
+          <div class="log-sub">${b.batch_date} · ${b.logged_by||'—'}</div>
+        </div>
+        <div class="log-amount neutral">${b.cost_per_unit ? fmt(b.cost_per_unit)+'/u' : '—'}</div>
+      </div>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════
+// SHOP
+// ══════════════════════════════════════════
+function loadShopDropdown() {
+  const sel = document.getElementById('shopIngredient');
+  sel.innerHTML = '<option value="">Select ingredient...</option>';
+  ingredients.forEach(i => {
+    sel.innerHTML += `<option value="${i.id}">${i.name} (${i.unit})</option>`;
+  });
+}
+
+async function loadShop() {
+  loadShopDropdown();
+  document.getElementById('shopDate').value = new Date().toISOString().split('T')[0];
+
+  const { data } = await sb.from('inventory_purchases')
+    .select('*, ingredients(name,unit)')
+    .order('purchase_date', {ascending:false})
+    .limit(20);
+
+  const el = document.getElementById('shopHistory');
+  if (!data || data.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🛒</div><div class="empty-text">No purchases yet</div></div>';
+    return;
+  }
+  el.innerHTML = data.map(p => `
+    <div class="log-item">
+      <div class="log-icon">🛒</div>
+      <div class="log-body">
+        <div class="log-title">${p.ingredients?.name||'?'} · ${p.quantity_bought}${p.unit||p.ingredients?.unit||''}</div>
+        <div class="log-sub">${p.purchase_date} · ${p.purchased_by||'—'}</div>
+      </div>
+      <div class="log-amount neg">${fmt(p.price_paid)}</div>
+    </div>`).join('');
+}
+
+async function logPurchase() {
+  const ingId = document.getElementById('shopIngredient').value;
+  const qty = parseFloat(document.getElementById('shopQty').value);
+  const unit = document.getElementById('shopUnit').value;
+  const price = parseFloat(document.getElementById('shopPrice').value);
+  const date = document.getElementById('shopDate').value;
+  const buyer = getChip('shopBoughtBy') || currentUser;
+
+  if (!ingId || !qty || !price || !date) { showToast('Fill all fields'); return; }
+
+  // Calculate price_per_unit
+  const pricePerUnit = price / qty;
+  const wk = getWeekKey(date);
+
+  const { error } = await sb.from('inventory_purchases').insert({
+    ingredient_id: ingId,
+    quantity_bought: qty,
+    unit: unit,
+    price_paid: price,
+    price_per_unit: pricePerUnit,
+    purchased_by: buyer,
+    purchase_date: date,
+    week_key: wk
+  });
+
+  if (error) { showToast('Error saving'); console.error(error); return; }
+
+  // Update ingredient price_per_unit (latest purchase = current price)
+  await sb.from('ingredients').update({
+    price_per_unit: pricePerUnit,
+    pack_size: qty,
+    pack_price: price,
+    updated_at: new Date().toISOString(),
+    updated_by: buyer
+  }).eq('id', ingId);
+
+  // Refresh ingredients
+  const { data } = await sb.from('ingredients').select('*').order('name');
+  ingredients = data || [];
+
+  showToast('Purchase logged ✓');
+  document.getElementById('shopQty').value = '';
+  document.getElementById('shopPrice').value = '';
+  loadShop();
+  loadHome();
+}
+
+// ══════════════════════════════════════════
+// BATCH
+// ══════════════════════════════════════════
+async function loadBatch() {
+  document.getElementById('batchDate').value = new Date().toISOString().split('T')[0];
+  renderBatchIngredients();
+  loadBatchHistory();
+}
+
+async function loadLastBatch() {
+  const flavour = getChip('batchFlavour') || 'Nutella';
+  const { data } = await sb.from('recipe_logs')
+    .select('*, recipe_ingredients(ingredient_id, quantity_used, unit)')
+    .eq('flavour', flavour)
+    .order('batch_date', {ascending:false})
+    .limit(1);
+
+  if (data && data.length > 0 && data[0].recipe_ingredients) {
+    const lastIng = {};
+    data[0].recipe_ingredients.forEach(ri => { lastIng[ri.ingredient_id] = ri.quantity_used; });
+    // Pre-fill inputs
+    ingredients.forEach(ing => {
+      const inp = document.getElementById('ing_'+ing.id);
+      if (inp && lastIng[ing.id]) inp.value = lastIng[ing.id];
+    });
+    calcBatchCost();
+  }
+}
+
+function renderBatchIngredients() {
+  const el = document.getElementById('batchIngredients');
+  if (ingredients.length === 0) {
+    el.innerHTML = '<div class="empty-text" style="text-align:center;padding:20px;font-size:10px;letter-spacing:1px;color:var(--brown-light)">No ingredients. Add in Admin.</div>';
+    return;
+  }
+  el.innerHTML = ingredients.map(ing => `
+    <div class="ing-row">
+      <div class="ing-name">${ing.name}</div>
+      <div class="ing-unit">${ing.unit}</div>
+      <input class="ing-input" type="number" id="ing_${ing.id}"
+        placeholder="0" oninput="calcBatchCost()"
+        data-ing-id="${ing.id}">
+      <div class="ing-cost" id="cost_${ing.id}">—</div>
+    </div>`).join('');
+}
+
+function calcBatchCost() {
+  let total = 0;
+  ingredients.forEach(ing => {
+    const inp = document.getElementById('ing_'+ing.id);
+    const costEl = document.getElementById('cost_'+ing.id);
+    if (!inp || !costEl) return;
+    const qty = parseFloat(inp.value) || 0;
+    if (qty > 0 && ing.price_per_unit) {
+      const cost = qty * ing.price_per_unit;
+      total += cost;
+      costEl.textContent = '₹'+cost.toFixed(2);
+    } else {
+      costEl.textContent = qty > 0 ? '—' : '';
+    }
+  });
+
+  const units = parseInt(document.getElementById('batchUnits').value) || 15;
+  const cpb = units > 0 ? total/units : 0;
+
+  document.getElementById('batchCostBar').style.display = total > 0 ? 'block' : 'none';
+  document.getElementById('batchTotalCost').textContent = fmt(total);
+  document.getElementById('batchCPB').textContent = fmt(cpb);
+}
+
+async function logBatch() {
+  const flavour = getChip('batchFlavour') || 'Nutella';
+  const units = parseInt(document.getElementById('batchUnits').value);
+  const date = document.getElementById('batchDate').value;
+  const loggedBy = getChip('batchLoggedBy') || currentUser;
+
+  if (!units || !date) { showToast('Fill batch details'); return; }
+
+  // Collect ingredient quantities
+  const ingUsed = [];
+  let totalCost = 0;
+
+  ingredients.forEach(ing => {
+    const inp = document.getElementById('ing_'+ing.id);
+    const qty = parseFloat(inp?.value) || 0;
+    if (qty > 0) {
+      const cost = ing.price_per_unit ? qty * ing.price_per_unit : 0;
+      totalCost += cost;
+      ingUsed.push({ ingredient_id: ing.id, quantity_used: qty, unit: ing.unit, cost_attributed: cost });
+    }
+  });
+
+  const cpb = units > 0 ? totalCost/units : 0;
+  const wk = getWeekKey(date);
+
+  // Insert recipe log
+  const { data: recipeLog, error } = await sb.from('recipe_logs').insert({
+    flavour, units_made: units, batch_date: date,
+    week_key: wk, logged_by: loggedBy,
+    total_cost: totalCost, cost_per_unit: cpb
+  }).select().single();
+
+  if (error) { showToast('Error saving batch'); console.error(error); return; }
+
+  // Insert recipe_ingredients
+  if (ingUsed.length > 0) {
+    await sb.from('recipe_ingredients').insert(
+      ingUsed.map(i => ({ ...i, recipe_log_id: recipeLog.id }))
+    );
+  }
+
+  showToast('Batch logged ✓');
+  // Reset inputs
+  ingredients.forEach(ing => {
+    const inp = document.getElementById('ing_'+ing.id);
+    if (inp) inp.value = '';
+  });
+  document.getElementById('batchCostBar').style.display = 'none';
+  loadBatchHistory();
+  loadHome();
+  loadRunway();
+}
+
+async function loadBatchHistory() {
+  const { data } = await sb.from('recipe_logs')
+    .select('*')
+    .order('batch_date', {ascending:false})
+    .limit(10);
+
+  const el = document.getElementById('batchHistory');
+  if (!data || data.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🍩</div><div class="empty-text">No batches yet</div></div>';
+    return;
+  }
+  el.innerHTML = data.map(b => `
+    <div class="card" style="padding:14px">
+      <div class="flex-between">
+        <div>
+          <span class="flavour-tag ${b.flavour?.toLowerCase()}">${b.flavour}</span>
+          <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:700;margin-top:6px">${b.units_made} units</div>
+          <div style="font-size:10px;color:var(--brown-light);margin-top:2px">${b.batch_date} · ${b.logged_by||'—'}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--brown-light)">Per Unit</div>
+          <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--gold)">${b.cost_per_unit ? fmt(b.cost_per_unit) : '—'}</div>
+          <div style="font-size:10px;color:var(--brown-light)">Total: ${b.total_cost ? fmt(b.total_cost) : '—'}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// SALES
+// ══════════════════════════════════════════
+function loadSales() {
+  document.getElementById('salesDate').value = new Date().toISOString().split('T')[0];
+  calcSaleTotal();
+  loadSalesHistory();
+}
+
+function adjustSale(sku, delta) {
+  saleCounts[sku] = Math.max(0, (saleCounts[sku]||0) + delta);
+  document.getElementById('sale'+sku.charAt(0).toUpperCase()+sku.slice(1)).textContent = saleCounts[sku];
+  calcSaleTotal();
+}
+
+function calcSaleTotal() {
+  const raw = saleCounts.single*PRICES.single + saleCounts.pair*PRICES.pair + saleCounts.trio*PRICES.trio;
+  const disc = parseFloat(document.getElementById('salesDiscount')?.value) || 0;
+  document.getElementById('saleTotal').textContent = fmt(Math.max(0, raw-disc));
 }
 
 async function logSale() {
-  if (!isJay()) { showToast('View only'); return; }
-  const date = document.getElementById('revDate').value;
-  let total = getSaleTotal(), items = [], totalUnits = 0;
-  COMBOS.forEach(c => { const q = saleQtys[c.id]||0; if(q>0){totalUnits+=q*c.units;items.push({...c,qty:q});} });
-  if (!date || total === 0) { showToast('Add at least one item'); return; }
-  const disc = Math.min(currentDiscount, total);
-  const netTotal = total - disc;
-  setBtn('revBtn', true, 'Logging...');
-  try {
-    const res = await dbInsert('sales', { date, total: netTotal, gross_total: total, discount: disc, items: JSON.stringify(items), total_units: totalUnits, week_key: getWeekKey(date) });
-    if (res && res[0]) {
-      sales.unshift({ ...res[0], items });
-      buildQtyList();
-      currentDiscount = 0;
-      document.querySelectorAll('.disc-chip').forEach(x => x.classList.remove('selected'));
-      document.querySelector('.disc-chip[data-val="0"]').classList.add('selected');
-      document.getElementById('customDiscount').value = '';
-      updateSalePreview();
-      renderAll(); showToast('Sale logged ✓');
-    } else showToast('Save failed');
-  } catch(e) { showToast('Error saving'); }
-  setBtn('revBtn', false, 'Log Sale');
-}
+  const date = document.getElementById('salesDate').value;
+  const location = document.getElementById('salesLocation').value;
+  const discount = parseFloat(document.getElementById('salesDiscount').value) || 0;
+  const loggedBy = getChip('salesLoggedBy') || currentUser;
+  const raw = saleCounts.single*PRICES.single + saleCounts.pair*PRICES.pair + saleCounts.trio*PRICES.trio;
+  const revenue = Math.max(0, raw - discount);
 
-async function deleteSale(id) {
-  if (!isJay()) { showToast('Only Jay can delete sales'); return; }
-  await dbDelete('sales', id); sales = sales.filter(s => s.id !== id); renderAll(); showToast('Deleted');
-}
+  if (!date) { showToast('Select a date'); return; }
+  if (raw === 0) { showToast('Add at least one sale'); return; }
 
-function renderRevenueLog() {
-  const totalRev = sales.reduce((a,s)=>a+Number(s.total),0);
-  const totalDisc = sales.reduce((a,s)=>a+Number(s.discount||0),0);
-  document.getElementById('totalRevenue').textContent = fmt(totalRev);
-  document.getElementById('totalUnits').textContent = sales.reduce((a,s)=>a+Number(s.total_units),0);
-  document.getElementById('totalTxns').textContent = sales.length;
-  document.getElementById('totalDiscounts').textContent = fmt(totalDisc);
-
-  const flavors = {};
-  sales.forEach(s => {
-    const items = typeof s.items==='string'?JSON.parse(s.items):s.items;
-    if(!Array.isArray(items)) return;
-    items.forEach(i => { if(!flavors[i.flavor]) flavors[i.flavor]={units:0,revenue:0}; flavors[i.flavor].units+=i.qty*i.units; flavors[i.flavor].revenue+=i.qty*i.price; });
+  const wk = getWeekKey(date);
+  const { error } = await sb.from('sales').insert({
+    sale_date: date, location, week_key: wk,
+    singles: saleCounts.single, pairs: saleCounts.pair, trios: saleCounts.trio,
+    total_revenue: raw, discount_applied: discount, revenue_after_discount: revenue,
+    logged_by: loggedBy
   });
-  document.getElementById('flavourStats').innerHTML = !Object.keys(flavors).length
-    ? '<div class="empty-state" style="padding:12px 0"><p>No sales yet</p></div>'
-    : Object.entries(flavors).map(([k,v])=>`
-      <div class="log-entry">
-        <div class="log-icon" style="background:var(--green-light)">${k==='Nutella'?'🍫':k==='Custard'?'🍮':'🍩'}</div>
-        <div class="log-body"><div class="log-title">${k}</div><div class="log-sub">${v.units} units sold</div></div>
-        <div class="log-amount pos">${fmt(v.revenue)}</div>
-      </div>`).join('');
 
-  const el = document.getElementById('revenueLog');
-  if (!sales.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">💰</div><p>No sales yet</p></div>'; return; }
-  el.innerHTML = sales.slice(0,30).map(s => {
-    const items = typeof s.items==='string'?JSON.parse(s.items):s.items;
-    const lbl = Array.isArray(items)?items.map(i=>`${i.qty}× ${i.label} ${i.flavor}`).join(', '):'—';
-    const disc = Number(s.discount||0);
-    return `<div class="log-entry">
-      <div class="log-icon" style="background:var(--green-light)">💰</div>
+  if (error) { showToast('Error saving'); console.error(error); return; }
+
+  showToast('Sales logged ✓');
+  saleCounts = {single:0,pair:0,trio:0};
+  ['Single','Pair','Trio'].forEach(s => document.getElementById('sale'+s).textContent = '0');
+  document.getElementById('salesDiscount').value = '0';
+  calcSaleTotal();
+  loadSalesHistory();
+  loadHome();
+}
+
+async function loadSalesHistory() {
+  const { data } = await sb.from('sales')
+    .select('*').order('sale_date', {ascending:false}).limit(15);
+
+  const el = document.getElementById('salesHistory');
+  if (!data || data.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No sales yet</div></div>';
+    return;
+  }
+  el.innerHTML = data.map(s => {
+    const units = (s.singles||0) + (s.pairs||0)*2 + (s.trios||0)*3;
+    return `
+    <div class="log-item">
+      <div class="log-icon">💰</div>
       <div class="log-body">
-        <div class="log-title">${lbl}</div>
-        <div class="log-sub">${fmtDate(s.date)} · ${s.total_units} units${disc>0?' · Disc: '+fmt(disc):''}</div>
+        <div class="log-title">${s.location||'Pop-up'} · ${units} units</div>
+        <div class="log-sub">${s.sale_date} · ${s.logged_by||'—'}</div>
       </div>
-      <div style="display:flex;align-items:center;gap:4px">
-        <div class="log-amount pos">${fmt(s.total)}</div>
-        ${isJay() ? `<button class="delete-btn" onclick="deleteSale(${s.id})">×</button>` : ''}
+      <div class="log-amount pos">${fmt(s.revenue_after_discount||s.total_revenue)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// RUNWAY
+// ══════════════════════════════════════════
+async function loadRunway() {
+  // Get all purchases grouped by ingredient
+  const { data: purchases } = await sb.from('inventory_purchases')
+    .select('ingredient_id, quantity_bought, unit');
+
+  // Get all recipe_ingredients used
+  const { data: used } = await sb.from('recipe_ingredients')
+    .select('ingredient_id, quantity_used');
+
+  // Build stock map
+  const stockIn = {}, stockOut = {};
+  (purchases||[]).forEach(p => {
+    // Normalise to base unit (g or ml)
+    let qty = Number(p.quantity_bought);
+    if (p.unit === 'kg') qty *= 1000;
+    if (p.unit === 'L') qty *= 1000;
+    stockIn[p.ingredient_id] = (stockIn[p.ingredient_id]||0) + qty;
+  });
+  (used||[]).forEach(u => {
+    stockOut[u.ingredient_id] = (stockOut[u.ingredient_id]||0) + Number(u.quantity_used);
+  });
+
+  // Calculate current stock per ingredient
+  const stockMap = {};
+  ingredients.forEach(ing => {
+    const inQty = stockIn[ing.id]||0;
+    const outQty = stockOut[ing.id]||0;
+    stockMap[ing.id] = { ...ing, stock: inQty - outQty };
+  });
+
+  // Calculate batches possible (based on BATCH_RECIPE)
+  let minBatches = Infinity;
+  let bottleneck = '';
+  ingredients.forEach(ing => {
+    const recipeQty = BATCH_RECIPE[ing.name];
+    if (!recipeQty) return;
+    const stock = stockMap[ing.id]?.stock || 0;
+    const possible = Math.floor(stock / recipeQty);
+    if (possible < minBatches) {
+      minBatches = possible;
+      bottleneck = ing.name;
+    }
+  });
+  if (minBatches === Infinity) minBatches = 0;
+
+  document.getElementById('runwayBatches').textContent = minBatches;
+  document.getElementById('runwayBottleneck').textContent =
+    minBatches === 0 ? `⚠️ Out of ${bottleneck} — restock needed` :
+    `Bottleneck: ${bottleneck}`;
+
+  // Render stock list
+  const el = document.getElementById('runwayList');
+  const stockIngredients = ingredients.map(ing => ({
+    ...ing, stock: stockMap[ing.id]?.stock || 0
+  })).sort((a,b) => {
+    const ra = BATCH_RECIPE[a.name];
+    const rb = BATCH_RECIPE[b.name];
+    if (!ra) return 1; if (!rb) return -1;
+    return (a.stock/ra) - (b.stock/rb);
+  });
+
+  el.innerHTML = stockIngredients.map(ing => {
+    const recipeQty = BATCH_RECIPE[ing.name];
+    const stock = ing.stock;
+    const batches = recipeQty ? Math.floor(stock/recipeQty) : null;
+    const isLow = batches !== null && batches <= 1;
+    return `
+    <div class="inv-row">
+      <div class="inv-name">${ing.name}</div>
+      <div class="inv-stock ${isLow?'inv-low':'inv-ok'}">${stock > 0 ? stock.toFixed(0)+ing.unit : '0'}</div>
+      <div class="inv-runway ${isLow?'inv-low':''}">${batches !== null ? batches+'B' : '—'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════
+async function loadCharts() {
+  const { data: sales } = await sb.from('sales').select('*').order('week_key');
+  const { data: purchases } = await sb.from('inventory_purchases').select('*').order('week_key');
+  const { data: batches } = await sb.from('recipe_logs').select('*').order('batch_date');
+
+  // Build week set
+  const weekSet = new Set([
+    ...(sales||[]).map(s=>s.week_key),
+    ...(purchases||[]).map(p=>p.week_key),
+    ...(batches||[]).map(b=>b.week_key)
+  ]);
+  const weeks = [...weekSet].sort();
+
+  // Build week filter buttons
+  const wf = document.getElementById('chartsWeekFilter');
+  const pf = document.getElementById('pnlWeekFilter');
+  weeks.forEach((wk,i) => {
+    if (!wf.querySelector(`[data-week="${wk}"]`)) {
+      const b = document.createElement('div');
+      b.className = 'wf-btn';
+      b.dataset.week = wk;
+      b.textContent = `W${i+1} (${getWeekLabel(wk)})`;
+      b.onclick = () => setChartWeek(b, wk);
+      wf.appendChild(b);
+    }
+    if (!pf.querySelector(`[data-week="${wk}"]`)) {
+      const b2 = document.createElement('div');
+      b2.className = 'wf-btn';
+      b2.dataset.week = wk;
+      b2.textContent = `W${i+1} (${getWeekLabel(wk)})`;
+      b2.onclick = () => setPnlWeek(b2, wk);
+      pf.appendChild(b2);
+    }
+  });
+
+  // Aggregate per week
+  const revByWeek = {}, expByWeek = {}, profByWeek = {}, cpbByWeek = {};
+  weeks.forEach(wk => {
+    const wkSales = (sales||[]).filter(s=>s.week_key===wk);
+    const wkPurch = (purchases||[]).filter(p=>p.week_key===wk);
+    const wkBatch = (batches||[]).filter(b=>b.week_key===wk);
+    revByWeek[wk] = wkSales.reduce((a,s)=>a+Number(s.revenue_after_discount||s.total_revenue||0),0);
+    expByWeek[wk] = wkPurch.reduce((a,p)=>a+Number(p.price_paid||0),0);
+    profByWeek[wk] = revByWeek[wk] - expByWeek[wk];
+    const cpbs = wkBatch.filter(b=>b.cost_per_unit).map(b=>Number(b.cost_per_unit));
+    cpbByWeek[wk] = cpbs.length > 0 ? cpbs.reduce((a,b)=>a+b,0)/cpbs.length : null;
+  });
+
+  const labels = weeks.map((wk,i)=>`W${i+1}`);
+  const revData = weeks.map(wk=>revByWeek[wk]||0);
+  const expData = weeks.map(wk=>expByWeek[wk]||0);
+  const profData = weeks.map(wk=>profByWeek[wk]||0);
+  const cpbData = weeks.map(wk=>cpbByWeek[wk]||null);
+
+  const chartDefaults = {
+    responsive: true,
+    plugins: { legend: { display: true, labels: { font: { family:'DM Mono', size:10 }, color:'#6B3D2E' } } },
+    scales: {
+      x: { grid: { display:false }, ticks: { font:{family:'DM Mono',size:10}, color:'#C4956A' } },
+      y: { grid: { color:'rgba(44,24,16,0.05)' }, ticks: { font:{family:'DM Mono',size:10}, color:'#C4956A',
+        callback: v => '₹'+v.toLocaleString('en-IN') } }
+    }
+  };
+
+  if (chartRevExp) chartRevExp.destroy();
+  chartRevExp = new Chart(document.getElementById('chartRevExp'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label:'Revenue', data:revData, borderColor:'#4A7C59', backgroundColor:'rgba(74,124,89,0.1)', tension:0.4, fill:true, pointBackgroundColor:'#4A7C59' },
+        { label:'Expenses', data:expData, borderColor:'#C0392B', backgroundColor:'rgba(192,57,43,0.07)', tension:0.4, fill:true, pointBackgroundColor:'#C0392B' }
+      ]
+    },
+    options: chartDefaults
+  });
+
+  if (chartRevProfit) chartRevProfit.destroy();
+  chartRevProfit = new Chart(document.getElementById('chartRevProfit'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label:'Revenue', data:revData, borderColor:'#4A7C59', backgroundColor:'rgba(74,124,89,0.1)', tension:0.4, fill:true, pointBackgroundColor:'#4A7C59' },
+        { label:'Profit', data:profData, borderColor:'#E8A838', backgroundColor:'rgba(232,168,56,0.1)', tension:0.4, fill:true, pointBackgroundColor:'#E8A838' }
+      ]
+    },
+    options: chartDefaults
+  });
+
+  if (chartCPB) chartCPB.destroy();
+  chartCPB = new Chart(document.getElementById('chartCPB'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label:'Cost/Unit', data:cpbData, borderColor:'#F2816B', backgroundColor:'rgba(242,129,107,0.1)', tension:0.4, fill:true, pointBackgroundColor:'#F2816B', spanGaps:true }
+      ]
+    },
+    options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, annotation: {} } }
+  });
+
+  // P&L breakdown (all time default)
+  renderPnlBreakdown(weeks, revByWeek, expByWeek, profByWeek, 'all');
+}
+
+function setChartWeek(el, wk) {
+  document.querySelectorAll('#chartsWeekFilter .wf-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  currentChartWeek = wk;
+}
+
+function setPnlWeek(el, wk) {
+  document.querySelectorAll('#pnlWeekFilter .wf-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  currentPnlWeek = wk;
+  // Re-render breakdown for selected week
+  renderPnlBreakdownForWeek(wk);
+}
+
+async function renderPnlBreakdownForWeek(wk) {
+  const { data: sales } = await sb.from('sales').select('*').order('week_key');
+  const { data: purchases } = await sb.from('inventory_purchases').select('*').order('week_key');
+  const weekSet = new Set([...(sales||[]).map(s=>s.week_key),...(purchases||[]).map(p=>p.week_key)]);
+  const weeks = [...weekSet].sort();
+  const revByWeek={}, expByWeek={}, profByWeek={};
+  weeks.forEach(w => {
+    revByWeek[w] = (sales||[]).filter(s=>s.week_key===w).reduce((a,s)=>a+Number(s.revenue_after_discount||s.total_revenue||0),0);
+    expByWeek[w] = (purchases||[]).filter(p=>p.week_key===w).reduce((a,p)=>a+Number(p.price_paid||0),0);
+    profByWeek[w] = revByWeek[w]-expByWeek[w];
+  });
+  renderPnlBreakdown(weeks, revByWeek, expByWeek, profByWeek, wk);
+}
+
+function renderPnlBreakdown(weeks, rev, exp, prof, filterWk) {
+  const el = document.getElementById('pnlBreakdown');
+  const toShow = filterWk === 'all' ? weeks : weeks.filter(w=>w===filterWk);
+  if (toShow.length === 0) { el.innerHTML = '<div class="empty"><div class="empty-text">No data</div></div>'; return; }
+
+  el.innerHTML = toShow.map((wk,i) => {
+    const weekIdx = weeks.indexOf(wk);
+    const margin = rev[wk] > 0 ? ((prof[wk]/rev[wk])*100).toFixed(0) : 0;
+    return `
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:12px">
+        <div>
+          <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:700">Week ${weekIdx+1}</div>
+          <div style="font-size:9px;color:var(--brown-light);letter-spacing:1px">${getWeekLabel(wk)}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:9px;letter-spacing:1px;color:var(--brown-light)">MARGIN</div>
+          <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:${Number(margin)>=0?'var(--green)':'var(--red)'}">${margin}%</div>
+        </div>
+      </div>
+      <div class="stat-row" style="margin-bottom:0">
+        <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-val green">${fmt(rev[wk])}</div></div>
+        <div class="stat-card"><div class="stat-label">Expenses</div><div class="stat-val red">${fmt(exp[wk])}</div></div>
+      </div>
+      <div style="margin-top:10px;padding:12px;background:var(--gold-light);border-radius:12px">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--brown-mid)">Net Profit</div>
+        <div style="font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:${prof[wk]>=0?'var(--green)':'var(--red)'}">${fmt(prof[wk])}</div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── P&L ──
-function switchPnlView(v) {
-  pnlView = v;
-  document.querySelectorAll('.week-tab').forEach(t => t.classList.toggle('active', t.dataset.week===v));
-  renderPnl();
-}
+// ══════════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════════
+async function loadAdmin() {
+  // Flavours
+  const el = document.getElementById('adminFlavours');
+  el.innerHTML = flavours.map(f => `
+    <div class="log-item">
+      <div class="log-icon">${f==='Nutella'?'🍫':f==='Custard'?'🍮':'🍩'}</div>
+      <div class="log-body"><div class="log-title">${f}</div></div>
+      ${!FLAVOURS_DEFAULT.includes(f) ? `<button class="btn btn-danger btn-sm" onclick="removeFlavour('${f}')">Remove</button>` : '<div style="font-size:9px;color:var(--brown-light)">Default</div>'}
+    </div>`).join('');
 
-function renderPnl() {
-  const cwk = getCWK(), isAll = pnlView==='all';
-  const exp = expenses.filter(isAll?()=>true:e=>e.week_key===cwk);
-  const rev = sales.filter(isAll?()=>true:s=>s.week_key===cwk);
-  const operating = exp.filter(e=>!e.is_setup).reduce((a,e)=>a+Number(e.amount),0);
-  const setup = exp.filter(e=>e.is_setup).reduce((a,e)=>a+Number(e.amount),0);
-  const revenue = rev.reduce((a,s)=>a+Number(s.total),0);
-  const totalDiscount = rev.reduce((a,s)=>a+Number(s.discount||0),0);
-  const netOp = revenue - operating, netTotal = revenue - operating - setup;
-  const setupItems = exp.filter(e=>e.is_setup);
-  const totalSpentEver = expenses.reduce((a,e)=>a+Number(e.amount),0);
-  const totalRevEver = sales.reduce((a,s)=>a+Number(s.total),0);
-  const recPct = totalSpentEver>0?Math.min(100,Math.round((totalRevEver/totalSpentEver)*100)):0;
-  const nc = netTotal>=0?'green':'red';
-
-  let html = `
-    <div class="stat-box full" style="background:${netTotal>=0?'var(--green-light)':'var(--red-light)'};border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:10px;">
-      <div class="stat-label">${isAll?'Net Profit — All Time':'Net Profit — This Week'}</div>
-      <div class="stat-value ${nc}" style="font-size:28px;">${netTotal<0?'−':''}${fmt(Math.abs(netTotal))}</div>
-      <div style="font-size:10px;color:var(--mid);margin-top:2px;">${netTotal>=0?'✓ Profitable':'↓ In loss'} · ${isAll?'All Time':getWeekLabel(cwk)}</div>
-    </div>
-    <div class="stat-grid">
-      <div class="stat-box" style="background:var(--green-light)"><div class="stat-label">Revenue</div><div class="stat-value green">${fmt(revenue)}</div></div>
-      <div class="stat-box" style="background:var(--red-light)"><div class="stat-label">Operating Costs</div><div class="stat-value red">${fmt(operating)}</div></div>
-      <div class="stat-box"><div class="stat-label">Net (Operating)</div><div class="stat-value ${netOp>=0?'green':'red'}">${netOp<0?'−':''}${fmt(Math.abs(netOp))}</div></div>
-      <div class="stat-box" style="background:var(--pink-light)"><div class="stat-label">Setup Costs</div><div class="stat-value pink">${fmt(setup)}</div></div>
-      ${totalDiscount>0?`<div class="stat-box full" style="background:var(--easter-light)"><div class="stat-label">Discounts Given</div><div class="stat-value easter">${fmt(totalDiscount)}</div></div>`:''}
-    </div>`;
-
-  if (setupItems.length) {
-    html += `<div class="card" style="margin-top:4px"><div class="card-title">Setup Breakdown</div>
-      ${setupItems.map(e=>`<div class="log-entry">
-        <div class="log-icon" style="background:var(--pink-light)">🔧</div>
-        <div class="log-body"><div class="log-title">${e.source}${e.note?' – '+e.note:''}</div><div class="log-sub">${e.paid_by} · ${fmtDate(e.date)}</div></div>
-        <div class="log-amount neg">${fmt(e.amount)}</div>
-      </div>`).join('')}
-    </div>`;
-  }
-
-  if (isAll) {
-    html += `<div class="recovery-bar">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="font-size:13px;font-weight:600">Have we recovered all costs?</div>
-        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:${recPct>=100?'var(--green)':'var(--pink)'}">${recPct}%</div>
+  // Ingredients
+  const ingEl = document.getElementById('adminIngredients');
+  const { data } = await sb.from('ingredients').select('*').order('name');
+  ingredients = data || [];
+  ingEl.innerHTML = ingredients.map(ing => `
+    <div class="log-item">
+      <div class="log-body">
+        <div class="log-title">${ing.name}</div>
+        <div class="log-sub">${ing.unit} · ${ing.price_per_unit ? '₹'+Number(ing.price_per_unit).toFixed(4)+'/'+ing.unit : 'No price yet'}</div>
       </div>
-      <div class="bar-track"><div class="bar-fill" style="width:${recPct}%;background:${recPct>=100?'var(--green)':'var(--pink)'}"></div></div>
-      <div class="bar-labels"><span>Spent: ${fmt(totalSpentEver)}</span><span>Revenue: ${fmt(totalRevEver)}</span></div>
-      <div style="font-size:12px;color:${recPct>=100?'var(--green)':'var(--mid)'};font-weight:600;margin-top:6px">
-        ${recPct>=100?'✓ Every rupee recovered. You\'re in profit.':`Need ${fmt(totalSpentEver-totalRevEver)} more to break even.`}
+      <button class="btn btn-danger btn-sm" onclick="removeIngredient('${ing.id}','${ing.name}')">✕</button>
+    </div>`).join('');
+
+  // Recent entries (last 10 across tables)
+  await loadAdminRecent();
+}
+
+async function loadAdminRecent() {
+  const { data: batches } = await sb.from('recipe_logs').select('*').order('created_at',{ascending:false}).limit(5);
+  const { data: sales } = await sb.from('sales').select('*').order('created_at',{ascending:false}).limit(5);
+  const { data: purch } = await sb.from('inventory_purchases').select('*, ingredients(name)').order('created_at',{ascending:false}).limit(5);
+
+  const all = [
+    ...(batches||[]).map(b=>({type:'batch',label:`Batch: ${b.flavour} ×${b.units_made}`,sub:b.batch_date,id:b.id,table:'recipe_logs'})),
+    ...(sales||[]).map(s=>({type:'sale',label:`Sale: ${fmt(s.revenue_after_discount||s.total_revenue)}`,sub:s.sale_date,id:s.id,table:'sales'})),
+    ...(purch||[]).map(p=>({type:'purchase',label:`Purchase: ${p.ingredients?.name||'?'} ${p.quantity_bought}${p.unit||''}`,sub:p.purchase_date,id:p.id,table:'inventory_purchases'}))
+  ].sort((a,b)=>b.sub?.localeCompare(a.sub||'')||0).slice(0,8);
+
+  const el = document.getElementById('adminRecent');
+  if (all.length === 0) { el.innerHTML = '<div class="empty-text">No entries</div>'; return; }
+  el.innerHTML = all.map(e => `
+    <div class="log-item">
+      <div class="log-icon">${e.type==='batch'?'🍩':e.type==='sale'?'💰':'🛒'}</div>
+      <div class="log-body">
+        <div class="log-title">${e.label}</div>
+        <div class="log-sub">${e.sub||'—'}</div>
       </div>
-    </div>`;
+      <button class="btn btn-danger btn-sm" onclick="deleteEntry('${e.table}','${e.id}')">✕</button>
+    </div>`).join('');
+}
+
+async function deleteEntry(table, id) {
+  if (!confirm('Delete this entry?')) return;
+  const { error } = await sb.from(table).delete().eq('id', id);
+  if (error) { showToast('Error deleting'); return; }
+  showToast('Deleted ✓');
+  loadAdmin();
+  loadHome();
+}
+
+function addFlavour() {
+  const val = document.getElementById('newFlavourInput').value.trim();
+  if (!val) { showToast('Enter a flavour name'); return; }
+  if (flavours.includes(val)) { showToast('Already exists'); return; }
+  flavours.push(val);
+  document.getElementById('newFlavourInput').value = '';
+  loadAdmin();
+  showToast(`${val} added ✓`);
+}
+
+function removeFlavour(name) {
+  flavours = flavours.filter(f=>f!==name);
+  loadAdmin();
+}
+
+async function addIngredient() {
+  const name = document.getElementById('newIngName').value.trim();
+  const unit = document.getElementById('newIngUnit').value;
+  if (!name) { showToast('Enter ingredient name'); return; }
+  const { error } = await sb.from('ingredients').insert({ name, unit });
+  if (error) { showToast('Error adding'); return; }
+  const { data } = await sb.from('ingredients').select('*').order('name');
+  ingredients = data || [];
+  document.getElementById('newIngName').value = '';
+  loadAdmin();
+  renderBatchIngredients();
+  loadShopDropdown();
+  showToast(`${name} added ✓`);
+}
+
+async function removeIngredient(id, name) {
+  if (!confirm(`Remove ${name}?`)) return;
+  await sb.from('recipe_ingredients').delete().eq('ingredient_id',id);
+  await sb.from('inventory_purchases').delete().eq('ingredient_id',id);
+  const { error } = await sb.from('ingredients').delete().eq('id',id);
+  if (error) { showToast('Error removing'); return; }
+  const { data } = await sb.from('ingredients').select('*').order('name');
+  ingredients = data || [];
+  loadAdmin();
+  renderBatchIngredients();
+  loadShopDropdown();
+  showToast(`${name} removed ✓`);
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+async function init() {
+  if (currentUser) {
+    document.getElementById('userPill').textContent = currentUser;
+  } else {
+    showUserOverlay();
   }
-
-  const payerMap = {};
-  exp.forEach(e => { payerMap[e.paid_by] = (payerMap[e.paid_by]||0)+Number(e.amount); });
-  if (Object.keys(payerMap).length) {
-    html += `<div class="card" style="margin-top:4px"><div class="card-title">Spent By Person</div>
-      ${Object.entries(payerMap).sort((a,b)=>b[1]-a[1]).map(([n,a])=>`
-        <div class="log-entry">
-          <div class="log-icon" style="background:var(--pink-light)">👤</div>
-          <div class="log-body"><div class="log-title">${n}</div></div>
-          <div class="log-amount neg">${fmt(a)}</div>
-        </div>`).join('')}
-    </div>`;
-  }
-
-  document.getElementById('pnlContent').innerHTML = html;
+  await seedIngredients();
+  await loadAll();
+  autoSelectUser();
 }
 
-// ── Pop-Up Tracker (replaces hardcoded Easter) ──
-function renderPopup() {
-  const total = easterEggs.length;
-  if (!total) {
-    document.getElementById('popupStats').innerHTML = `<div class="popup-stat full"><div class="stat-label">No scans yet</div><div class="stat-value">0</div></div>`;
-    document.getElementById('popupLog').innerHTML = '<div class="empty-state"><div class="emoji">🥚</div><p>No eggs cracked yet</p></div>';
-    return;
-  }
-
-  // Group by offer_type correctly using offer_headline field
-  const cashbackEggs = easterEggs.filter(e => e.offer_type === 'TODAY ONLY');
-  const nextVisitEggs = easterEggs.filter(e => e.offer_type === 'NEXT VISIT');
-  const freeEggs = nextVisitEggs.filter(e => (e.offer_headline || '').includes('Free'));
-  const discountEggs = nextVisitEggs.filter(e => (e.offer_headline || '').includes('15'));
-  const named = easterEggs.filter(e => e.customer_name && e.customer_name.trim());
-  const cashbackCost = cashbackEggs.length * 10;
-
-  // Date range
-  const dates = easterEggs.map(e => new Date(e.created_at));
-  const earliest = new Date(Math.min(...dates));
-  const latest = new Date(Math.max(...dates));
-  const dateLabel = earliest.toDateString() === latest.toDateString()
-    ? earliest.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-    : earliest.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' – ' + latest.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-
-  document.getElementById('popupSubtitle').textContent = `${total} scan${total!==1?'s':''} · ${dateLabel}`;
-
-  document.getElementById('popupStats').innerHTML = `
-    <div class="popup-stat"><div class="stat-label">Total Scans</div><div class="stat-value easter">${total}</div></div>
-    <div class="popup-stat"><div class="stat-label">Named Customers</div><div class="stat-value">${named.length}</div></div>
-    <div class="popup-stat"><div class="stat-label">Rs 10 Cashback</div><div class="stat-value red">${cashbackEggs.length} people</div></div>
-    <div class="popup-stat"><div class="stat-label">Cash Out Today</div><div class="stat-value red">${fmt(cashbackCost)}</div></div>
-    <div class="popup-stat"><div class="stat-label">Free Bomboloni Offers</div><div class="stat-value easter">${freeEggs.length} next visit</div></div>
-    <div class="popup-stat"><div class="stat-label">Rs 15 Off Offers</div><div class="stat-value easter">${discountEggs.length} next visit</div></div>
-  `;
-
-  document.getElementById('popupLog').innerHTML = easterEggs.length
-    ? easterEggs.map(e => `
-      <div class="egg-entry">
-        <div class="log-icon" style="background:var(--easter-light)">🥚</div>
-        <div class="log-body">
-          <div class="log-title">${e.offer_headline || e.offer_type || 'Unknown offer'}</div>
-          <div class="log-sub">${e.customer_name ? '👤 ' + e.customer_name + ' · ' : ''}${fmtDateTime(e.created_at)}</div>
-        </div>
-        <span class="egg-badge ${e.offer_type==='TODAY ONLY'?'today':'next'}">${e.offer_type==='TODAY ONLY'?'Today':'Next Visit'}</span>
-      </div>`).join('')
-    : '<div class="empty-state"><div class="emoji">🥚</div><p>No eggs cracked yet</p></div>';
-}
-
-function updateWeekBadge() {
-  const weeks = [...new Set([...expenses.map(e=>e.week_key),...sales.map(s=>s.week_key)])].sort();
-  const cwk = getCWK(), idx = weeks.indexOf(cwk);
-  document.getElementById('currentWeekBadge').textContent = idx>=0?`Week ${idx+1}`:weeks.length>0?`Week ${weeks.length+1}`:'Week 1';
-}
-
-function switchPage(name) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  const pages = ['expense','revenue','pnl','popup'];
-  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===pages.indexOf(name)));
-  window.scrollTo(0,0);
-}
-
-// ── Init ──
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('expDate').value = today;
-document.getElementById('revDate').value = today;
-buildQtyList();
-
-// Always ask who you are on load — no persistence
-currentUser = null;
-localStorage.removeItem('bb_user');
-showUserSelector();
-loadAll();
+init();
 </script>
 </body>
 </html>

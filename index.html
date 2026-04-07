@@ -299,10 +299,10 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
     <div class="overlay-title">Who's logging?</div>
     <div class="overlay-sub">Tap to continue</div>
     <div class="user-grid">
-      <div class="user-card jay" onclick="selectUser('Jay')"><div class="user-emoji">👨</div><div class="user-name">Jay</div></div>
-      <div class="user-card" onclick="selectUser('Priyanka')"><div class="user-emoji">👩</div><div class="user-name">Priyanka</div></div>
-      <div class="user-card" onclick="selectUser('Monica')"><div class="user-emoji">👩</div><div class="user-name">Monica</div></div>
-      <div class="user-card" onclick="selectUser('Vikas')"><div class="user-emoji">👨</div><div class="user-name">Vikas</div></div>
+      <div class="user-card jay" onclick="selectUser('Jay')"><div class="user-emoji">👑</div><div class="user-name">Jay</div><div class="user-role">Admin</div></div>
+      <div class="user-card" onclick="selectUser('Priyanka')"><div class="user-emoji">👩‍🍳</div><div class="user-name">Priyanka</div><div class="user-role">Baker</div></div>
+      <div class="user-card" onclick="selectUser('Monica')"><div class="user-emoji">🛒</div><div class="user-name">Monica</div><div class="user-role">Shopper</div></div>
+      <div class="user-card" onclick="selectUser('Vikas')"><div class="user-emoji">💰</div><div class="user-name">Vikas</div><div class="user-role">Sales</div></div>
     </div>
   </div>
 </div>
@@ -370,6 +370,27 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       <div class="card-label">Recent Batches</div>
       <div id="homeRecentBatches"><div class="loading">Loading...</div></div>
     </div>
+
+    <!-- Flavour split -->
+    <div class="card" id="homeFlavCard" style="display:none">
+      <div class="card-label">Flavour Split — All Time</div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <div style="flex:1;background:var(--gold-light);border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(243,156,18,0.2)">
+          <div style="font-size:11px;color:var(--mid);margin-bottom:4px">🍫 Nutella</div>
+          <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gold)" id="homeFlavNutella">0</div>
+          <div style="font-size:11px;color:var(--mid);margin-top:2px" id="homeFlavNutellaPct">0%</div>
+        </div>
+        <div style="flex:1;background:var(--green-light);border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(39,174,96,0.2)">
+          <div style="font-size:11px;color:var(--mid);margin-bottom:4px">🍮 Custard</div>
+          <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green)" id="homeFlavCustard">0</div>
+          <div style="font-size:11px;color:var(--mid);margin-top:2px" id="homeFlavCustardPct">0%</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;height:8px;border-radius:4px;overflow:hidden;display:flex">
+        <div id="homeFlavBar" style="height:100%;background:var(--gold);transition:width 0.4s"></div>
+        <div style="flex:1;background:var(--green)"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -415,29 +436,109 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 <div class="page" id="page-sales">
   <div style="margin-top:8px">
     <div class="s-title">Sales</div>
-    <div class="s-sub">Log today's pop-up</div>
-    <div class="card">
-      <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="salesDate"></div>
-      <div class="form-group"><label class="form-label">Location</label><input class="form-input" type="text" id="salesLocation" placeholder="e.g. Mira Road Church"></div>
-      <div class="card-label" style="margin-bottom:12px">Units Sold</div>
-      <div class="sku-grid">
-        <div><div class="sku-label">Single — ₹95</div><div class="sku-counter"><button class="sku-btn" onclick="adjSale('single',-1)">−</button><div class="sku-count" id="saleSingle">0</div><button class="sku-btn" onclick="adjSale('single',1)">+</button></div></div>
-        <div><div class="sku-label">Pair — ₹180</div><div class="sku-counter"><button class="sku-btn" onclick="adjSale('pair',-1)">−</button><div class="sku-count" id="salePair">0</div><button class="sku-btn" onclick="adjSale('pair',1)">+</button></div></div>
-        <div><div class="sku-label">Trio — ₹250</div><div class="sku-counter"><button class="sku-btn" onclick="adjSale('trio',-1)">−</button><div class="sku-count" id="saleTrio">0</div><button class="sku-btn" onclick="adjSale('trio',1)">+</button></div></div>
-        <div style="display:flex;flex-direction:column;justify-content:flex-end"><div class="sku-label">Total</div><div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--green)" id="saleTotal">₹0</div></div>
+
+    <!-- Day summary -->
+    <div style="background:var(--pink);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:3px">Orders</div><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="dOrders">0</div></div>
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:3px">Units</div><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="dUnits">0</div></div>
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:3px">Revenue</div><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="dRevenue">₹0</div></div>
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:3px">Avg</div><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="dAvg">₹0</div></div>
       </div>
-      <div class="divider"></div>
-      <div class="form-group"><label class="form-label">Discount (₹)</label><input class="form-input" type="number" id="salesDiscount" placeholder="0" value="0" oninput="calcSaleTotal()"></div>
-      <div class="form-group"><label class="form-label">Logged by</label>
-        <div class="chip-group" id="salesLoggedBy">
-          <div class="chip" data-val="Jay" onclick="selectChip(this,'salesLoggedBy')">Jay</div>
-          <div class="chip" data-val="Priyanka" onclick="selectChip(this,'salesLoggedBy')">Priyanka</div>
-          <div class="chip" data-val="Vikas" onclick="selectChip(this,'salesLoggedBy')">Vikas</div>
+      <div id="dayFlavRow" style="display:none;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.2)">
+        <div id="dayNutella" style="flex:1;text-align:center;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.2);color:white">🍫 Nutella 0</div>
+        <div id="dayCustard" style="flex:1;text-align:center;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.2);color:white">🍮 Custard 0</div>
+      </div>
+    </div>
+
+    <!-- Order builder -->
+    <div class="card">
+      <div class="card-label">New Order</div>
+
+      <!-- Date + location -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div><label class="form-label">Date</label><input class="form-input" type="date" id="salesDate" style="padding:10px 12px;font-size:13px"></div>
+        <div><label class="form-label">Location</label><input class="form-input" type="text" id="salesLocation" placeholder="Optional" style="padding:10px 12px;font-size:13px"></div>
+      </div>
+
+      <!-- SKU counters -->
+      <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:10px">SKU</div>
+      <div id="skuCounters">
+        <div style="display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)">
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">Single</div><div style="font-size:11px;color:var(--mid);margin-top:1px" id="priceSingle">₹95 each</div></div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="sku-btn" onclick="adjSku('single',-1)">−</button>
+            <div class="sku-count" id="skuSingle" style="min-width:28px;text-align:center">0</div>
+            <button class="sku-btn" onclick="adjSku('single',1)">+</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)">
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">Pair</div><div style="font-size:11px;color:var(--mid);margin-top:1px" id="pricePair">₹180 · 2 units</div></div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="sku-btn" onclick="adjSku('pair',-1)">−</button>
+            <div class="sku-count" id="skuPair" style="min-width:28px;text-align:center">0</div>
+            <button class="sku-btn" onclick="adjSku('pair',1)">+</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;padding:11px 0">
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">Trio</div><div style="font-size:11px;color:var(--mid);margin-top:1px" id="priceTrio">₹250 · 3 units</div></div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="sku-btn" onclick="adjSku('trio',-1)">−</button>
+            <div class="sku-count" id="skuTrio" style="min-width:28px;text-align:center">0</div>
+            <button class="sku-btn" onclick="adjSku('trio',1)">+</button>
+          </div>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="logSale()">Save Sales</button>
+
+      <!-- Divider -->
+      <div style="display:flex;align-items:center;gap:10px;margin:14px 0">
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid)">Flavours</div>
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+
+      <!-- Flavour counters -->
+      <div style="display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)">
+        <div style="flex:1;font-size:14px;font-weight:600">🍫 Nutella</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="sku-btn" onclick="adjFlav('nutella',-1)">−</button>
+          <div class="sku-count" id="flavNutella" style="min-width:28px;text-align:center">0</div>
+          <button class="sku-btn" onclick="adjFlav('nutella',1)">+</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;padding:11px 0">
+        <div style="flex:1;font-size:14px;font-weight:600">🍮 Custard</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="sku-btn" onclick="adjFlav('custard',-1)">−</button>
+          <div class="sku-count" id="flavCustard" style="min-width:28px;text-align:center">0</div>
+          <button class="sku-btn" onclick="adjFlav('custard',1)">+</button>
+        </div>
+      </div>
+
+      <!-- Match msg + total + confirm -->
+      <div style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--light);border-radius:12px;margin-bottom:8px">
+          <div style="font-size:12px;color:var(--mid)">Order Total</div>
+          <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--dark)" id="orderTotal">₹0</div>
+        </div>
+        <div style="font-size:11px;text-align:center;margin-bottom:10px;min-height:16px" id="matchMsg"></div>
+        <div class="form-group" style="margin-bottom:10px"><label class="form-label">Logged by</label>
+          <div class="chip-group" id="salesLoggedBy">
+            <div class="chip" data-val="Jay" onclick="selectChip(this,'salesLoggedBy')">Jay</div>
+            <div class="chip" data-val="Priyanka" onclick="selectChip(this,'salesLoggedBy')">Priyanka</div>
+            <div class="chip" data-val="Vikas" onclick="selectChip(this,'salesLoggedBy')">Vikas</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="confirmOrderBtn" onclick="confirmOrder()" disabled style="opacity:0.4">Confirm Order</button>
+      </div>
     </div>
-    <div class="s-title mt-16" style="font-size:17px;margin-top:20px">History</div>
+
+    <!-- Today orders history -->
+    <div class="s-title" style="font-size:17px;margin-top:4px">Today's Orders</div>
+    <div id="todayOrders"><div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No orders yet</div></div></div>
+
+    <!-- Full sales history -->
+    <div class="s-title" style="font-size:17px;margin-top:16px">All Sales History</div>
     <div class="card"><div id="salesHistory"><div class="loading">Loading...</div></div></div>
   </div>
 </div>
@@ -574,6 +675,37 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
   <div style="margin-top:8px">
     <div class="s-title">Admin</div>
     <div class="s-sub">Jay only · full control</div>
+
+    <!-- SKU Prices -->
+    <div class="card">
+      <div class="admin-title">SKU Prices</div>
+      <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="flex:1;font-size:13px;font-weight:500">Single</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;color:var(--mid)">₹</span>
+          <input class="form-input" type="number" id="adminPriceSingle" style="width:80px;padding:8px;text-align:center;font-size:14px;font-weight:600">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="flex:1;font-size:13px;font-weight:500">Pair</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;color:var(--mid)">₹</span>
+          <input class="form-input" type="number" id="adminPricePair" style="width:80px;padding:8px;text-align:center;font-size:14px;font-weight:600">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;padding:10px 0">
+        <div style="flex:1;font-size:13px;font-weight:500">Trio</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;color:var(--mid)">₹</span>
+          <input class="form-input" type="number" id="adminPriceTrio" style="width:80px;padding:8px;text-align:center;font-size:14px;font-weight:600">
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <button class="btn btn-primary" onclick="savePrices()">Save Prices</button>
+      </div>
+    </div>
+
+    <!-- Flavours -->
     <div class="card">
       <div class="admin-title">Flavours</div>
       <div id="adminFlavours"></div>
@@ -581,6 +713,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       <div class="form-group"><label class="form-label">Add Flavour</label><input class="form-input" type="text" id="newFlavourInput" placeholder="e.g. Lotus Biscoff"></div>
       <button class="btn btn-outline btn-sm" onclick="addFlavour()">+ Add</button>
     </div>
+
+    <!-- Ingredients -->
     <div class="card">
       <div class="admin-title">Ingredients</div>
       <div id="adminIngredients"></div>
@@ -589,10 +723,25 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       <div class="form-group"><select class="form-select" id="newIngUnit"><option value="g">grams (g)</option><option value="ml">ml</option><option value="tsp">tsp</option><option value="pcs">pieces</option></select></div>
       <button class="btn btn-outline btn-sm" onclick="addIngredient()">+ Add</button>
     </div>
+
+    <!-- Full History + Edit -->
     <div class="card">
-      <div class="admin-title">Delete Recent Entries</div>
-      <div id="adminRecent"><div class="loading">Loading...</div></div>
+      <div class="admin-title">Full History — Edit & Delete</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px">
+        <button class="btn btn-outline btn-sm" id="hTab-sales" onclick="switchHistoryTab('sales')">Sales</button>
+        <button class="btn btn-outline btn-sm" id="hTab-purchases" onclick="switchHistoryTab('purchases')">Shop</button>
+        <button class="btn btn-outline btn-sm" id="hTab-batches" onclick="switchHistoryTab('batches')">Batches</button>
+        <button class="btn btn-outline btn-sm" id="hTab-expenses" onclick="switchHistoryTab('expenses')">Expenses</button>
+      </div>
+      <div id="adminHistory"><div class="loading">Loading...</div></div>
     </div>
+
+    <!-- Export -->
+    <div class="card">
+      <div class="admin-title">Export</div>
+      <button class="btn btn-primary" onclick="exportPDF()">Export as PDF</button>
+    </div>
+
     <button class="btn btn-outline" style="margin-top:8px" onclick="logOut()">Switch User</button>
   </div>
 </div>
@@ -604,7 +753,7 @@ const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 const ADMIN_PIN='2505';
-const PRICES={single:95,pair:180,trio:250};
+let PRICES={single:95,pair:180,trio:250};
 const BATCH_RECIPE={'Maida':450,'Warm Water':225,'Instant Yeast':7,'Butter':60,'Castor Sugar':50,'Milk Powder':12,'Baking Powder':1,'Salt':6,'Vanilla Extract':6,'Oil':500,'Milk':100};
 const SEED_INGREDIENTS=[
   {name:'Maida',unit:'g'},{name:'Warm Water',unit:'ml'},{name:'Instant Yeast',unit:'g'},
@@ -616,7 +765,12 @@ const SEED_INGREDIENTS=[
 let currentUser=localStorage.getItem('bmb_user')||null;
 let ingredients=[];
 let flavours=['Nutella','Custard','Mixed'];
-let saleCounts={single:0,pair:0,trio:0};
+let skuCounts={single:0,pair:0,trio:0};
+let flavCounts={nutella:0,custard:0};
+let todayOrders=[];
+let todayOrderNum=0;
+let currentHistoryTab='sales';
+let adminHistoryOffset=0;
 let pinEntry='';
 let adminNavItem=null;
 let charts={};
@@ -767,8 +921,28 @@ async function loadHome(){
     }).join('');
   } else document.getElementById('homeCPBTrend').innerHTML='';
   const rb=document.getElementById('homeRecentBatches');
-  if(!batches||!batches.length){rb.innerHTML='<div class="empty"><div class="empty-icon">🍩</div><div class="empty-text">No batches yet</div></div>';return;}
-  rb.innerHTML=batches.slice(0,3).map(b=>`<div class="log-item"><div class="log-icon">${b.flavour==='Nutella'?'🍫':b.flavour==='Custard'?'🍮':'🍩'}</div><div class="log-body"><div class="log-title">${b.flavour} · ${b.units_made} units</div><div class="log-sub">${b.batch_date} · ${b.logged_by||'—'}</div></div><div class="log-right"><div class="log-amount neutral">${b.cost_per_unit?fmt(b.cost_per_unit)+'/u':'—'}</div></div></div>`).join('');
+  if(!batches||!batches.length){rb.innerHTML='<div class="empty"><div class="empty-icon">🍩</div><div class="empty-text">No batches yet</div></div>';}
+  else{rb.innerHTML=batches.slice(0,3).map(b=>`<div class="log-item"><div class="log-icon">${b.flavour==='Nutella'?'🍫':b.flavour==='Custard'?'🍮':'🍩'}</div><div class="log-body"><div class="log-title">${b.flavour} · ${b.units_made} units</div><div class="log-sub">${b.batch_date} · ${b.logged_by||'—'}</div></div><div class="log-right"><div class="log-amount neutral">${b.cost_per_unit?fmt(b.cost_per_unit)+'/u':'—'}</div></div></div>`).join('');}
+
+  // Flavour split
+  const {data:saleItems}=await sb.from('sale_items').select('flavour,quantity');
+  let totalN=0,totalC=0;
+  (saleItems||[]).forEach(i=>{if(i.flavour==='Nutella')totalN+=Number(i.quantity||0);else totalC+=Number(i.quantity||0);});
+  if(totalN+totalC>0){
+    const fc=document.getElementById('homeFlavCard');
+    if(fc)fc.style.display='block';
+    const pctN=Math.round((totalN/(totalN+totalC))*100);
+    const el_n=document.getElementById('homeFlavNutella');
+    const el_c=document.getElementById('homeFlavCustard');
+    const el_np=document.getElementById('homeFlavNutellaPct');
+    const el_cp=document.getElementById('homeFlavCustardPct');
+    const el_bar=document.getElementById('homeFlavBar');
+    if(el_n)el_n.textContent=totalN;
+    if(el_c)el_c.textContent=totalC;
+    if(el_np)el_np.textContent=pctN+'%';
+    if(el_cp)el_cp.textContent=(100-pctN)+'%';
+    if(el_bar)el_bar.style.width=pctN+'%';
+  }
 }
 
 // ══ P&L ══
@@ -815,13 +989,39 @@ async function loadPnl(){
   // Accordion week breakdown
   const el=document.getElementById('pnlAccordion');
   if(!weeks.length){el.innerHTML='<div class="empty"><div class="empty-text">No data yet</div></div>';return;}
+  // Fetch sale_items for flavour split per week
+  const {data:allSaleItems}=await sb.from('sale_items').select('flavour,quantity,week_key');
+  const flavByWk={};
+  weeks.forEach(wk=>{
+    const wkItems=(allSaleItems||[]).filter(i=>i.week_key===wk);
+    const n=wkItems.filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
+    const c=wkItems.filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
+    flavByWk[wk]={nutella:n,custard:c};
+  });
+
+  // SKU split per week from sales
+  const skuByWk={};
+  weeks.forEach(wk=>{
+    const wkSales=(sales||[]).filter(s=>s.week_key===wk);
+    skuByWk[wk]={
+      singles:wkSales.reduce((a,s)=>a+Number(s.singles||0),0),
+      pairs:wkSales.reduce((a,s)=>a+Number(s.pairs||0),0),
+      trios:wkSales.reduce((a,s)=>a+Number(s.trios||0),0),
+      orders:wkSales.length
+    };
+  });
+
   el.innerHTML=weeks.map((wk,i)=>{
     const margin=rev[wk]>0?((prof[wk]/rev[wk])*100).toFixed(0):0;
+    const flav=flavByWk[wk]||{nutella:0,custard:0};
+    const sku=skuByWk[wk]||{singles:0,pairs:0,trios:0,orders:0};
+    const hasFlav=flav.nutella+flav.custard>0;
+    const flavPct=hasFlav?Math.round((flav.nutella/(flav.nutella+flav.custard))*100):0;
     return `<div class="accordion-item" id="acc_${i}">
       <div class="accordion-head" onclick="toggleAccordion(${i})">
         <div>
           <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700">Week ${i+1} <span style="font-size:11px;font-weight:400;color:var(--mid)">w/c ${getWeekLabel(wk)}</span></div>
-          <div style="font-size:11px;color:var(--mid);margin-top:2px">${fmt(rev[wk])} · ${unitsByWk[wk]} units</div>
+          <div style="font-size:11px;color:var(--mid);margin-top:2px">${fmt(rev[wk])} · ${unitsByWk[wk]} units · ${sku.orders} orders</div>
         </div>
         <div style="display:flex;align-items:center;gap:10px">
           <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:${Number(margin)>=0?'var(--green)':'var(--red)'}">${margin}%</div>
@@ -835,6 +1035,30 @@ async function loadPnl(){
           <div class="stat-cell"><div class="stat-label">Units</div><div class="stat-val pink">${unitsByWk[wk]}</div></div>
           <div class="stat-cell"><div class="stat-label">CPB</div><div class="stat-val">${cpbMap[wk]?fmt(cpbMap[wk]):'—'}</div></div>
         </div>
+
+        ${sku.singles+sku.pairs+sku.trios>0?`
+        <div style="margin-bottom:10px">
+          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">SKU Split</div>
+          <div style="display:flex;gap:8px">
+            ${sku.singles>0?`<div style="flex:1;background:var(--pink-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">Single</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--pink)">${sku.singles}</div></div>`:''}
+            ${sku.pairs>0?`<div style="flex:1;background:var(--gold-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">Pair</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--gold)">${sku.pairs}</div></div>`:''}
+            ${sku.trios>0?`<div style="flex:1;background:var(--green-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">Trio</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--green)">${sku.trios}</div></div>`:''}
+          </div>
+        </div>`:''}
+
+        ${hasFlav?`
+        <div style="margin-bottom:10px">
+          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Flavour Split</div>
+          <div style="display:flex;gap:8px">
+            <div style="flex:1;background:#FDF3DC;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#8B5E0A">🍫 Nutella</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#8B5E0A">${flav.nutella} <span style="font-size:11px">(${flavPct}%)</span></div></div>
+            <div style="flex:1;background:#E8F8EF;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#1a6b3a">🍮 Custard</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#1a6b3a">${flav.custard} <span style="font-size:11px">(${100-flavPct}%)</span></div></div>
+          </div>
+          <div style="margin-top:8px;height:6px;border-radius:3px;overflow:hidden;display:flex">
+            <div style="width:${flavPct}%;background:#E8A838"></div>
+            <div style="flex:1;background:#27AE60"></div>
+          </div>
+        </div>`:''}
+
         <div style="padding:12px;background:var(--pink-light);border-radius:12px;display:flex;justify-content:space-between;align-items:center">
           <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mid)">Net Profit</div>
           <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:${prof[wk]>=0?'var(--pink)':'var(--red)'}">${fmt(prof[wk])}</div>
@@ -883,33 +1107,199 @@ async function deleteNote(id){
 }
 
 // ══ SALES ══
-function loadSales(){document.getElementById('salesDate').value=today();calcSaleTotal();loadSalesHistory();}
-function adjSale(sku,d){saleCounts[sku]=Math.max(0,(saleCounts[sku]||0)+d);document.getElementById('sale'+sku.charAt(0).toUpperCase()+sku.slice(1)).textContent=saleCounts[sku];calcSaleTotal();}
-function calcSaleTotal(){const raw=saleCounts.single*PRICES.single+saleCounts.pair*PRICES.pair+saleCounts.trio*PRICES.trio;const disc=parseFloat(document.getElementById('salesDiscount')?.value)||0;document.getElementById('saleTotal').textContent=fmt(Math.max(0,raw-disc));}
+function loadSales(){
+  document.getElementById('salesDate').value=today();
+  skuCounts={single:0,pair:0,trio:0};
+  flavCounts={nutella:0,custard:0};
+  // Load today's orders from Supabase
+  loadTodayOrders();
+  loadSalesHistory();
+  updatePriceLabels();
+}
 
-async function logSale(){
+function updatePriceLabels(){
+  const ps=document.getElementById('priceSingle');
+  const pp=document.getElementById('pricePair');
+  const pt=document.getElementById('priceTrio');
+  if(ps)ps.textContent='₹'+PRICES.single+' each';
+  if(pp)pp.textContent='₹'+PRICES.pair+' · 2 units';
+  if(pt)pt.textContent='₹'+PRICES.trio+' · 3 units';
+}
+
+function adjSku(sku,d){
+  skuCounts[sku]=Math.max(0,(skuCounts[sku]||0)+d);
+  document.getElementById('sku'+sku.charAt(0).toUpperCase()+sku.slice(1)).textContent=skuCounts[sku];
+  updateOrderUI();
+}
+
+function adjFlav(f,d){
+  flavCounts[f]=Math.max(0,(flavCounts[f]||0)+d);
+  document.getElementById('flav'+f.charAt(0).toUpperCase()+f.slice(1)).textContent=flavCounts[f];
+  updateOrderUI();
+}
+
+function totalSkuUnits(){return skuCounts.single*1+skuCounts.pair*2+skuCounts.trio*3;}
+function totalFlavUnits(){return flavCounts.nutella+flavCounts.custard;}
+function orderRevenue(){return skuCounts.single*PRICES.single+skuCounts.pair*PRICES.pair+skuCounts.trio*PRICES.trio;}
+
+function updateOrderUI(){
+  const units=totalSkuUnits();
+  const fTotal=totalFlavUnits();
+  const rev=orderRevenue();
+  const msg=document.getElementById('matchMsg');
+  const btn=document.getElementById('confirmOrderBtn');
+  document.getElementById('orderTotal').textContent=fmt(rev);
+
+  if(units===0){msg.textContent='';btn.disabled=true;btn.style.opacity='0.4';}
+  else if(fTotal<units){msg.style.color='var(--red)';msg.textContent=`Add ${units-fTotal} more flavour${units-fTotal>1?'s':''}`;btn.disabled=true;btn.style.opacity='0.4';}
+  else if(fTotal>units){msg.style.color='var(--red)';msg.textContent=`${fTotal-units} too many flavours`;btn.disabled=true;btn.style.opacity='0.4';}
+  else{msg.style.color='var(--green)';msg.textContent=`✓ ${units} unit${units>1?'s':''} · flavours matched`;btn.disabled=false;btn.style.opacity='1';}
+}
+
+async function confirmOrder(){
+  const units=totalSkuUnits();
+  if(units===0||totalFlavUnits()!==units){showToast('Fix flavour count first');return;}
   const date=document.getElementById('salesDate').value;
   const location=document.getElementById('salesLocation').value;
-  const discount=parseFloat(document.getElementById('salesDiscount').value)||0;
   const loggedBy=getChip('salesLoggedBy')||currentUser;
-  const raw=saleCounts.single*PRICES.single+saleCounts.pair*PRICES.pair+saleCounts.trio*PRICES.trio;
-  if(!date){showToast('Select a date');return;}
-  if(raw===0){showToast('Add at least one sale');return;}
-  const revenue=Math.max(0,raw-discount);
-  const {error}=await sb.from('sales').insert({sale_date:date,location,week_key:getWeekKey(date),singles:saleCounts.single,pairs:saleCounts.pair,trios:saleCounts.trio,total_revenue:raw,discount_applied:discount,revenue_after_discount:revenue,logged_by:loggedBy});
+  const rev=orderRevenue();
+  const wk=getWeekKey(date);
+
+  // Insert into sales
+  const {data:saleRow,error}=await sb.from('sales').insert({
+    sale_date:date,location,week_key:wk,
+    singles:skuCounts.single,pairs:skuCounts.pair,trios:skuCounts.trio,
+    total_revenue:rev,discount_applied:0,revenue_after_discount:rev,
+    logged_by:loggedBy
+  }).select().single();
   if(error){showToast('Error saving');console.error(error);return;}
-  showToast('Sales logged ✓');
-  saleCounts={single:0,pair:0,trio:0};
-  ['Single','Pair','Trio'].forEach(s=>document.getElementById('sale'+s).textContent='0');
-  document.getElementById('salesDiscount').value='0';calcSaleTotal();
-  loadSalesHistory();loadHome();
+
+  // Insert sale_items
+  const items=[];
+  ['single','pair','trio'].forEach(sku=>{
+    for(let i=0;i<skuCounts[sku];i++){
+      // distribute flavours proportionally
+    }
+  });
+  // Log nutella items
+  if(flavCounts.nutella>0){
+    await sb.from('sale_items').insert({
+      sale_id:saleRow.id,sku:'all',flavour:'Nutella',
+      quantity:flavCounts.nutella,price:0,
+      sale_date:date,week_key:wk
+    });
+  }
+  if(flavCounts.custard>0){
+    await sb.from('sale_items').insert({
+      sale_id:saleRow.id,sku:'all',flavour:'Custard',
+      quantity:flavCounts.custard,price:0,
+      sale_date:date,week_key:wk
+    });
+  }
+
+  todayOrderNum++;
+  todayOrders.push({
+    num:todayOrderNum,
+    skus:{...skuCounts},
+    flavs:{...flavCounts},
+    total:rev,units,
+    time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})
+  });
+
+  // Reset
+  skuCounts={single:0,pair:0,trio:0};
+  flavCounts={nutella:0,custard:0};
+  ['Single','Pair','Trio'].forEach(s=>document.getElementById('sku'+s).textContent='0');
+  ['Nutella','Custard'].forEach(f=>document.getElementById('flav'+f).textContent='0');
+  updateOrderUI();
+  showToast('Order #'+todayOrderNum+' saved ✓');
+  updateDaySummary();
+  renderTodayOrders();
+  loadSalesHistory();
+  loadHome();
+}
+
+function updateDaySummary(){
+  const totalOrds=todayOrders.length;
+  const totalU=todayOrders.reduce((a,o)=>a+o.units,0);
+  const totalR=todayOrders.reduce((a,o)=>a+o.total,0);
+  const avg=totalOrds>0?Math.round(totalR/totalOrds):0;
+  let n=0,c=0;
+  todayOrders.forEach(o=>{n+=o.flavs.nutella;c+=o.flavs.custard;});
+  document.getElementById('dOrders').textContent=totalOrds;
+  document.getElementById('dUnits').textContent=totalU;
+  document.getElementById('dRevenue').textContent='₹'+totalR;
+  document.getElementById('dAvg').textContent='₹'+avg;
+  if(n+c>0){
+    const fr=document.getElementById('dayFlavRow');
+    if(fr)fr.style.display='flex';
+    const dn=document.getElementById('dayNutella');
+    const dc=document.getElementById('dayCustard');
+    if(dn)dn.textContent='🍫 Nutella '+n;
+    if(dc)dc.textContent='🍮 Custard '+c;
+  }
+}
+
+function renderTodayOrders(){
+  const el=document.getElementById('todayOrders');
+  if(!todayOrders.length){el.innerHTML='<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No orders yet</div></div>';return;}
+  el.innerHTML=[...todayOrders].reverse().map(o=>{
+    const skuTags=Object.entries(o.skus).filter(([,v])=>v>0).map(([k,v])=>`<span style="background:var(--pink-light);color:var(--pink-dark);padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600">${v}× ${k.charAt(0).toUpperCase()+k.slice(1)}</span>`).join('');
+    const flavTags=[o.flavs.nutella>0?`<span style="background:#FDF3DC;color:#8B5E0A;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600">🍫 ${o.flavs.nutella}</span>`:'',o.flavs.custard>0?`<span style="background:#E8F8EF;color:#1a6b3a;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600">🍮 ${o.flavs.custard}</span>`:''].join('');
+    return `<div class="card" style="padding:12px 14px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:11px;color:var(--mid)">Order #${o.num} · ${o.time} · ${o.units} units</div>
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--green)">${fmt(o.total)}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${skuTags}${flavTags}</div>
+    </div>`;
+  }).join('');
+}
+
+async function loadTodayOrders(){
+  // Load today's sales from Supabase to rebuild day summary
+  const todayStr=today();
+  const {data}=await sb.from('sales').select('*,sale_items(*)').eq('sale_date',todayStr).order('created_at');
+  todayOrders=[];
+  todayOrderNum=0;
+  if(data&&data.length){
+    data.forEach(s=>{
+      todayOrderNum++;
+      const n=(s.sale_items||[]).filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
+      const c=(s.sale_items||[]).filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
+      const units=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;
+      todayOrders.push({
+        num:todayOrderNum,
+        skus:{single:s.singles||0,pair:s.pairs||0,trio:s.trios||0},
+        flavs:{nutella:n,custard:c},
+        total:Number(s.revenue_after_discount||s.total_revenue||0),
+        units,
+        time:new Date(s.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})
+      });
+    });
+    updateDaySummary();
+    renderTodayOrders();
+  }
 }
 
 async function loadSalesHistory(){
-  const {data}=await sb.from('sales').select('*').order('sale_date',{ascending:false}).limit(15);
+  const {data}=await sb.from('sales').select('*,sale_items(flavour,quantity)').order('sale_date',{ascending:false}).limit(30);
   const el=document.getElementById('salesHistory');
   if(!data||!data.length){el.innerHTML='<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No sales yet</div></div>';return;}
-  el.innerHTML=data.map(s=>{const units=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;return `<div class="log-item"><div class="log-icon">💰</div><div class="log-body"><div class="log-title">${s.location||'Pop-up'} · ${units} units</div><div class="log-sub">${s.sale_date} · S:${s.singles||0} P:${s.pairs||0} T:${s.trios||0}</div></div><div class="log-right"><div class="log-amount pos">${fmt(s.revenue_after_discount||s.total_revenue)}</div></div></div>`;}).join('');
+  el.innerHTML=data.map(s=>{
+    const units=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;
+    const n=(s.sale_items||[]).filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
+    const c=(s.sale_items||[]).filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
+    const flavStr=n||c?` · ${n?'🍫'+n:''} ${c?'🍮'+c:''}`.trim():'';
+    return `<div class="log-item">
+      <div class="log-icon">💰</div>
+      <div class="log-body">
+        <div class="log-title">${s.location||'Pop-up'} · ${units} units${flavStr}</div>
+        <div class="log-sub">${s.sale_date} · S:${s.singles||0} P:${s.pairs||0} T:${s.trios||0} · ${s.logged_by||'—'}</div>
+      </div>
+      <div class="log-right"><div class="log-amount pos">${fmt(s.revenue_after_discount||s.total_revenue)}</div></div>
+    </div>`;
+  }).join('');
 }
 
 // ══ SHOP ══
@@ -1070,32 +1460,155 @@ async function loadBatchHistory(){
 
 // ══ ADMIN ══
 async function loadAdmin(){
+  // Load prices from Supabase settings
+  const {data:settings}=await sb.from('settings').select('*');
+  if(settings){
+    settings.forEach(s=>{
+      if(s.key==='price_single'){PRICES.single=Number(s.value);const el=document.getElementById('adminPriceSingle');if(el)el.value=s.value;}
+      if(s.key==='price_pair'){PRICES.pair=Number(s.value);const el=document.getElementById('adminPricePair');if(el)el.value=s.value;}
+      if(s.key==='price_trio'){PRICES.trio=Number(s.value);const el=document.getElementById('adminPriceTrio');if(el)el.value=s.value;}
+    });
+  }
   document.getElementById('adminFlavours').innerHTML=flavours.map(f=>`<div class="log-item"><div class="log-icon">${f==='Nutella'?'🍫':f==='Custard'?'🍮':'🍩'}</div><div class="log-body"><div class="log-title">${f}</div></div>${!['Nutella','Custard','Mixed'].includes(f)?`<button class="btn btn-danger btn-sm" onclick="removeFlavour('${f}')">Remove</button>`:'<span style="font-size:10px;color:var(--mid)">Default</span>'}</div>`).join('');
-  const {data}=await sb.from('ingredients').select('*').order('name');
-  ingredients=data||[];
+  const {data:ings}=await sb.from('ingredients').select('*').order('name');
+  ingredients=ings||[];
   document.getElementById('adminIngredients').innerHTML=ingredients.map(ing=>`<div class="log-item"><div class="log-body"><div class="log-title">${ing.name}</div><div class="log-sub">${ing.unit} · ${ing.price_per_unit?'₹'+Number(ing.price_per_unit).toFixed(4)+'/'+ing.unit:'No price yet'}</div></div><button class="btn btn-danger btn-sm" onclick="removeIngredient('${ing.id}','${ing.name}')">✕</button></div>`).join('');
-  await loadAdminRecent();
+  switchHistoryTab('sales');
 }
 
-async function loadAdminRecent(){
-  const [{data:batches},{data:sales},{data:purch},{data:exps}]=await Promise.all([
-    sb.from('recipe_logs').select('*').order('created_at',{ascending:false}).limit(4),
-    sb.from('sales').select('*').order('created_at',{ascending:false}).limit(4),
-    sb.from('inventory_purchases').select('*,ingredients(name)').order('created_at',{ascending:false}).limit(4),
-    sb.from('expenses').select('*').order('created_at',{ascending:false}).limit(4)
+async function savePrices(){
+  const s=parseFloat(document.getElementById('adminPriceSingle').value);
+  const p=parseFloat(document.getElementById('adminPricePair').value);
+  const t=parseFloat(document.getElementById('adminPriceTrio').value);
+  if(!s||!p||!t){showToast('Enter all prices');return;}
+  await Promise.all([
+    sb.from('settings').upsert({key:'price_single',value:String(s),updated_by:currentUser,updated_at:new Date().toISOString()}),
+    sb.from('settings').upsert({key:'price_pair',value:String(p),updated_by:currentUser,updated_at:new Date().toISOString()}),
+    sb.from('settings').upsert({key:'price_trio',value:String(t),updated_by:currentUser,updated_at:new Date().toISOString()})
   ]);
-  const all=[
-    ...(batches||[]).map(b=>({icon:'🍩',label:`Batch: ${b.flavour} ×${b.units_made}`,sub:b.batch_date,id:b.id,table:'recipe_logs'})),
-    ...(sales||[]).map(s=>({icon:'💰',label:`Sale: ${fmt(s.revenue_after_discount||s.total_revenue)}`,sub:s.sale_date,id:s.id,table:'sales'})),
-    ...(purch||[]).map(p=>({icon:'🛒',label:`Purchase: ${p.ingredients?.name||'?'} ${p.quantity_bought}${p.unit||''}`,sub:p.purchase_date,id:p.id,table:'inventory_purchases'})),
-    ...(exps||[]).map(e=>({icon:'🧾',label:`Expense: ${e.category} ${fmt(e.amount)}`,sub:e.expense_date,id:e.id,table:'expenses'}))
-  ].sort((a,b)=>(b.sub||'').localeCompare(a.sub||'')).slice(0,12);
-  const el=document.getElementById('adminRecent');
-  if(!all.length){el.innerHTML='<div class="empty-text">No entries yet</div>';return;}
-  el.innerHTML=all.map(e=>`<div class="log-item"><div class="log-icon">${e.icon}</div><div class="log-body"><div class="log-title">${e.label}</div><div class="log-sub">${e.sub||'—'}</div></div><button class="btn btn-danger btn-sm" onclick="deleteEntry('${e.table}','${e.id}')">✕</button></div>`).join('');
+  PRICES.single=s;PRICES.pair=p;PRICES.trio=t;
+  showToast('Prices updated ✓');
+  updatePriceLabels();
 }
 
-async function deleteEntry(table,id){if(!confirm('Delete?'))return;await sb.from(table).delete().eq('id',id);showToast('Deleted ✓');loadAdmin();loadHome();}
+async function switchHistoryTab(tab){
+  currentHistoryTab=tab;
+  ['sales','purchases','batches','expenses'].forEach(t=>{
+    const btn=document.getElementById('hTab-'+t);
+    if(btn)btn.style.background=t===tab?'var(--pink)':'';;
+    if(btn)btn.style.color=t===tab?'white':'';
+    if(btn)btn.style.borderColor=t===tab?'var(--pink)':'';
+  });
+  const el=document.getElementById('adminHistory');
+  el.innerHTML='<div class="loading">Loading...</div>';
+
+  let data,mapped;
+  if(tab==='sales'){
+    const r=await sb.from('sales').select('*,sale_items(flavour,quantity)').order('sale_date',{ascending:false}).limit(50);
+    data=r.data||[];
+    mapped=data.map(s=>{
+      const units=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;
+      const n=(s.sale_items||[]).filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
+      const c=(s.sale_items||[]).filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
+      return {icon:'💰',label:`${s.sale_date} · ${units} units${n||c?' · 🍫'+n+' 🍮'+c:''}`,sub:fmt(s.revenue_after_discount||s.total_revenue),id:s.id,table:'sales'};
+    });
+  } else if(tab==='purchases'){
+    const r=await sb.from('inventory_purchases').select('*,ingredients(name)').order('purchase_date',{ascending:false}).limit(50);
+    data=r.data||[];
+    mapped=data.map(p=>({icon:'🛒',label:`${p.purchase_date} · ${p.ingredients?.name||'?'} ${p.quantity_bought||0}${p.unit||''}`,sub:fmt(p.price_paid),id:p.id,table:'inventory_purchases'}));
+  } else if(tab==='batches'){
+    const r=await sb.from('recipe_logs').select('*').order('batch_date',{ascending:false}).limit(50);
+    data=r.data||[];
+    mapped=data.map(b=>({icon:'🍩',label:`${b.batch_date} · ${b.flavour} ×${b.units_made}`,sub:b.cost_per_unit?fmt(b.cost_per_unit)+'/u':'—',id:b.id,table:'recipe_logs'}));
+  } else {
+    const r=await sb.from('expenses').select('*').order('expense_date',{ascending:false}).limit(50);
+    data=r.data||[];
+    mapped=data.map(e=>({icon:'🧾',label:`${e.expense_date} · ${e.category}${e.note?' · '+e.note:''}`,sub:fmt(e.amount),id:e.id,table:'expenses'}));
+  }
+
+  if(!mapped.length){el.innerHTML='<div class="empty"><div class="empty-text">No entries</div></div>';return;}
+  el.innerHTML=mapped.map(e=>`
+    <div class="log-item">
+      <div class="log-icon">${e.icon}</div>
+      <div class="log-body"><div class="log-title">${e.label}</div><div class="log-sub" style="color:var(--green);font-weight:600">${e.sub}</div></div>
+      <button class="btn btn-danger btn-sm" onclick="deleteEntry('${e.table}','${e.id}')">✕</button>
+    </div>`).join('');
+}
+
+async function exportPDF(){
+  showToast('Generating PDF...');
+  const [{data:sales},{data:purchases},{data:otherExp}]=await Promise.all([
+    sb.from('sales').select('*,sale_items(flavour,quantity)').order('sale_date'),
+    sb.from('inventory_purchases').select('*,ingredients(name)').order('purchase_date'),
+    sb.from('expenses').select('*').order('expense_date')
+  ]);
+
+  const totalRev=(sales||[]).reduce((a,s)=>a+Number(s.revenue_after_discount||s.total_revenue||0),0);
+  const totalIng=(purchases||[]).reduce((a,p)=>a+Number(p.price_paid||0),0);
+  const totalExp=(otherExp||[]).reduce((a,e)=>a+Number(e.amount||0),0);
+  const totalUnits=(sales||[]).reduce((a,s)=>a+Number(s.singles||0)+Number(s.pairs||0)*2+Number(s.trios||0)*3,0);
+  let totalN=0,totalC=0;
+  (sales||[]).forEach(s=>(s.sale_items||[]).forEach(i=>{if(i.flavour==='Nutella')totalN+=Number(i.quantity||0);else totalC+=Number(i.quantity||0);}));
+
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bombolitoo Report</title>
+  <style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;color:#1A1A2E;font-size:13px}
+  h1{font-size:24px;margin-bottom:4px;color:#FF6B8A}
+  h2{font-size:16px;margin:24px 0 10px;border-bottom:1px solid #eee;padding-bottom:6px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .stat{background:#FFF9F7;border:1px solid #FFE8ED;border-radius:10px;padding:12px}
+  .stat-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6B6B7B;margin-bottom:4px}
+  .stat-val{font-size:22px;font-weight:700;color:#FF6B8A}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{background:#FF6B8A;color:white;padding:8px 10px;text-align:left}
+  td{padding:7px 10px;border-bottom:1px solid #eee}
+  tr:nth-child(even)td{background:#FFF9F7}
+  .footer{margin-top:30px;font-size:11px;color:#999;text-align:center}
+  </style></head><body>
+  <h1>🍩 Bombolitoo</h1>
+  <p style="color:#6B6B7B;margin-bottom:20px">Business Report · Generated ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</p>
+  <h2>All Time Summary</h2>
+  <div class="grid">
+    <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val">₹${totalRev.toLocaleString('en-IN')}</div></div>
+    <div class="stat"><div class="stat-label">Profit</div><div class="stat-val" style="color:#27AE60">₹${(totalRev-totalIng-totalExp).toLocaleString('en-IN')}</div></div>
+    <div class="stat"><div class="stat-label">Units Sold</div><div class="stat-val">${totalUnits}</div></div>
+    <div class="stat"><div class="stat-label">Total Spend</div><div class="stat-val" style="color:#E74C3C">₹${(totalIng+totalExp).toLocaleString('en-IN')}</div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 1fr">
+    <div class="stat"><div class="stat-label">🍫 Nutella</div><div class="stat-val">${totalN} units</div></div>
+    <div class="stat"><div class="stat-label">🍮 Custard</div><div class="stat-val">${totalC} units</div></div>
+  </div>
+  <h2>Sales Log</h2>
+  <table><tr><th>Date</th><th>Location</th><th>Units</th><th>Nutella</th><th>Custard</th><th>Revenue</th></tr>
+  ${(sales||[]).map(s=>{
+    const u=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;
+    const n=(s.sale_items||[]).filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
+    const c=(s.sale_items||[]).filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
+    return `<tr><td>${s.sale_date}</td><td>${s.location||'—'}</td><td>${u}</td><td>${n||'—'}</td><td>${c||'—'}</td><td>₹${Number(s.revenue_after_discount||s.total_revenue||0).toLocaleString('en-IN')}</td></tr>`;
+  }).join('')}
+  </table>
+  <h2>Ingredient Purchases</h2>
+  <table><tr><th>Date</th><th>Ingredient</th><th>Qty</th><th>Price Paid</th></tr>
+  ${(purchases||[]).map(p=>`<tr><td>${p.purchase_date}</td><td>${p.ingredients?.name||'?'}</td><td>${p.quantity_bought||0}${p.unit||''}</td><td>₹${Number(p.price_paid||0).toLocaleString('en-IN')}</td></tr>`).join('')}
+  </table>
+  <h2>Other Expenses</h2>
+  <table><tr><th>Date</th><th>Category</th><th>Note</th><th>Amount</th></tr>
+  ${(otherExp||[]).map(e=>`<tr><td>${e.expense_date}</td><td>${e.category}</td><td>${e.note||'—'}</td><td>₹${Number(e.amount||0).toLocaleString('en-IN')}</td></tr>`).join('')}
+  </table>
+  <div class="footer">Bombolitoo Business Tracker · Confidential</div>
+  </body></html>`);
+  win.document.close();
+  setTimeout(()=>win.print(),500);
+}
+
+async function deleteEntry(table,id){
+  if(!confirm('Delete this entry?'))return;
+  if(table==='sales') await sb.from('sale_items').delete().eq('sale_id',id);
+  await sb.from(table).delete().eq('id',id);
+  showToast('Deleted ✓');
+  switchHistoryTab(currentHistoryTab);
+  loadHome();
+}
 function addFlavour(){const v=document.getElementById('newFlavourInput').value.trim();if(!v){showToast('Enter a name');return;}if(flavours.includes(v)){showToast('Already exists');return;}flavours.push(v);document.getElementById('newFlavourInput').value='';loadAdmin();showToast(v+' added ✓');}
 function removeFlavour(name){flavours=flavours.filter(f=>f!==name);loadAdmin();}
 async function addIngredient(){
@@ -1120,6 +1633,15 @@ async function removeIngredient(id,name){
 
 // ══ INIT ══
 async function init(){
+  // Load prices from settings
+  const {data:settings}=await sb.from('settings').select('*');
+  if(settings){
+    settings.forEach(s=>{
+      if(s.key==='price_single')PRICES.single=Number(s.value);
+      if(s.key==='price_pair')PRICES.pair=Number(s.value);
+      if(s.key==='price_trio')PRICES.trio=Number(s.value);
+    });
+  }
   if(currentUser){
     document.getElementById('sidebarUserName').textContent=currentUser+(currentUser==='Jay'?' 👑':'');
     autoSelectChips();
@@ -1127,7 +1649,7 @@ async function init(){
     showUserOverlay();
   }
   await seedIngredients();
-  await loadAll(); // loads ingredients first, then renders everything
+  await loadAll();
 }
 
 init();

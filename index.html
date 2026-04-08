@@ -356,15 +356,36 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       <div class="card-val pink" id="homeCPB">₹—</div>
       <div id="homeCPBTrend" style="margin-top:12px"></div>
     </div>
+    <!-- Cash In Hand -->
+    <div class="card" style="background:var(--dark);border:none">
+      <div class="card-label" style="color:rgba(255,255,255,0.5)">Cash In Hand</div>
+      <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:white;margin-bottom:4px" id="homeCashInHand">₹0</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.45)">Revenue collected minus all cash spent</div>
+    </div>
+
+    <!-- Spend Breakdown -->
     <div class="card">
-      <div class="card-label">Spend vs Revenue</div>
-      <div class="flex-between">
-        <div class="stat-val red" id="homeIngSpend" style="font-size:18px">₹0</div>
-        <div style="font-size:11px;color:var(--mid)">of</div>
-        <div class="stat-val green" id="homeRevenue2" style="font-size:18px">₹0</div>
+      <div class="card-label">Spend Breakdown</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div style="font-size:13px;font-weight:500">🛒 Ingredients</div>
+          <div style="font-size:10px;color:var(--mid);margin-top:2px">Logged in Shop tab</div>
+        </div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--red)" id="homeIngSpend">₹0</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div style="font-size:13px;font-weight:500">📦 Other Expenses</div>
+          <div style="font-size:10px;color:var(--mid);margin-top:2px">Packaging, marketing, equipment</div>
+        </div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--gold)" id="homeOtherSpend">₹0</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">
+        <div style="font-size:13px;font-weight:600;color:var(--dark)">Total Spend</div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--dark)" id="homeIngSpendTotal">₹0</div>
       </div>
       <div class="prog-track"><div class="prog-fill green" id="homeSpendBar" style="width:0%"></div></div>
-      <div class="prog-labels"><span id="homeSpendL">Spend</span><span id="homeSpendR">Revenue</span></div>
+      <div class="prog-labels"><span id="homeSpendL">Spend</span><span id="homeRevenue2" style="display:none">₹0</span><span id="homeSpendR">Revenue</span></div>
     </div>
     <div class="card">
       <div class="card-label">Recent Batches</div>
@@ -405,7 +426,17 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
         <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Revenue</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white" id="summaryRev">₹0</div></div>
         <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Profit</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white" id="summaryProfit">₹0</div></div>
         <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Units Sold</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white" id="summaryUnits">0</div></div>
-        <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Expenses</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:rgba(255,255,255,0.8)" id="summaryExp">₹0</div></div>
+        <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Total Spend</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:rgba(255,255,255,0.8)" id="summaryExp">₹0</div></div>
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.2);display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px">
+          <div style="font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">🛒 Ingredients</div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="summaryIngSpend">₹0</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px">
+          <div style="font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">📦 Other</div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="summaryOtherSpend">₹0</div>
+        </div>
       </div>
     </div>
     <div class="chart-wrap"><div class="chart-label">Revenue vs Expenses</div><canvas id="chartRevExp" height="200"></canvas></div>
@@ -901,8 +932,12 @@ async function loadHome(){
   document.getElementById('homeUnits').textContent=units;
   document.getElementById('homeBatches').textContent=(batches||[]).length;
   document.getElementById('homeCPB').textContent=avgCPB?fmt(avgCPB):'₹—';
-  document.getElementById('homeIngSpend').textContent=fmt(totalSpend);
-  document.getElementById('homeRevenue2').textContent=fmt(revenue);
+  // Spend breakdown
+  document.getElementById('homeIngSpend').textContent=fmt(ingSpend);
+  document.getElementById('homeOtherSpend').textContent=fmt(otherSpend);
+  document.getElementById('homeIngSpendTotal').textContent=fmt(totalSpend);
+  // Cash in hand
+  document.getElementById('homeCashInHand').textContent=fmt(revenue-totalSpend);
   const pct=revenue>0?Math.min(100,(totalSpend/revenue)*100):0;
   document.getElementById('homeSpendBar').style.width=(100-pct)+'%';
   document.getElementById('homeSpendL').textContent='Spend '+fmt(totalSpend);
@@ -973,10 +1008,14 @@ async function loadPnl(){
   const totalRev=weeks.reduce((a,w)=>a+(rev[w]||0),0);
   const totalExp=weeks.reduce((a,w)=>a+(exp[w]||0),0);
   const totalUnits=weeks.reduce((a,w)=>a+(unitsByWk[w]||0),0);
+  const totalIngSpend=(purchases||[]).reduce((a,p)=>a+Number(p.price_paid||0),0);
+  const totalOtherSpend=(otherExp||[]).reduce((a,e)=>a+Number(e.amount||0),0);
   document.getElementById('summaryRev').textContent=fmt(totalRev);
   document.getElementById('summaryExp').textContent=fmt(totalExp);
   document.getElementById('summaryProfit').textContent=fmt(totalRev-totalExp);
   document.getElementById('summaryUnits').textContent=totalUnits;
+  document.getElementById('summaryIngSpend').textContent=fmt(totalIngSpend);
+  document.getElementById('summaryOtherSpend').textContent=fmt(totalOtherSpend);
 
   // Charts
   const labels=weeks.map((wk,i)=>`W${i+1}`);

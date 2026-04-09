@@ -785,7 +785,7 @@ const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 const ADMIN_PIN='2505';
 let PRICES={single:95,pair:180,trio:250};
-const BATCH_RECIPE={'Maida':450,'Warm Water':225,'Instant Yeast':7,'Butter':60,'Castor Sugar':50,'Milk Powder':12,'Baking Powder':1,'Salt':6,'Vanilla Extract':6,'Oil':500,'Milk':100};
+const BATCH_RECIPE={'Maida':450,'Warm Water':225,'Instant Yeast':7,'Butter':60,'Castor Sugar':50,'Milk Powder':12,'Baking Powder':3,'Salt':6,'Vanilla Extract':6,'Oil':500,'Milk':250};
 const SEED_INGREDIENTS=[
   {name:'Maida',unit:'g'},{name:'Warm Water',unit:'ml'},{name:'Instant Yeast',unit:'g'},
   {name:'Butter',unit:'g'},{name:'Castor Sugar',unit:'g'},{name:'Milk Powder',unit:'g'},
@@ -992,16 +992,22 @@ async function loadPnl(){
   const weekSet=new Set([...(sales||[]).map(s=>s.week_key),...(purchases||[]).map(p=>p.week_key),...(otherExp||[]).map(e=>e.week_key),...(batches||[]).map(b=>b.week_key)]);
   const weeks=[...weekSet].filter(Boolean).sort();
 
-  const rev={},exp={},prof={},unitsByWk={},cpbMap={};
+  const rev={},exp={},prof={},unitsByWk={},cpbMap={},ingSpendByWk={},othSpendByWk={},expCatByWk={};
   weeks.forEach(wk=>{
     rev[wk]=(sales||[]).filter(s=>s.week_key===wk).reduce((a,s)=>a+Number(s.revenue_after_discount||s.total_revenue||0),0);
     unitsByWk[wk]=(sales||[]).filter(s=>s.week_key===wk).reduce((a,s)=>a+Number(s.singles||0)+Number(s.pairs||0)*2+Number(s.trios||0)*3,0);
     const ingExp=(purchases||[]).filter(p=>p.week_key===wk).reduce((a,p)=>a+Number(p.price_paid||0),0);
     const othExp=(otherExp||[]).filter(e=>e.week_key===wk).reduce((a,e)=>a+Number(e.amount||0),0);
+    ingSpendByWk[wk]=ingExp;
+    othSpendByWk[wk]=othExp;
     exp[wk]=ingExp+othExp;
     prof[wk]=rev[wk]-exp[wk];
     const cpbs=(batches||[]).filter(b=>b.week_key===wk&&b.cost_per_unit).map(b=>Number(b.cost_per_unit));
     cpbMap[wk]=cpbs.length?cpbs.reduce((a,b)=>a+b,0)/cpbs.length:null;
+    // expense breakdown by category
+    const cats={};
+    (otherExp||[]).filter(e=>e.week_key===wk).forEach(e=>{cats[e.category]=(cats[e.category]||0)+Number(e.amount||0);});
+    expCatByWk[wk]=cats;
   });
 
   // All time summary
@@ -1101,6 +1107,29 @@ async function loadPnl(){
         <div style="padding:12px;background:var(--pink-light);border-radius:12px;display:flex;justify-content:space-between;align-items:center">
           <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mid)">Net Profit</div>
           <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:${prof[wk]>=0?'var(--pink)':'var(--red)'}">${fmt(prof[wk])}</div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Spend Breakdown</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <div style="flex:1;background:#FFF3F5;border:1px solid rgba(255,107,138,0.15);border-radius:10px;padding:10px">
+              <div style="font-size:10px;color:var(--mid);margin-bottom:2px">🛒 Ingredients</div>
+              <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--pink)">${fmt(ingSpendByWk[wk]||0)}</div>
+            </div>
+            <div style="flex:1;background:#FFF8EC;border:1px solid rgba(243,156,18,0.15);border-radius:10px;padding:10px">
+              <div style="font-size:10px;color:var(--mid);margin-bottom:2px">📦 Other Expenses</div>
+              <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--gold)">${fmt(othSpendByWk[wk]||0)}</div>
+            </div>
+          </div>
+          ${Object.keys(expCatByWk[wk]||{}).length>0?`
+          <div style="background:#FAFAFA;border-radius:10px;padding:10px">
+            <div style="font-size:10px;color:var(--mid);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase">By Category</div>
+            ${Object.entries(expCatByWk[wk]).map(([cat,amt])=>`
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)">
+                <div style="font-size:12px;color:var(--dark)">${cat}</div>
+                <div style="font-size:12px;font-weight:600;color:var(--gold)">${fmt(amt)}</div>
+              </div>`).join('')}
+          </div>`:''}
         </div>
       </div>
     </div>`;
@@ -1426,12 +1455,15 @@ async function loadRunway(){
   document.getElementById('runwayBatches').textContent=minBatches;
   document.getElementById('runwayBatches').className='card-val '+(minBatches<=1?'red':minBatches<=3?'gold':'green');
   document.getElementById('runwayBottleneck').textContent=minBatches===0?`⚠️ Restock ${bottleneck}`:`Bottleneck: ${bottleneck}`;
+  document.getElementById('runwayBatches').textContent=minBatches+' batch'+(minBatches===1?'':'es');
   document.getElementById('runwayList').innerHTML=ingredients.map(ing=>{
     const rq=BATCH_RECIPE[ing.name];
     const stock=Math.max(0,(stockIn[ing.id]||0)-(stockOut[ing.id]||0));
     const batches=rq?Math.floor(stock/rq):null;
-    const low=batches!==null&&batches<=1;
-    return `<div class="inv-row"><div class="inv-name">${ing.name}</div><div class="inv-stock ${low?'inv-low':'inv-ok'}">${stock>0?stock.toFixed(0)+ing.unit:'0'}</div><div class="inv-runway ${low?'inv-low':''}">${batches!==null?batches+'B':'—'}</div></div>`;
+    const noStock=stock===0;
+    const stockLabel=noStock?'<span style="color:var(--red);font-weight:600">No stock</span>':`<span>${stock.toFixed(0)}${ing.unit}</span>`;
+    const batchLabel=batches===null?'<span style="color:var(--mid);font-size:11px">filling</span>':noStock?'<span style="color:var(--red);font-weight:700">0 batches</span>':`<span style="color:${batches<=1?'var(--red)':batches<=3?'var(--gold)':'var(--green)'};font-weight:700">${batches}B</span>`;
+    return `<div class="inv-row"><div class="inv-name">${ing.name}</div><div class="inv-stock">${stockLabel}</div><div class="inv-runway">${batchLabel}</div></div>`;
   }).join('');
 }
 

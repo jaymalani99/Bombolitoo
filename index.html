@@ -119,28 +119,15 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 .log-amount.neg { color: var(--red); }
 .log-amount.neutral { color: var(--dark); }
 
-/* ── SHOP ── */
-.shop-col-head { display: flex; align-items: center; gap: 8px; padding: 0 0 10px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
-.shop-col-name { flex: 1; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--mid); }
-.shop-col-right { width: 70px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--mid); text-align: center; }
-.shop-ing-row { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-.shop-ing-row:last-child { border-bottom: none; }
-.shop-ing-name { flex: 1; font-size: 13px; font-weight: 500; }
-.shop-ing-unit { font-size: 10px; color: var(--mid); width: 20px; }
-.shop-num-input { width: 70px; padding: 8px 6px; background: var(--light); border: 1.5px solid transparent; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--dark); text-align: center; outline: none; transition: all 0.2s; }
-.shop-num-input:focus { border-color: var(--pink); background: white; }
-.shop-total-bar { background: var(--pink-light); border-radius: 14px; padding: 14px 16px; margin-top: 14px; border: 1px solid rgba(255,107,138,0.2); display: flex; justify-content: space-between; align-items: center; }
-.shop-total-label { font-size: 12px; color: var(--mid); }
-.shop-total-val { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--pink); }
+/* ── RECIPE AUTO ── */
+.recipe-scaled-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.recipe-scaled-row:last-child { border-bottom: none; }
+.recipe-ing-name { font-size: 13px; font-weight: 500; color: var(--dark); }
+.recipe-ing-qty { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--pink); }
+.recipe-ing-unit { font-size: 11px; color: var(--mid); margin-left: 3px; }
+.recipe-ing-cost { font-size: 11px; color: var(--mid); }
 
 /* ── BATCH ── */
-.batch-ing-row { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-.batch-ing-row:last-child { border-bottom: none; }
-.batch-ing-name { flex: 1; font-size: 13px; }
-.batch-ing-unit { font-size: 10px; color: var(--mid); width: 22px; }
-.batch-ing-input { width: 76px; padding: 8px 8px; background: var(--light); border: 1.5px solid transparent; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--dark); text-align: right; outline: none; transition: all 0.2s; }
-.batch-ing-input:focus { border-color: var(--pink); background: white; }
-.batch-ing-cost { font-size: 11px; color: var(--mid); width: 50px; text-align: right; font-family: 'Syne', sans-serif; font-weight: 600; }
 .cost-bar { background: var(--pink-light); border-radius: 14px; padding: 14px 16px; margin-top: 12px; border: 1px solid rgba(255,107,138,0.2); }
 .cost-bar-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .cost-bar-row:last-child { margin-bottom: 0; padding-top: 8px; border-top: 1px dashed rgba(255,107,138,0.3); }
@@ -148,9 +135,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 .cost-bar-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--pink); }
 
 /* ── SALES SKU ── */
-.sku-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.sku-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
-.sku-counter { display: flex; align-items: center; gap: 8px; }
 .sku-btn { width: 34px; height: 34px; border-radius: 10px; background: var(--pink-light); color: var(--pink); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
 .sku-btn:active { background: var(--pink); color: white; transform: scale(0.92); }
 .sku-count { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; flex: 1; text-align: center; }
@@ -163,7 +147,10 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 .note-meta { font-size: 10px; color: var(--mid); margin-top: 8px; letter-spacing: 0.5px; }
 .note-del { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 16px; color: var(--mid); cursor: pointer; padding: 4px; }
 
-/* ── EXPENSES ── */
+/* ── EXPENSES (merged) ── */
+.exp-type-toggle { display: flex; gap: 0; margin-bottom: 16px; background: var(--light); border-radius: 12px; padding: 4px; }
+.exp-type-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; background: transparent; color: var(--mid); transition: all 0.2s; }
+.exp-type-btn.active { background: var(--pink); color: white; }
 .exp-cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .exp-cat { padding: 10px 14px; border-radius: 12px; background: var(--light); border: 1.5px solid transparent; font-size: 12px; font-weight: 500; color: var(--mid); cursor: pointer; text-align: center; transition: all 0.15s; }
 .exp-cat.selected { background: var(--pink-light); color: var(--pink); border-color: var(--pink); }
@@ -173,15 +160,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 .prog-fill { height: 100%; border-radius: 3px; background: var(--pink); transition: width 0.4s; }
 .prog-fill.green { background: var(--green); }
 .prog-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--mid); margin-top: 4px; }
-
-/* ── INVENTORY ── */
-.inv-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
-.inv-row:last-child { border-bottom: none; }
-.inv-name { flex: 1; font-size: 13px; }
-.inv-stock { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; text-align: right; min-width: 72px; }
-.inv-runway { font-size: 11px; color: var(--mid); text-align: right; min-width: 44px; }
-.inv-ok { color: var(--green); }
-.inv-low { color: var(--red); }
 
 /* ── CPB TREND ── */
 .cpb-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
@@ -200,12 +178,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 .week-filter::-webkit-scrollbar { display: none; }
 .wf-btn { flex: 0 0 auto; padding: 7px 14px; border-radius: 20px; font-family: 'DM Sans', sans-serif; font-size: 11px; background: white; color: var(--mid); border: 1.5px solid var(--border); cursor: pointer; transition: all 0.15s; }
 .wf-btn.active { background: var(--pink); color: white; border-color: var(--pink); }
-
-/* ── FLAVOUR TAGS ── */
-.ftag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-.ftag.nutella { background: #FDF3DC; color: #8B5E0A; }
-.ftag.custard { background: #E8F8EF; color: #1a6b3a; }
-.ftag.mixed { background: var(--pink-light); color: var(--pink-dark); }
 
 /* ── OVERLAYS ── */
 .overlay { position: fixed; inset: 0; background: rgba(26,26,46,0.5); z-index: 600; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
@@ -254,10 +226,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 </head>
 <body>
 
-<!-- SIDEBAR OVERLAY -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-head">
     <div class="sidebar-logo">🍩 Bombolitoo</div>
@@ -267,27 +237,21 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       <div class="sidebar-user-name" id="sidebarUserName">Select User</div>
     </div>
   </div>
-
   <div class="sidebar-nav">
     <div class="nav-section">Overview</div>
     <div class="nav-item active" data-page="home" onclick="navTo('home',this)"><span class="nav-icon">🏠</span>Home</div>
     <div class="nav-item" data-page="pnl" onclick="navTo('pnl',this)"><span class="nav-icon">📊</span>P&L</div>
-
     <div class="nav-divider"></div>
     <div class="nav-section">Live Updates</div>
     <div class="nav-item" data-page="notes" onclick="navTo('notes',this)"><span class="nav-icon">📝</span>Notes</div>
     <div class="nav-item" data-page="sales" onclick="navTo('sales',this)"><span class="nav-icon">💰</span>Sales</div>
     <div class="nav-item" data-page="pop" onclick="navTo('pop',this)"><span class="nav-icon">🎪</span>POP</div>
-
     <div class="nav-divider"></div>
     <div class="nav-section">Daily Ops</div>
-    <div class="nav-item" data-page="shop" onclick="navTo('shop',this)"><span class="nav-icon">🛒</span>Shop</div>
     <div class="nav-item" data-page="expenses" onclick="navTo('expenses',this)"><span class="nav-icon">🧾</span>Expenses</div>
-    <div class="nav-item" data-page="runway" onclick="navTo('runway',this)"><span class="nav-icon">📦</span>Runway</div>
     <div class="nav-item" data-page="recipe" onclick="navTo('recipe',this)"><span class="nav-icon">🍩</span>Recipe</div>
     <div class="nav-item" data-page="admin" onclick="handleAdminNav(this)"><span class="nav-icon">⚙️</span>Admin</div>
   </div>
-
   <div class="sidebar-foot">
     <button class="sidebar-foot-btn" onclick="logOut()">Switch User</button>
   </div>
@@ -328,10 +292,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
   <div class="topbar-title" id="topbarTitle">Home</div>
@@ -356,61 +318,35 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       <div class="card-val pink" id="homeCPB">₹—</div>
       <div id="homeCPBTrend" style="margin-top:12px"></div>
     </div>
-    <!-- Cash In Hand -->
     <div class="card" style="background:var(--dark);border:none">
       <div class="card-label" style="color:rgba(255,255,255,0.5)">Cash In Hand</div>
       <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:white;margin-bottom:4px" id="homeCashInHand">₹0</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.45)">Revenue collected minus all cash spent</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.45)">Revenue minus all spend</div>
     </div>
-
-    <!-- Spend Breakdown -->
     <div class="card">
       <div class="card-label">Spend Breakdown</div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
-        <div>
-          <div style="font-size:13px;font-weight:500">🛒 Ingredients</div>
-          <div style="font-size:10px;color:var(--mid);margin-top:2px">Logged in Shop tab</div>
-        </div>
+        <div><div style="font-size:13px;font-weight:500">🛒 Ingredients</div></div>
         <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--red)" id="homeIngSpend">₹0</div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
-        <div>
-          <div style="font-size:13px;font-weight:500">📦 Other Expenses</div>
-          <div style="font-size:10px;color:var(--mid);margin-top:2px">Packaging, marketing, equipment</div>
-        </div>
+        <div><div style="font-size:13px;font-weight:500">📦 Other Expenses</div></div>
         <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--gold)" id="homeOtherSpend">₹0</div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">
-        <div style="font-size:13px;font-weight:600;color:var(--dark)">Total Spend</div>
-        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--dark)" id="homeIngSpendTotal">₹0</div>
+        <div style="font-size:13px;font-weight:600">Total Spend</div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;" id="homeIngSpendTotal">₹0</div>
       </div>
       <div class="prog-track"><div class="prog-fill green" id="homeSpendBar" style="width:0%"></div></div>
-      <div class="prog-labels"><span id="homeSpendL">Spend</span><span id="homeRevenue2" style="display:none">₹0</span><span id="homeSpendR">Revenue</span></div>
+      <div class="prog-labels"><span id="homeSpendL">Spend</span><span id="homeSpendR">Revenue</span></div>
     </div>
     <div class="card">
       <div class="card-label">Recent Batches</div>
       <div id="homeRecentBatches"><div class="loading">Loading...</div></div>
     </div>
-
-    <!-- Flavour split -->
     <div class="card" id="homeFlavCard" style="display:none">
       <div class="card-label">Flavour Split — All Time</div>
-      <div style="display:flex;gap:10px;margin-top:4px">
-        <div style="flex:1;background:var(--gold-light);border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(243,156,18,0.2)">
-          <div style="font-size:11px;color:var(--mid);margin-bottom:4px">🍫 Nutella</div>
-          <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gold)" id="homeFlavNutella">0</div>
-          <div style="font-size:11px;color:var(--mid);margin-top:2px" id="homeFlavNutellaPct">0%</div>
-        </div>
-        <div style="flex:1;background:var(--green-light);border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(39,174,96,0.2)">
-          <div style="font-size:11px;color:var(--mid);margin-bottom:4px">🍮 Custard</div>
-          <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green)" id="homeFlavCustard">0</div>
-          <div style="font-size:11px;color:var(--mid);margin-top:2px" id="homeFlavCustardPct">0%</div>
-        </div>
-      </div>
-      <div style="margin-top:10px;height:8px;border-radius:4px;overflow:hidden;display:flex">
-        <div id="homeFlavBar" style="height:100%;background:var(--gold);transition:width 0.4s"></div>
-        <div style="flex:1;background:var(--green)"></div>
-      </div>
+      <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap" id="homeFlavGrid"></div>
     </div>
   </div>
 </div>
@@ -427,16 +363,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
         <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Profit</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white" id="summaryProfit">₹0</div></div>
         <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Units Sold</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white" id="summaryUnits">0</div></div>
         <div><div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">Total Spend</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:rgba(255,255,255,0.8)" id="summaryExp">₹0</div></div>
-      </div>
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.2);display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px">
-          <div style="font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">🛒 Ingredients</div>
-          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="summaryIngSpend">₹0</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px">
-          <div style="font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px">📦 Other</div>
-          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="summaryOtherSpend">₹0</div>
-        </div>
       </div>
     </div>
     <div class="chart-wrap"><div class="chart-label">Revenue vs Expenses</div><canvas id="chartRevExp" height="200"></canvas></div>
@@ -455,9 +381,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
     <div class="s-sub">Shared team notepad</div>
     <div class="card">
       <textarea class="note-input" id="noteInput" placeholder="Write a note for the team..."></textarea>
-      <div style="margin-top:10px">
-        <button class="btn btn-primary" onclick="postNote()">Post Note</button>
-      </div>
+      <div style="margin-top:10px"><button class="btn btn-primary" onclick="postNote()">Post Note</button></div>
     </div>
     <div id="notesList"><div class="loading">Loading...</div></div>
   </div>
@@ -467,7 +391,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 <div class="page" id="page-sales">
   <div style="margin-top:8px">
     <div class="s-title">Sales</div>
-
     <!-- Day summary -->
     <div style="background:var(--pink);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px">
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
@@ -476,25 +399,38 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
         <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:3px">Revenue</div><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="dRevenue">₹0</div></div>
         <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:3px">Avg</div><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white" id="dAvg">₹0</div></div>
       </div>
-      <div id="dayFlavRow" style="display:none;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.2)">
-        <div id="dayNutella" style="flex:1;text-align:center;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.2);color:white">🍫 Nutella 0</div>
-        <div id="dayCustard" style="flex:1;text-align:center;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.2);color:white">🍮 Custard 0</div>
-      </div>
+      <div id="dayFlavRow" style="display:none;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.2);flex-wrap:wrap" id="dayFlavRow"></div>
     </div>
 
     <!-- Order builder -->
     <div class="card">
       <div class="card-label">New Order</div>
-
-      <!-- Date + location -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
         <div><label class="form-label">Date</label><input class="form-input" type="date" id="salesDate" style="padding:10px 12px;font-size:13px"></div>
         <div><label class="form-label">Location</label><input class="form-input" type="text" id="salesLocation" placeholder="Optional" style="padding:10px 12px;font-size:13px"></div>
       </div>
 
+      <!-- Dine-in / Takeaway -->
+      <div class="form-group">
+        <label class="form-label">Order Type</label>
+        <div class="chip-group" id="orderType">
+          <div class="chip selected" data-val="Takeaway" onclick="selectChip(this,'orderType')">📦 Takeaway</div>
+          <div class="chip" data-val="Dine In" onclick="selectChip(this,'orderType')">🪑 Dine In</div>
+        </div>
+      </div>
+
+      <!-- Payment -->
+      <div class="form-group">
+        <label class="form-label">Payment</label>
+        <div class="chip-group" id="paymentMode">
+          <div class="chip selected" data-val="Cash" onclick="selectChip(this,'paymentMode')">💵 Cash</div>
+          <div class="chip" data-val="UPI" onclick="selectChip(this,'paymentMode')">📱 UPI</div>
+        </div>
+      </div>
+
       <!-- SKU counters -->
       <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:10px">SKU</div>
-      <div id="skuCounters">
+      <div>
         <div style="display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)">
           <div style="flex:1"><div style="font-size:14px;font-weight:600">Single</div><div style="font-size:11px;color:var(--mid);margin-top:1px" id="priceSingle">₹95 each</div></div>
           <div style="display:flex;align-items:center;gap:12px">
@@ -521,39 +457,23 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
         </div>
       </div>
 
-      <!-- Divider -->
+      <!-- Flavours -->
       <div style="display:flex;align-items:center;gap:10px;margin:14px 0">
         <div style="flex:1;height:1px;background:var(--border)"></div>
         <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid)">Flavours</div>
         <div style="flex:1;height:1px;background:var(--border)"></div>
       </div>
 
-      <!-- Flavour counters -->
-      <div style="display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)">
-        <div style="flex:1;font-size:14px;font-weight:600">🍫 Nutella</div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <button class="sku-btn" onclick="adjFlav('nutella',-1)">−</button>
-          <div class="sku-count" id="flavNutella" style="min-width:28px;text-align:center">0</div>
-          <button class="sku-btn" onclick="adjFlav('nutella',1)">+</button>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;padding:11px 0">
-        <div style="flex:1;font-size:14px;font-weight:600">🍮 Custard</div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <button class="sku-btn" onclick="adjFlav('custard',-1)">−</button>
-          <div class="sku-count" id="flavCustard" style="min-width:28px;text-align:center">0</div>
-          <button class="sku-btn" onclick="adjFlav('custard',1)">+</button>
-        </div>
-      </div>
+      <div id="flavourCounters"></div>
 
-      <!-- Match msg + total + confirm -->
       <div style="margin-top:14px">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--light);border-radius:12px;margin-bottom:8px">
           <div style="font-size:12px;color:var(--mid)">Order Total</div>
           <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--dark)" id="orderTotal">₹0</div>
         </div>
         <div style="font-size:11px;text-align:center;margin-bottom:10px;min-height:16px" id="matchMsg"></div>
-        <div class="form-group" style="margin-bottom:10px"><label class="form-label">Logged by</label>
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="form-label">Logged by</label>
           <div class="chip-group" id="salesLoggedBy">
             <div class="chip" data-val="Jay" onclick="selectChip(this,'salesLoggedBy')">Jay</div>
             <div class="chip" data-val="Priyanka" onclick="selectChip(this,'salesLoggedBy')">Priyanka</div>
@@ -564,11 +484,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       </div>
     </div>
 
-    <!-- Today orders history -->
     <div class="s-title" style="font-size:17px;margin-top:4px">Today's Orders</div>
     <div id="todayOrders"><div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No orders yet</div></div></div>
-
-    <!-- Full sales history -->
     <div class="s-title" style="font-size:17px;margin-top:16px">All Sales History</div>
     <div class="card"><div id="salesHistory"><div class="loading">Loading...</div></div></div>
   </div>
@@ -587,55 +504,51 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
   </div>
 </div>
 
-<!-- ══ SHOP ══ -->
-<div class="page" id="page-shop">
-  <div style="margin-top:8px">
-    <div class="s-title">Shop</div>
-    <div class="s-sub">Log what you bought</div>
-    <div class="card">
-      <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="shopDate"></div>
-      <div class="form-group"><label class="form-label">Bought by</label>
-        <div class="chip-group" id="shopBoughtBy">
-          <div class="chip" data-val="Jay" onclick="selectChip(this,'shopBoughtBy')">Jay</div>
-          <div class="chip" data-val="Priyanka" onclick="selectChip(this,'shopBoughtBy')">Priyanka</div>
-          <div class="chip" data-val="Monica" onclick="selectChip(this,'shopBoughtBy')">Monica</div>
-          <div class="chip" data-val="Vikas" onclick="selectChip(this,'shopBoughtBy')">Vikas</div>
-        </div>
-      </div>
-      <div class="shop-col-head">
-        <div class="shop-col-name">Ingredient</div>
-        <div class="shop-col-right">Qty</div>
-        <div class="shop-col-right">₹ Price</div>
-      </div>
-      <div id="shopIngList"><div class="loading">Loading...</div></div>
-      <div class="shop-total-bar"><div class="shop-total-label">Total Spend</div><div class="shop-total-val" id="shopTotal">₹0</div></div>
-      <div style="margin-top:14px"><button class="btn btn-primary" onclick="logPurchase()">Update Inventory</button></div>
-    </div>
-    <div class="s-title mt-16" style="font-size:17px;margin-top:20px">Purchase History</div>
-    <div class="card"><div id="shopHistory"><div class="loading">Loading...</div></div></div>
-  </div>
-</div>
-
-<!-- ══ EXPENSES ══ -->
+<!-- ══ EXPENSES (merged) ══ -->
 <div class="page" id="page-expenses">
   <div style="margin-top:8px">
     <div class="s-title">Expenses</div>
-    <div class="s-sub">Non-ingredient costs</div>
+    <div class="s-sub">All purchases & costs</div>
     <div class="card">
-      <div class="form-group"><label class="form-label">Category</label>
-        <div class="exp-cat-grid" id="expCatGrid">
-          <div class="exp-cat selected" data-val="Packaging" onclick="selectExpCat(this)">📦 Packaging</div>
-          <div class="exp-cat" data-val="Marketing" onclick="selectExpCat(this)">📢 Marketing</div>
-          <div class="exp-cat" data-val="Transport" onclick="selectExpCat(this)">🚗 Transport</div>
-          <div class="exp-cat" data-val="Equipment" onclick="selectExpCat(this)">🔧 Equipment</div>
-          <div class="exp-cat" data-val="Gas/Fuel" onclick="selectExpCat(this)">⛽ Gas/Fuel</div>
-          <div class="exp-cat" data-val="Other" onclick="selectExpCat(this)">📌 Other</div>
+      <!-- Type toggle -->
+      <div class="exp-type-toggle">
+        <button class="exp-type-btn active" id="expTypeIngBtn" onclick="switchExpType('ingredient')">🛒 Ingredient</button>
+        <button class="exp-type-btn" id="expTypeOtherBtn" onclick="switchExpType('other')">📦 Other</button>
+      </div>
+
+      <!-- Ingredient fields -->
+      <div id="expIngFields">
+        <div class="form-group">
+          <label class="form-label">Ingredient</label>
+          <select class="form-select" id="expIngSelect"></select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-group"><label class="form-label">Qty</label><input class="form-input" type="number" id="expIngQty" placeholder="e.g. 500"></div>
+          <div class="form-group"><label class="form-label">Amount (₹)</label><input class="form-input" type="number" id="expIngAmount" placeholder="e.g. 149"></div>
         </div>
       </div>
-      <div class="form-group"><label class="form-label">Amount (₹)</label><input class="form-input" type="number" id="expAmount" placeholder="e.g. 150"></div>
-      <div class="form-group"><label class="form-label">Note</label><input class="form-input" type="text" id="expNote" placeholder="e.g. Printed 50 cards at Xerox"></div>
+
+      <!-- Other fields -->
+      <div id="expOtherFields" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <div class="exp-cat-grid" id="expCatGrid">
+            <div class="exp-cat selected" data-val="Packaging" onclick="selectExpCat(this)">📦 Packaging</div>
+            <div class="exp-cat" data-val="Marketing" onclick="selectExpCat(this)">📢 Marketing</div>
+            <div class="exp-cat" data-val="Transport" onclick="selectExpCat(this)">🚗 Transport</div>
+            <div class="exp-cat" data-val="Equipment" onclick="selectExpCat(this)">🔧 Equipment</div>
+            <div class="exp-cat" data-val="Gas/Fuel" onclick="selectExpCat(this)">⛽ Gas/Fuel</div>
+            <div class="exp-cat" data-val="Other" onclick="selectExpCat(this)">📌 Other</div>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Amount (₹)</label><input class="form-input" type="number" id="expAmount" placeholder="e.g. 150"></div>
+        <div class="form-group"><label class="form-label">Note</label><input class="form-input" type="text" id="expNote" placeholder="e.g. Printed 50 cards"></div>
+      </div>
+
+      <!-- Common fields -->
       <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="expDate"></div>
-      <div class="form-group"><label class="form-label">Paid by</label>
+      <div class="form-group">
+        <label class="form-label">Paid by</label>
         <div class="chip-group" id="expPaidBy">
           <div class="chip" data-val="Jay" onclick="selectChip(this,'expPaidBy')">Jay</div>
           <div class="chip" data-val="Priyanka" onclick="selectChip(this,'expPaidBy')">Priyanka</div>
@@ -643,24 +556,16 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
           <div class="chip" data-val="Vikas" onclick="selectChip(this,'expPaidBy')">Vikas</div>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="logExpense()">Save Expense</button>
+      <button class="btn btn-primary" onclick="logExpenseMerged()">Save</button>
     </div>
-    <div class="s-title mt-16" style="font-size:17px;margin-top:20px">History</div>
-    <div class="card"><div id="expHistory"><div class="loading">Loading...</div></div></div>
-  </div>
-</div>
 
-<!-- ══ RUNWAY ══ -->
-<div class="page" id="page-runway">
-  <div style="margin-top:8px">
-    <div class="s-title">Runway</div>
-    <div class="s-sub">Stock on hand · batches possible</div>
-    <div class="card" id="runwayCard">
-      <div class="card-label">Batches Possible</div>
-      <div class="card-val pink" id="runwayBatches">—</div>
-      <div style="font-size:12px;color:var(--mid);margin-top:6px" id="runwayBottleneck"></div>
+    <!-- History tabs -->
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      <button class="btn btn-outline btn-sm" id="expHistAll" onclick="switchExpHistory('all')" style="background:var(--pink);color:white;border-color:var(--pink)">All</button>
+      <button class="btn btn-outline btn-sm" id="expHistIng" onclick="switchExpHistory('ingredient')">Ingredients</button>
+      <button class="btn btn-outline btn-sm" id="expHistOther" onclick="switchExpHistory('other')">Other</button>
     </div>
-    <div class="card"><div class="card-label">Stock Levels</div><div id="runwayList"><div class="loading">Loading...</div></div></div>
+    <div class="card"><div id="expHistory"><div class="loading">Loading...</div></div></div>
   </div>
 </div>
 
@@ -668,18 +573,18 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
 <div class="page" id="page-recipe">
   <div style="margin-top:8px">
     <div class="s-title">Recipe</div>
-    <div class="s-sub">Log a batch · track cost</div>
+    <div class="s-sub">Auto-scale from locked recipe</div>
     <div class="card">
-      <div class="form-group"><label class="form-label">Flavour</label>
-        <div class="chip-group" id="batchFlavour">
-          <div class="chip selected" data-val="Nutella" onclick="selectChip(this,'batchFlavour');loadLastBatch()">Nutella</div>
-          <div class="chip" data-val="Custard" onclick="selectChip(this,'batchFlavour');loadLastBatch()">Custard</div>
-          <div class="chip" data-val="Mixed" onclick="selectChip(this,'batchFlavour');loadLastBatch()">Mixed</div>
-        </div>
+      <div class="form-group">
+        <label class="form-label">Units to make</label>
+        <input class="form-input" type="number" id="batchUnits" placeholder="32" value="32" oninput="scaleRecipe()" style="font-size:20px;font-weight:700;text-align:center">
       </div>
-      <div class="form-group"><label class="form-label">Units Made</label><input class="form-input" type="number" id="batchUnits" placeholder="15" value="15" oninput="calcBatchCost()"></div>
-      <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="batchDate"></div>
-      <div class="form-group"><label class="form-label">Logged by</label>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" type="date" id="batchDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Logged by</label>
         <div class="chip-group" id="batchLoggedBy">
           <div class="chip" data-val="Jay" onclick="selectChip(this,'batchLoggedBy')">Jay</div>
           <div class="chip" data-val="Priyanka" onclick="selectChip(this,'batchLoggedBy')">Priyanka</div>
@@ -687,10 +592,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
         </div>
       </div>
     </div>
+
+    <!-- Scaled ingredients -->
     <div class="card">
-      <div class="card-label">Quantities Used</div>
-      <div id="batchIngredients"><div class="loading">Loading...</div></div>
-      <div class="cost-bar" id="batchCostBar" style="display:none">
+      <div class="card-label">Scaled Quantities</div>
+      <div id="scaledIngredients"></div>
+      <div class="cost-bar" id="batchCostBar" style="margin-top:12px">
         <div class="cost-bar-row"><div class="cost-bar-label">Batch Cost</div><div class="cost-bar-val" id="batchTotalCost">₹0</div></div>
         <div class="cost-bar-row"><div class="cost-bar-label">Per Bombolini</div><div class="cost-bar-val" id="batchCPBVal">₹0</div></div>
       </div>
@@ -712,28 +619,17 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       <div class="admin-title">SKU Prices</div>
       <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
         <div style="flex:1;font-size:13px;font-weight:500">Single</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:13px;color:var(--mid)">₹</span>
-          <input class="form-input" type="number" id="adminPriceSingle" style="width:80px;padding:8px;text-align:center;font-size:14px;font-weight:600">
-        </div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;color:var(--mid)">₹</span><input class="form-input" type="number" id="adminPriceSingle" style="width:80px;padding:8px;text-align:center;font-size:14px;font-weight:600"></div>
       </div>
       <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
         <div style="flex:1;font-size:13px;font-weight:500">Pair</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:13px;color:var(--mid)">₹</span>
-          <input class="form-input" type="number" id="adminPricePair" style="width:80px;padding:8px;text-align:center;font-size:14px;font-weight:600">
-        </div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;color:var(--mid)">₹</span><input class="form-input" type="number" id="adminPricePair" style="width:80px;padding:8px;text-align:center;font-size:14px;font-weight:600"></div>
       </div>
       <div style="display:flex;align-items:center;padding:10px 0">
         <div style="flex:1;font-size:13px;font-weight:500">Trio</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:13px;color:var(--mid)">₹</span>
-          <input class="form-input" type="number" id="adminPriceTrio" style="width:80px;padding:8px;text-align:center;font-size:14px;font-weight:600">
-        </div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;color:var(--mid)">₹</span><input class="form-input" type="number" id="adminPriceTrio" style="width:80px;padding:8px;text-align:center;font-size:14px;font-weight:600"></div>
       </div>
-      <div style="margin-top:12px">
-        <button class="btn btn-primary" onclick="savePrices()">Save Prices</button>
-      </div>
+      <div style="margin-top:12px"><button class="btn btn-primary" onclick="savePrices()">Save Prices</button></div>
     </div>
 
     <!-- Flavours -->
@@ -755,12 +651,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       <button class="btn btn-outline btn-sm" onclick="addIngredient()">+ Add</button>
     </div>
 
-    <!-- Full History + Edit -->
+    <!-- Full History -->
     <div class="card">
       <div class="admin-title">Full History — Edit & Delete</div>
       <div style="display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px">
         <button class="btn btn-outline btn-sm" id="hTab-sales" onclick="switchHistoryTab('sales')">Sales</button>
-        <button class="btn btn-outline btn-sm" id="hTab-purchases" onclick="switchHistoryTab('purchases')">Shop</button>
+        <button class="btn btn-outline btn-sm" id="hTab-purchases" onclick="switchHistoryTab('purchases')">Purchases</button>
         <button class="btn btn-outline btn-sm" id="hTab-batches" onclick="switchHistoryTab('batches')">Batches</button>
         <button class="btn btn-outline btn-sm" id="hTab-expenses" onclick="switchHistoryTab('expenses')">Expenses</button>
       </div>
@@ -772,7 +668,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(
       <div class="admin-title">Export</div>
       <button class="btn btn-primary" onclick="exportPDF()">Export as PDF</button>
     </div>
-
     <button class="btn btn-outline" style="margin-top:8px" onclick="logOut()">Switch User</button>
   </div>
 </div>
@@ -785,27 +680,44 @@ const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 const ADMIN_PIN='2505';
 let PRICES={single:95,pair:180,trio:250};
-const BATCH_RECIPE={'Maida':450,'Warm Water':225,'Instant Yeast':7,'Butter':60,'Castor Sugar':50,'Milk Powder':12,'Baking Powder':3,'Salt':6,'Vanilla Extract':6,'Oil':500,'Milk':250};
-const SEED_INGREDIENTS=[
-  {name:'Maida',unit:'g'},{name:'Warm Water',unit:'ml'},{name:'Instant Yeast',unit:'g'},
-  {name:'Butter',unit:'g'},{name:'Castor Sugar',unit:'g'},{name:'Milk Powder',unit:'g'},
-  {name:'Baking Powder',unit:'tsp'},{name:'Salt',unit:'g'},{name:'Vanilla Extract',unit:'ml'},
-  {name:'Oil',unit:'ml'},{name:'Milk',unit:'ml'},{name:'Nutella',unit:'g'},{name:'Custard Powder',unit:'g'}
+
+// ── LOCKED STANDARD RECIPE (32 units base) ──
+const STANDARD_BATCH_UNITS=32;
+const STANDARD_RECIPE=[
+  {name:'Maida',qty:900,unit:'g'},
+  {name:'Castor Sugar',qty:100,unit:'g'},
+  {name:'Butter',qty:120,unit:'g'},
+  {name:'Vanilla Essence',qty:12,unit:'ml'},
+  {name:'Milk Powder',qty:25,unit:'g'},
+  {name:'Instant Yeast',qty:14,unit:'g'},
+  {name:'Baking Powder',qty:14,unit:'g'},
+  {name:'Warm Water',qty:450,unit:'ml'},
+  {name:'Oil',qty:2232,unit:'g'},
 ];
+
+// Filling CPB constants
+const FILLING_CPB={
+  'Nutella':11.50,
+  'Blueberry':8.74,
+  'Dark Chocolate':10.35,
+  'Custard':0
+};
+
+const DOUGH_CPB=7.83; // per unit at 32 units
 
 let currentUser=localStorage.getItem('bmb_user')||null;
 let ingredients=[];
-let flavours=['Nutella','Custard','Mixed'];
+let flavours=['Nutella','Blueberry','Dark Chocolate','Custard'];
 let skuCounts={single:0,pair:0,trio:0};
-let flavCounts={nutella:0,custard:0};
+let flavCounts={};
 let todayOrders=[];
 let todayOrderNum=0;
 let currentHistoryTab='sales';
-let adminHistoryOffset=0;
 let pinEntry='';
 let adminNavItem=null;
 let charts={};
-let currentPnlWeek='all';
+let currentExpType='ingredient';
+let currentExpHistFilter='all';
 
 // ── UTILS ──
 const fmt=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2});
@@ -826,7 +738,7 @@ function openSidebar(){document.getElementById('sidebar').classList.add('open');
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('show');}
 
 // ── NAV ──
-const PAGE_TITLES={home:'Home',pnl:'P&L',notes:'Notes',sales:'Sales',pop:'POP',shop:'Shop',expenses:'Expenses',runway:'Runway',recipe:'Recipe',admin:'Admin'};
+const PAGE_TITLES={home:'Home',pnl:'P&L',notes:'Notes',sales:'Sales',pop:'POP',expenses:'Expenses',recipe:'Recipe',admin:'Admin'};
 function navTo(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
@@ -838,9 +750,7 @@ function navTo(name,el){
   if(name==='pnl') loadPnl();
   if(name==='notes') loadNotes();
   if(name==='sales') loadSales();
-  if(name==='shop') loadShop();
   if(name==='expenses') loadExpenses();
-  if(name==='runway') loadRunway();
   if(name==='recipe') loadRecipe();
   if(name==='admin') loadAdmin();
 }
@@ -863,7 +773,7 @@ function selectUser(name){
 function logOut(){localStorage.removeItem('bmb_user');currentUser=null;document.getElementById('sidebarUserName').textContent='Select User';showUserOverlay();}
 function autoSelectChips(){
   if(!currentUser) return;
-  ['shopBoughtBy','batchLoggedBy','salesLoggedBy','expPaidBy'].forEach(g=>{
+  ['batchLoggedBy','salesLoggedBy','expPaidBy'].forEach(g=>{
     document.querySelectorAll(`#${g} .chip`).forEach(c=>c.classList.toggle('selected',c.dataset.val===currentUser));
   });
 }
@@ -887,20 +797,12 @@ function pinDel(){pinEntry=pinEntry.slice(0,-1);updatePinDots();document.getElem
 function updatePinDots(){for(let i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('filled',i<pinEntry.length);}
 function closePinOverlay(){document.getElementById('pinOverlay').classList.remove('show');pinEntry='';closeSidebar();}
 
-// ── SEED ──
-async function seedIngredients(){
-  const {data}=await sb.from('ingredients').select('id').limit(1);
-  if(data&&data.length>0) return;
-  for(const ing of SEED_INGREDIENTS) await sb.from('ingredients').insert({name:ing.name,unit:ing.unit});
-}
-
-// ── LOAD ALL (called on user select + init) ──
+// ── LOAD ALL ──
 async function loadAll(){
   const {data}=await sb.from('ingredients').select('*').order('name');
   ingredients=data||[];
   updateTopbarWeek();
-  renderShopIngList();
-  renderBatchIngredients();
+  renderIngredientSelect();
   loadHome();
 }
 
@@ -909,9 +811,8 @@ function updateTopbarWeek(){
   document.getElementById('topbarWeek').textContent=`${d.getDate()}/${d.getMonth()+1}`;
 }
 
-// ══ HOME — ALL TIME ══
+// ── HOME ──
 async function loadHome(){
-  document.getElementById('homeWeekSub').textContent='All time · every pop-up';
   const [{data:sales},{data:purchases},{data:otherExp},{data:batches}]=await Promise.all([
     sb.from('sales').select('*').order('sale_date',{ascending:false}),
     sb.from('inventory_purchases').select('*'),
@@ -932,17 +833,14 @@ async function loadHome(){
   document.getElementById('homeUnits').textContent=units;
   document.getElementById('homeBatches').textContent=(batches||[]).length;
   document.getElementById('homeCPB').textContent=avgCPB?fmt(avgCPB):'₹—';
-  // Spend breakdown
   document.getElementById('homeIngSpend').textContent=fmt(ingSpend);
   document.getElementById('homeOtherSpend').textContent=fmt(otherSpend);
   document.getElementById('homeIngSpendTotal').textContent=fmt(totalSpend);
-  // Cash in hand
   document.getElementById('homeCashInHand').textContent=fmt(revenue-totalSpend);
   const pct=revenue>0?Math.min(100,(totalSpend/revenue)*100):0;
   document.getElementById('homeSpendBar').style.width=(100-pct)+'%';
   document.getElementById('homeSpendL').textContent='Spend '+fmt(totalSpend);
   document.getElementById('homeSpendR').textContent='Revenue '+fmt(revenue);
-  // CPB trend
   const weekMap={};
   (batches||[]).forEach(b=>{if(!weekMap[b.week_key])weekMap[b.week_key]=[];if(b.cost_per_unit)weekMap[b.week_key].push(Number(b.cost_per_unit));});
   const wks=Object.keys(weekMap).sort();
@@ -957,26 +855,26 @@ async function loadHome(){
   } else document.getElementById('homeCPBTrend').innerHTML='';
   const rb=document.getElementById('homeRecentBatches');
   if(!batches||!batches.length){rb.innerHTML='<div class="empty"><div class="empty-icon">🍩</div><div class="empty-text">No batches yet</div></div>';}
-  else{rb.innerHTML=batches.slice(0,3).map(b=>`<div class="log-item"><div class="log-icon">${b.flavour==='Nutella'?'🍫':b.flavour==='Custard'?'🍮':'🍩'}</div><div class="log-body"><div class="log-title">${b.flavour} · ${b.units_made} units</div><div class="log-sub">${b.batch_date} · ${b.logged_by||'—'}</div></div><div class="log-right"><div class="log-amount neutral">${b.cost_per_unit?fmt(b.cost_per_unit)+'/u':'—'}</div></div></div>`).join('');}
+  else{rb.innerHTML=batches.slice(0,3).map(b=>`<div class="log-item"><div class="log-icon">🍩</div><div class="log-body"><div class="log-title">${b.flavour||'Batch'} · ${b.units_made} units</div><div class="log-sub">${b.batch_date} · ${b.logged_by||'—'}</div></div><div class="log-right"><div class="log-amount neutral">${b.cost_per_unit?fmt(b.cost_per_unit)+'/u':'—'}</div></div></div>`).join('');}
 
-  // Flavour split
+  // Flavour split from sale_items
   const {data:saleItems}=await sb.from('sale_items').select('flavour,quantity');
-  let totalN=0,totalC=0;
-  (saleItems||[]).forEach(i=>{if(i.flavour==='Nutella')totalN+=Number(i.quantity||0);else totalC+=Number(i.quantity||0);});
-  if(totalN+totalC>0){
-    const fc=document.getElementById('homeFlavCard');
-    if(fc)fc.style.display='block';
-    const pctN=Math.round((totalN/(totalN+totalC))*100);
-    const el_n=document.getElementById('homeFlavNutella');
-    const el_c=document.getElementById('homeFlavCustard');
-    const el_np=document.getElementById('homeFlavNutellaPct');
-    const el_cp=document.getElementById('homeFlavCustardPct');
-    const el_bar=document.getElementById('homeFlavBar');
-    if(el_n)el_n.textContent=totalN;
-    if(el_c)el_c.textContent=totalC;
-    if(el_np)el_np.textContent=pctN+'%';
-    if(el_cp)el_cp.textContent=(100-pctN)+'%';
-    if(el_bar)el_bar.style.width=pctN+'%';
+  const flavMap={};
+  (saleItems||[]).forEach(i=>{const f=i.flavour||'Other';flavMap[f]=(flavMap[f]||0)+Number(i.quantity||0);});
+  const total=Object.values(flavMap).reduce((a,b)=>a+b,0);
+  if(total>0){
+    document.getElementById('homeFlavCard').style.display='block';
+    const flavEmoji={'Nutella':'🍫','Blueberry':'🫐','Dark Chocolate':'🍫','Custard':'🍮'};
+    const flavColor={'Nutella':'#FDF3DC','Blueberry':'#EEF2FF','Dark Chocolate':'#F3E8D0','Custard':'#E8F8EF'};
+    const flavTextColor={'Nutella':'#8B5E0A','Blueberry':'#3730A3','Dark Chocolate':'#5C3A1E','Custard':'#1a6b3a'};
+    document.getElementById('homeFlavGrid').innerHTML=Object.entries(flavMap).map(([f,qty])=>{
+      const pct=Math.round((qty/total)*100);
+      return `<div style="flex:1;min-width:80px;background:${flavColor[f]||'#f0f0f0'};border-radius:12px;padding:10px;text-align:center">
+        <div style="font-size:11px;color:${flavTextColor[f]||'#333'};margin-bottom:4px">${flavEmoji[f]||'🍩'} ${f}</div>
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:${flavTextColor[f]||'#333'}">${qty}</div>
+        <div style="font-size:10px;color:${flavTextColor[f]||'#666'};margin-top:2px">${pct}%</div>
+      </div>`;
+    }).join('');
   }
 }
 
@@ -988,80 +886,55 @@ async function loadPnl(){
     sb.from('expenses').select('*').order('week_key'),
     sb.from('recipe_logs').select('*').order('batch_date')
   ]);
-
   const weekSet=new Set([...(sales||[]).map(s=>s.week_key),...(purchases||[]).map(p=>p.week_key),...(otherExp||[]).map(e=>e.week_key),...(batches||[]).map(b=>b.week_key)]);
   const weeks=[...weekSet].filter(Boolean).sort();
-
   const rev={},exp={},prof={},unitsByWk={},cpbMap={},ingSpendByWk={},othSpendByWk={},expCatByWk={};
   weeks.forEach(wk=>{
     rev[wk]=(sales||[]).filter(s=>s.week_key===wk).reduce((a,s)=>a+Number(s.revenue_after_discount||s.total_revenue||0),0);
     unitsByWk[wk]=(sales||[]).filter(s=>s.week_key===wk).reduce((a,s)=>a+Number(s.singles||0)+Number(s.pairs||0)*2+Number(s.trios||0)*3,0);
     const ingExp=(purchases||[]).filter(p=>p.week_key===wk).reduce((a,p)=>a+Number(p.price_paid||0),0);
     const othExp=(otherExp||[]).filter(e=>e.week_key===wk).reduce((a,e)=>a+Number(e.amount||0),0);
-    ingSpendByWk[wk]=ingExp;
-    othSpendByWk[wk]=othExp;
-    exp[wk]=ingExp+othExp;
-    prof[wk]=rev[wk]-exp[wk];
+    ingSpendByWk[wk]=ingExp; othSpendByWk[wk]=othExp;
+    exp[wk]=ingExp+othExp; prof[wk]=rev[wk]-exp[wk];
     const cpbs=(batches||[]).filter(b=>b.week_key===wk&&b.cost_per_unit).map(b=>Number(b.cost_per_unit));
     cpbMap[wk]=cpbs.length?cpbs.reduce((a,b)=>a+b,0)/cpbs.length:null;
-    // expense breakdown by category
     const cats={};
     (otherExp||[]).filter(e=>e.week_key===wk).forEach(e=>{cats[e.category]=(cats[e.category]||0)+Number(e.amount||0);});
     expCatByWk[wk]=cats;
   });
-
-  // All time summary
   const totalRev=weeks.reduce((a,w)=>a+(rev[w]||0),0);
   const totalExp=weeks.reduce((a,w)=>a+(exp[w]||0),0);
   const totalUnits=weeks.reduce((a,w)=>a+(unitsByWk[w]||0),0);
-  const totalIngSpend=(purchases||[]).reduce((a,p)=>a+Number(p.price_paid||0),0);
-  const totalOtherSpend=(otherExp||[]).reduce((a,e)=>a+Number(e.amount||0),0);
   document.getElementById('summaryRev').textContent=fmt(totalRev);
   document.getElementById('summaryExp').textContent=fmt(totalExp);
   document.getElementById('summaryProfit').textContent=fmt(totalRev-totalExp);
   document.getElementById('summaryUnits').textContent=totalUnits;
-  document.getElementById('summaryIngSpend').textContent=fmt(totalIngSpend);
-  document.getElementById('summaryOtherSpend').textContent=fmt(totalOtherSpend);
-
-  // Charts
   const labels=weeks.map((wk,i)=>`W${i+1}`);
   const chartOpts={responsive:true,plugins:{legend:{display:true,labels:{font:{family:'DM Sans',size:11},color:'#6B6B7B',boxWidth:12,padding:16}}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:10},color:'#6B6B7B'}},y:{grid:{color:'rgba(255,107,138,0.06)'},ticks:{font:{family:'DM Sans',size:10},color:'#6B6B7B',callback:v=>'₹'+v.toLocaleString('en-IN')}}}};
   ['chartRevExp','chartRevProfit','chartCPB'].forEach(id=>{if(charts[id])charts[id].destroy();});
   charts.chartRevExp=new Chart(document.getElementById('chartRevExp'),{type:'line',data:{labels,datasets:[{label:'Revenue',data:weeks.map(w=>rev[w]),borderColor:'#27AE60',backgroundColor:'rgba(39,174,96,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#27AE60',pointRadius:5},{label:'Expenses',data:weeks.map(w=>exp[w]),borderColor:'#FF6B8A',backgroundColor:'rgba(255,107,138,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#FF6B8A',pointRadius:5}]},options:chartOpts});
   charts.chartRevProfit=new Chart(document.getElementById('chartRevProfit'),{type:'line',data:{labels,datasets:[{label:'Revenue',data:weeks.map(w=>rev[w]),borderColor:'#27AE60',backgroundColor:'rgba(39,174,96,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#27AE60',pointRadius:5},{label:'Profit',data:weeks.map(w=>prof[w]),borderColor:'#F39C12',backgroundColor:'rgba(243,156,18,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#F39C12',pointRadius:5}]},options:chartOpts});
   charts.chartCPB=new Chart(document.getElementById('chartCPB'),{type:'line',data:{labels,datasets:[{label:'₹/Bombolini',data:weeks.map(w=>cpbMap[w]),borderColor:'#FF6B8A',backgroundColor:'rgba(255,107,138,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#FF6B8A',pointRadius:5,spanGaps:true}]},options:{...chartOpts,scales:{...chartOpts.scales,y:{...chartOpts.scales.y,ticks:{...chartOpts.scales.y.ticks,callback:v=>'₹'+v}}}}});
-
-  // Accordion week breakdown
   const el=document.getElementById('pnlAccordion');
   if(!weeks.length){el.innerHTML='<div class="empty"><div class="empty-text">No data yet</div></div>';return;}
-  // Fetch sale_items for flavour split per week
   const {data:allSaleItems}=await sb.from('sale_items').select('flavour,quantity,week_key');
   const flavByWk={};
   weeks.forEach(wk=>{
     const wkItems=(allSaleItems||[]).filter(i=>i.week_key===wk);
-    const n=wkItems.filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
-    const c=wkItems.filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
-    flavByWk[wk]={nutella:n,custard:c};
+    const flavMap={};
+    wkItems.forEach(i=>{const f=i.flavour||'Other';flavMap[f]=(flavMap[f]||0)+Number(i.quantity||0);});
+    flavByWk[wk]=flavMap;
   });
-
-  // SKU split per week from sales
   const skuByWk={};
   weeks.forEach(wk=>{
     const wkSales=(sales||[]).filter(s=>s.week_key===wk);
-    skuByWk[wk]={
-      singles:wkSales.reduce((a,s)=>a+Number(s.singles||0),0),
-      pairs:wkSales.reduce((a,s)=>a+Number(s.pairs||0),0),
-      trios:wkSales.reduce((a,s)=>a+Number(s.trios||0),0),
-      orders:wkSales.length
-    };
+    skuByWk[wk]={singles:wkSales.reduce((a,s)=>a+Number(s.singles||0),0),pairs:wkSales.reduce((a,s)=>a+Number(s.pairs||0),0),trios:wkSales.reduce((a,s)=>a+Number(s.trios||0),0),orders:wkSales.length};
   });
-
   el.innerHTML=weeks.map((wk,i)=>{
     const margin=rev[wk]>0?((prof[wk]/rev[wk])*100).toFixed(0):0;
-    const flav=flavByWk[wk]||{nutella:0,custard:0};
+    const flav=flavByWk[wk]||{};
     const sku=skuByWk[wk]||{singles:0,pairs:0,trios:0,orders:0};
-    const hasFlav=flav.nutella+flav.custard>0;
-    const flavPct=hasFlav?Math.round((flav.nutella/(flav.nutella+flav.custard))*100):0;
+    const flavTotal=Object.values(flav).reduce((a,b)=>a+b,0);
     return `<div class="accordion-item" id="acc_${i}">
       <div class="accordion-head" onclick="toggleAccordion(${i})">
         <div>
@@ -1080,57 +953,13 @@ async function loadPnl(){
           <div class="stat-cell"><div class="stat-label">Units</div><div class="stat-val pink">${unitsByWk[wk]}</div></div>
           <div class="stat-cell"><div class="stat-label">CPB</div><div class="stat-val">${cpbMap[wk]?fmt(cpbMap[wk]):'—'}</div></div>
         </div>
-
-        ${sku.singles+sku.pairs+sku.trios>0?`
-        <div style="margin-bottom:10px">
-          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">SKU Split</div>
-          <div style="display:flex;gap:8px">
-            ${sku.singles>0?`<div style="flex:1;background:var(--pink-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">Single</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--pink)">${sku.singles}</div></div>`:''}
-            ${sku.pairs>0?`<div style="flex:1;background:var(--gold-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">Pair</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--gold)">${sku.pairs}</div></div>`:''}
-            ${sku.trios>0?`<div style="flex:1;background:var(--green-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">Trio</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--green)">${sku.trios}</div></div>`:''}
-          </div>
-        </div>`:''}
-
-        ${hasFlav?`
-        <div style="margin-bottom:10px">
-          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Flavour Split</div>
-          <div style="display:flex;gap:8px">
-            <div style="flex:1;background:#FDF3DC;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#8B5E0A">🍫 Nutella</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#8B5E0A">${flav.nutella} <span style="font-size:11px">(${flavPct}%)</span></div></div>
-            <div style="flex:1;background:#E8F8EF;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#1a6b3a">🍮 Custard</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#1a6b3a">${flav.custard} <span style="font-size:11px">(${100-flavPct}%)</span></div></div>
-          </div>
-          <div style="margin-top:8px;height:6px;border-radius:3px;overflow:hidden;display:flex">
-            <div style="width:${flavPct}%;background:#E8A838"></div>
-            <div style="flex:1;background:#27AE60"></div>
-          </div>
-        </div>`:''}
-
+        ${sku.singles+sku.pairs+sku.trios>0?`<div style="margin-bottom:10px"><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">SKU Split</div><div style="display:flex;gap:8px">${sku.singles>0?`<div style="flex:1;background:var(--pink-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">Single</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--pink)">${sku.singles}</div></div>`:''} ${sku.pairs>0?`<div style="flex:1;background:var(--gold-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">Pair</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--gold)">${sku.pairs}</div></div>`:''} ${sku.trios>0?`<div style="flex:1;background:var(--green-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">Trio</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--green)">${sku.trios}</div></div>`:''}</div></div>`:''}
+        ${flavTotal>0?`<div style="margin-bottom:10px"><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Flavour Split</div><div style="display:flex;gap:6px;flex-wrap:wrap">${Object.entries(flav).map(([f,qty])=>`<div style="flex:1;min-width:70px;background:var(--pink-light);border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--mid)">${f}</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--pink)">${qty}</div></div>`).join('')}</div></div>`:''}
         <div style="padding:12px;background:var(--pink-light);border-radius:12px;display:flex;justify-content:space-between;align-items:center">
           <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mid)">Net Profit</div>
           <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:${prof[wk]>=0?'var(--pink)':'var(--red)'}">${fmt(prof[wk])}</div>
         </div>
-
-        <div style="margin-top:12px">
-          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Spend Breakdown</div>
-          <div style="display:flex;gap:8px;margin-bottom:8px">
-            <div style="flex:1;background:#FFF3F5;border:1px solid rgba(255,107,138,0.15);border-radius:10px;padding:10px">
-              <div style="font-size:10px;color:var(--mid);margin-bottom:2px">🛒 Ingredients</div>
-              <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--pink)">${fmt(ingSpendByWk[wk]||0)}</div>
-            </div>
-            <div style="flex:1;background:#FFF8EC;border:1px solid rgba(243,156,18,0.15);border-radius:10px;padding:10px">
-              <div style="font-size:10px;color:var(--mid);margin-bottom:2px">📦 Other Expenses</div>
-              <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--gold)">${fmt(othSpendByWk[wk]||0)}</div>
-            </div>
-          </div>
-          ${Object.keys(expCatByWk[wk]||{}).length>0?`
-          <div style="background:#FAFAFA;border-radius:10px;padding:10px">
-            <div style="font-size:10px;color:var(--mid);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase">By Category</div>
-            ${Object.entries(expCatByWk[wk]).map(([cat,amt])=>`
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)">
-                <div style="font-size:12px;color:var(--dark)">${cat}</div>
-                <div style="font-size:12px;font-weight:600;color:var(--gold)">${fmt(amt)}</div>
-              </div>`).join('')}
-          </div>`:''}
-        </div>
+        <div style="margin-top:12px"><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Spend Breakdown</div><div style="display:flex;gap:8px"><div style="flex:1;background:#FFF3F5;border:1px solid rgba(255,107,138,0.15);border-radius:10px;padding:10px"><div style="font-size:10px;color:var(--mid);margin-bottom:2px">🛒 Ingredients</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--pink)">${fmt(ingSpendByWk[wk]||0)}</div></div><div style="flex:1;background:#FFF8EC;border:1px solid rgba(243,156,18,0.15);border-radius:10px;padding:10px"><div style="font-size:10px;color:var(--mid);margin-bottom:2px">📦 Other</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--gold)">${fmt(othSpendByWk[wk]||0)}</div></div></div></div>
       </div>
     </div>`;
   }).join('');
@@ -1144,42 +973,45 @@ function toggleAccordion(i){
   arrow.style.transform=open?'':'rotate(180deg)';
 }
 
-
 // ══ NOTES ══
 async function loadNotes(){
   const {data}=await sb.from('notes').select('*').order('created_at',{ascending:false}).limit(30);
   const el=document.getElementById('notesList');
   if(!data||!data.length){el.innerHTML='<div class="empty"><div class="empty-icon">📝</div><div class="empty-text">No notes yet</div></div>';return;}
-  el.innerHTML=data.map(n=>`
-    <div class="note-card">
-      <button class="note-del" onclick="deleteNote('${n.id}')">✕</button>
-      <div class="note-text">${n.content}</div>
-      <div class="note-meta">${n.written_by||'—'} · ${new Date(n.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
-    </div>`).join('');
+  el.innerHTML=data.map(n=>`<div class="note-card"><button class="note-del" onclick="deleteNote('${n.id}')">✕</button><div class="note-text">${n.content}</div><div class="note-meta">${n.written_by||'—'} · ${new Date(n.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
 }
-
 async function postNote(){
   const content=document.getElementById('noteInput').value.trim();
   if(!content){showToast('Write something first');return;}
-  const {error}=await sb.from('notes').insert({content,written_by:currentUser||'Unknown'});
-  if(error){showToast('Error saving');console.error(error);return;}
+  await sb.from('notes').insert({content,written_by:currentUser||'Unknown'});
   document.getElementById('noteInput').value='';
-  showToast('Note posted ✓');
-  loadNotes();
+  showToast('Note posted ✓'); loadNotes();
 }
-
-async function deleteNote(id){
-  await sb.from('notes').delete().eq('id',id);
-  showToast('Note deleted');
-  loadNotes();
-}
+async function deleteNote(id){await sb.from('notes').delete().eq('id',id);showToast('Deleted');loadNotes();}
 
 // ══ SALES ══
+function renderFlavourCounters(){
+  flavCounts={};
+  flavours.forEach(f=>{flavCounts[f.toLowerCase().replace(/ /g,'_')]=0;});
+  document.getElementById('flavourCounters').innerHTML=flavours.map((f,i)=>{
+    const key=f.toLowerCase().replace(/ /g,'_');
+    const emoji={'Nutella':'🍫','Blueberry':'🫐','Dark Chocolate':'🍫','Custard':'🍮'}[f]||'🍩';
+    const isLast=i===flavours.length-1;
+    return `<div style="display:flex;align-items:center;padding:11px 0;${isLast?'':'border-bottom:1px solid var(--border)'}">
+      <div style="flex:1;font-size:14px;font-weight:600">${emoji} ${f}</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="sku-btn" onclick="adjFlav('${key}',-1)">−</button>
+        <div class="sku-count" id="flav_${key}" style="min-width:28px;text-align:center">0</div>
+        <button class="sku-btn" onclick="adjFlav('${key}',1)">+</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function loadSales(){
   document.getElementById('salesDate').value=today();
   skuCounts={single:0,pair:0,trio:0};
-  flavCounts={nutella:0,custard:0};
-  // Load today's orders from Supabase
+  renderFlavourCounters();
   loadTodayOrders();
   loadSalesHistory();
   updatePriceLabels();
@@ -1202,12 +1034,12 @@ function adjSku(sku,d){
 
 function adjFlav(f,d){
   flavCounts[f]=Math.max(0,(flavCounts[f]||0)+d);
-  document.getElementById('flav'+f.charAt(0).toUpperCase()+f.slice(1)).textContent=flavCounts[f];
+  document.getElementById('flav_'+f).textContent=flavCounts[f];
   updateOrderUI();
 }
 
 function totalSkuUnits(){return skuCounts.single*1+skuCounts.pair*2+skuCounts.trio*3;}
-function totalFlavUnits(){return flavCounts.nutella+flavCounts.custard;}
+function totalFlavUnits(){return Object.values(flavCounts).reduce((a,b)=>a+b,0);}
 function orderRevenue(){return skuCounts.single*PRICES.single+skuCounts.pair*PRICES.pair+skuCounts.trio*PRICES.trio;}
 
 function updateOrderUI(){
@@ -1217,7 +1049,6 @@ function updateOrderUI(){
   const msg=document.getElementById('matchMsg');
   const btn=document.getElementById('confirmOrderBtn');
   document.getElementById('orderTotal').textContent=fmt(rev);
-
   if(units===0){msg.textContent='';btn.disabled=true;btn.style.opacity='0.4';}
   else if(fTotal<units){msg.style.color='var(--red)';msg.textContent=`Add ${units-fTotal} more flavour${units-fTotal>1?'s':''}`;btn.disabled=true;btn.style.opacity='0.4';}
   else if(fTotal>units){msg.style.color='var(--red)';msg.textContent=`${fTotal-units} too many flavours`;btn.disabled=true;btn.style.opacity='0.4';}
@@ -1230,10 +1061,10 @@ async function confirmOrder(){
   const date=document.getElementById('salesDate').value;
   const location=document.getElementById('salesLocation').value;
   const loggedBy=getChip('salesLoggedBy')||currentUser;
+  const orderType=getChip('orderType')||'Takeaway';
+  const paymentMode=getChip('paymentMode')||'Cash';
   const rev=orderRevenue();
   const wk=getWeekKey(date);
-
-  // Insert into sales
   const {data:saleRow,error}=await sb.from('sales').insert({
     sale_date:date,location,week_key:wk,
     singles:skuCounts.single,pairs:skuCounts.pair,trios:skuCounts.trio,
@@ -1241,44 +1072,18 @@ async function confirmOrder(){
     logged_by:loggedBy
   }).select().single();
   if(error){showToast('Error saving');console.error(error);return;}
-
-  // Insert sale_items
-  const items=[];
-  ['single','pair','trio'].forEach(sku=>{
-    for(let i=0;i<skuCounts[sku];i++){
-      // distribute flavours proportionally
+  // Save flavour items
+  for(const [key,qty] of Object.entries(flavCounts)){
+    if(qty>0){
+      const flavName=flavours.find(f=>f.toLowerCase().replace(/ /g,'_')===key)||key;
+      await sb.from('sale_items').insert({sale_id:saleRow.id,sku:'all',flavour:flavName,quantity:qty,price:0,sale_date:date,week_key:wk});
     }
-  });
-  // Log nutella items
-  if(flavCounts.nutella>0){
-    await sb.from('sale_items').insert({
-      sale_id:saleRow.id,sku:'all',flavour:'Nutella',
-      quantity:flavCounts.nutella,price:0,
-      sale_date:date,week_key:wk
-    });
   }
-  if(flavCounts.custard>0){
-    await sb.from('sale_items').insert({
-      sale_id:saleRow.id,sku:'all',flavour:'Custard',
-      quantity:flavCounts.custard,price:0,
-      sale_date:date,week_key:wk
-    });
-  }
-
   todayOrderNum++;
-  todayOrders.push({
-    num:todayOrderNum,
-    skus:{...skuCounts},
-    flavs:{...flavCounts},
-    total:rev,units,
-    time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})
-  });
-
-  // Reset
+  todayOrders.push({num:todayOrderNum,skus:{...skuCounts},flavs:{...flavCounts},total:rev,units,orderType,paymentMode,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});
   skuCounts={single:0,pair:0,trio:0};
-  flavCounts={nutella:0,custard:0};
+  renderFlavourCounters();
   ['Single','Pair','Trio'].forEach(s=>document.getElementById('sku'+s).textContent='0');
-  ['Nutella','Custard'].forEach(f=>document.getElementById('flav'+f).textContent='0');
   updateOrderUI();
   showToast('Order #'+todayOrderNum+' saved ✓');
   updateDaySummary();
@@ -1292,19 +1097,16 @@ function updateDaySummary(){
   const totalU=todayOrders.reduce((a,o)=>a+o.units,0);
   const totalR=todayOrders.reduce((a,o)=>a+o.total,0);
   const avg=totalOrds>0?Math.round(totalR/totalOrds):0;
-  let n=0,c=0;
-  todayOrders.forEach(o=>{n+=o.flavs.nutella;c+=o.flavs.custard;});
   document.getElementById('dOrders').textContent=totalOrds;
   document.getElementById('dUnits').textContent=totalU;
   document.getElementById('dRevenue').textContent='₹'+totalR;
   document.getElementById('dAvg').textContent='₹'+avg;
-  if(n+c>0){
-    const fr=document.getElementById('dayFlavRow');
-    if(fr)fr.style.display='flex';
-    const dn=document.getElementById('dayNutella');
-    const dc=document.getElementById('dayCustard');
-    if(dn)dn.textContent='🍫 Nutella '+n;
-    if(dc)dc.textContent='🍮 Custard '+c;
+  const flavMap={};
+  todayOrders.forEach(o=>{Object.entries(o.flavs||{}).forEach(([k,v])=>{if(v>0){const name=flavours.find(f=>f.toLowerCase().replace(/ /g,'_')===k)||k;flavMap[name]=(flavMap[name]||0)+v;}});});
+  const fr=document.getElementById('dayFlavRow');
+  if(Object.keys(flavMap).length>0){
+    fr.style.display='flex';
+    fr.innerHTML=Object.entries(flavMap).map(([f,qty])=>`<div style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.2);color:white">${f} ${qty}</div>`).join('');
   }
 }
 
@@ -1313,40 +1115,31 @@ function renderTodayOrders(){
   if(!todayOrders.length){el.innerHTML='<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No orders yet</div></div>';return;}
   el.innerHTML=[...todayOrders].reverse().map(o=>{
     const skuTags=Object.entries(o.skus).filter(([,v])=>v>0).map(([k,v])=>`<span style="background:var(--pink-light);color:var(--pink-dark);padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600">${v}× ${k.charAt(0).toUpperCase()+k.slice(1)}</span>`).join('');
-    const flavTags=[o.flavs.nutella>0?`<span style="background:#FDF3DC;color:#8B5E0A;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600">🍫 ${o.flavs.nutella}</span>`:'',o.flavs.custard>0?`<span style="background:#E8F8EF;color:#1a6b3a;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600">🍮 ${o.flavs.custard}</span>`:''].join('');
+    const flavTags=Object.entries(o.flavs||{}).filter(([,v])=>v>0).map(([k,v])=>{const name=flavours.find(f=>f.toLowerCase().replace(/ /g,'_')===k)||k;return `<span style="background:var(--gold-light);color:var(--gold);padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600">${name} ${v}</span>`;}).join('');
+    const tags=[o.orderType&&`<span style="background:var(--light);color:var(--mid);padding:3px 8px;border-radius:20px;font-size:10px">${o.orderType}</span>`,o.paymentMode&&`<span style="background:var(--light);color:var(--mid);padding:3px 8px;border-radius:20px;font-size:10px">${o.paymentMode}</span>`].filter(Boolean).join('');
     return `<div class="card" style="padding:12px 14px;margin-bottom:8px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div style="font-size:11px;color:var(--mid)">Order #${o.num} · ${o.time} · ${o.units} units</div>
         <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--green)">${fmt(o.total)}</div>
       </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">${skuTags}${flavTags}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${skuTags}${flavTags}${tags}</div>
     </div>`;
   }).join('');
 }
 
 async function loadTodayOrders(){
-  // Load today's sales from Supabase to rebuild day summary
   const todayStr=today();
   const {data}=await sb.from('sales').select('*,sale_items(*)').eq('sale_date',todayStr).order('created_at');
-  todayOrders=[];
-  todayOrderNum=0;
+  todayOrders=[];todayOrderNum=0;
   if(data&&data.length){
     data.forEach(s=>{
       todayOrderNum++;
-      const n=(s.sale_items||[]).filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
-      const c=(s.sale_items||[]).filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
+      const flavs={};
+      (s.sale_items||[]).forEach(i=>{const key=i.flavour.toLowerCase().replace(/ /g,'_');flavs[key]=(flavs[key]||0)+Number(i.quantity||0);});
       const units=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;
-      todayOrders.push({
-        num:todayOrderNum,
-        skus:{single:s.singles||0,pair:s.pairs||0,trio:s.trios||0},
-        flavs:{nutella:n,custard:c},
-        total:Number(s.revenue_after_discount||s.total_revenue||0),
-        units,
-        time:new Date(s.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})
-      });
+      todayOrders.push({num:todayOrderNum,skus:{single:s.singles||0,pair:s.pairs||0,trio:s.trios||0},flavs,total:Number(s.revenue_after_discount||s.total_revenue||0),units,time:new Date(s.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});
     });
-    updateDaySummary();
-    renderTodayOrders();
+    updateDaySummary();renderTodayOrders();
   }
 }
 
@@ -1356,182 +1149,172 @@ async function loadSalesHistory(){
   if(!data||!data.length){el.innerHTML='<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No sales yet</div></div>';return;}
   el.innerHTML=data.map(s=>{
     const units=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;
-    const n=(s.sale_items||[]).filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
-    const c=(s.sale_items||[]).filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
-    const flavStr=n||c?` · ${n?'🍫'+n:''} ${c?'🍮'+c:''}`.trim():'';
-    return `<div class="log-item">
-      <div class="log-icon">💰</div>
-      <div class="log-body">
-        <div class="log-title">${s.location||'Pop-up'} · ${units} units${flavStr}</div>
-        <div class="log-sub">${s.sale_date} · S:${s.singles||0} P:${s.pairs||0} T:${s.trios||0} · ${s.logged_by||'—'}</div>
-      </div>
-      <div class="log-right"><div class="log-amount pos">${fmt(s.revenue_after_discount||s.total_revenue)}</div></div>
-    </div>`;
+    const flavSummary=(s.sale_items||[]).reduce((acc,i)=>{acc[i.flavour]=(acc[i.flavour]||0)+Number(i.quantity||0);return acc;},{});
+    const flavStr=Object.entries(flavSummary).map(([f,q])=>`${f} ${q}`).join(' · ');
+    return `<div class="log-item"><div class="log-icon">💰</div><div class="log-body"><div class="log-title">${s.location||'Pop-up'} · ${units} units</div><div class="log-sub">${s.sale_date}${flavStr?' · '+flavStr:''} · ${s.logged_by||'—'}</div></div><div class="log-right"><div class="log-amount pos">${fmt(s.revenue_after_discount||s.total_revenue)}</div></div></div>`;
   }).join('');
 }
 
-// ══ SHOP ══
-function renderShopIngList(){
-  const el=document.getElementById('shopIngList');
-  if(!ingredients.length){el.innerHTML='<div class="loading">No ingredients</div>';return;}
-  el.innerHTML=ingredients.map(ing=>`<div class="shop-ing-row"><div class="shop-ing-name">${ing.name}</div><div class="shop-ing-unit" style="font-size:10px;color:var(--mid);width:20px">${ing.unit}</div><input class="shop-num-input" type="number" id="sq_${ing.id}" placeholder="qty" oninput="calcShopTotal()"><input class="shop-num-input" type="number" id="sp_${ing.id}" placeholder="₹" oninput="calcShopTotal()"></div>`).join('');
+// ══ EXPENSES (merged) ══
+function switchExpType(type){
+  currentExpType=type;
+  document.getElementById('expIngFields').style.display=type==='ingredient'?'block':'none';
+  document.getElementById('expOtherFields').style.display=type==='other'?'block':'none';
+  document.getElementById('expTypeIngBtn').classList.toggle('active',type==='ingredient');
+  document.getElementById('expTypeOtherBtn').classList.toggle('active',type==='other');
 }
 
-function calcShopTotal(){let t=0;ingredients.forEach(ing=>{t+=parseFloat(document.getElementById('sp_'+ing.id)?.value)||0;});document.getElementById('shopTotal').textContent=fmt(t);}
-
-async function loadShop(){
-  document.getElementById('shopDate').value=today();
-  renderShopIngList(); calcShopTotal();
-  const {data}=await sb.from('inventory_purchases').select('*,ingredients(name,unit)').order('purchase_date',{ascending:false}).limit(20);
-  const el=document.getElementById('shopHistory');
-  if(!data||!data.length){el.innerHTML='<div class="empty"><div class="empty-icon">🛒</div><div class="empty-text">No purchases yet</div></div>';return;}
-  el.innerHTML=data.map(p=>`<div class="log-item"><div class="log-icon">🛒</div><div class="log-body"><div class="log-title">${p.ingredients?.name||'?'} · ${p.quantity_bought}${p.unit||''}</div><div class="log-sub">${p.purchase_date} · ${p.purchased_by||'—'}</div></div><div class="log-right"><div class="log-amount neg">${fmt(p.price_paid)}</div></div></div>`).join('');
+function renderIngredientSelect(){
+  const sel=document.getElementById('expIngSelect');
+  if(!sel) return;
+  sel.innerHTML=ingredients.map(ing=>`<option value="${ing.id}" data-unit="${ing.unit}">${ing.name} (${ing.unit})</option>`).join('');
 }
 
-async function logPurchase(){
-  const date=document.getElementById('shopDate').value;
-  const buyer=getChip('shopBoughtBy')||currentUser;
-  if(!date){showToast('Select a date');return;}
-  const entries=[];
-  ingredients.forEach(ing=>{
-    const qty=parseFloat(document.getElementById('sq_'+ing.id)?.value)||0;
-    const price=parseFloat(document.getElementById('sp_'+ing.id)?.value)||0;
-    if(qty>0&&price>0) entries.push({ing,qty,price});
-  });
-  if(!entries.length){showToast('Fill at least one ingredient');return;}
-  const wk=getWeekKey(date);
-  for(const e of entries){
-    const ppu=e.price/e.qty;
-    await sb.from('inventory_purchases').insert({ingredient_id:e.ing.id,quantity_bought:e.qty,unit:e.ing.unit,price_paid:e.price,price_per_unit:ppu,purchased_by:buyer,purchase_date:date,week_key:wk});
-    await sb.from('ingredients').update({price_per_unit:ppu,pack_size:e.qty,pack_price:e.price,updated_at:new Date().toISOString(),updated_by:buyer}).eq('id',e.ing.id);
-  }
-  const {data}=await sb.from('ingredients').select('*').order('name');
-  ingredients=data||[];
-  ingredients.forEach(ing=>{const qi=document.getElementById('sq_'+ing.id);const pi=document.getElementById('sp_'+ing.id);if(qi)qi.value='';if(pi)pi.value='';});
-  calcShopTotal();
-  showToast(`${entries.length} item${entries.length>1?'s':''} logged ✓`);
-  loadShop();loadHome();loadRunway();
-}
-
-// ══ EXPENSES ══
-async function loadExpenses(){
-  document.getElementById('expDate').value=today();
-  const {data}=await sb.from('expenses').select('*').order('expense_date',{ascending:false}).limit(20);
-  const el=document.getElementById('expHistory');
-  if(!data||!data.length){el.innerHTML='<div class="empty"><div class="empty-icon">🧾</div><div class="empty-text">No expenses yet</div></div>';return;}
-  el.innerHTML=data.map(e=>`<div class="log-item"><div class="log-icon">🧾</div><div class="log-body"><div class="log-title">${e.category}${e.note?' · '+e.note:''}</div><div class="log-sub">${e.expense_date} · ${e.paid_by||'—'}</div></div><div class="log-right"><div class="log-amount neg">${fmt(e.amount)}</div></div></div>`).join('');
-}
-
-async function logExpense(){
-  const category=getExpCat()||'Other';
-  const amount=parseFloat(document.getElementById('expAmount').value);
-  const note=document.getElementById('expNote').value;
+async function logExpenseMerged(){
   const date=document.getElementById('expDate').value;
   const paidBy=getChip('expPaidBy')||currentUser;
-  if(!amount||!date){showToast('Fill amount and date');return;}
-  const {error}=await sb.from('expenses').insert({category,amount,note,paid_by:paidBy,expense_date:date,week_key:getWeekKey(date)});
-  if(error){showToast('Error saving');console.error(error);return;}
-  document.getElementById('expAmount').value='';
-  document.getElementById('expNote').value='';
-  showToast('Expense logged ✓');
+  if(!date){showToast('Select a date');return;}
+  const wk=getWeekKey(date);
+
+  if(currentExpType==='ingredient'){
+    const sel=document.getElementById('expIngSelect');
+    const ingId=sel.value;
+    const qty=parseFloat(document.getElementById('expIngQty').value)||0;
+    const amount=parseFloat(document.getElementById('expIngAmount').value)||0;
+    if(!ingId||!amount){showToast('Fill ingredient and amount');return;}
+    const ing=ingredients.find(i=>i.id===ingId);
+    const ppu=qty>0?amount/qty:0;
+    await sb.from('inventory_purchases').insert({ingredient_id:ingId,quantity_bought:qty,unit:ing?.unit||'g',price_paid:amount,price_per_unit:ppu,purchased_by:paidBy,purchase_date:date,week_key:wk});
+    if(qty>0&&ppu>0) await sb.from('ingredients').update({price_per_unit:ppu,pack_size:qty,pack_price:amount,updated_at:new Date().toISOString(),updated_by:paidBy}).eq('id',ingId);
+    document.getElementById('expIngQty').value='';
+    document.getElementById('expIngAmount').value='';
+    showToast('Ingredient purchase logged ✓');
+  } else {
+    const category=getExpCat()||'Other';
+    const amount=parseFloat(document.getElementById('expAmount').value);
+    const note=document.getElementById('expNote').value;
+    if(!amount){showToast('Enter amount');return;}
+    await sb.from('expenses').insert({category,amount,note,paid_by:paidBy,expense_date:date,week_key:wk});
+    document.getElementById('expAmount').value='';
+    document.getElementById('expNote').value='';
+    showToast('Expense logged ✓');
+  }
   loadExpenses();loadHome();
 }
 
-// ══ RUNWAY ══
-async function loadRunway(){
-  const [{data:purchases},{data:used}]=await Promise.all([
-    sb.from('inventory_purchases').select('ingredient_id,quantity_bought,unit'),
-    sb.from('recipe_ingredients').select('ingredient_id,quantity_used')
-  ]);
-  const stockIn={},stockOut={};
-  (purchases||[]).forEach(p=>{let q=Number(p.quantity_bought);if(p.unit==='kg')q*=1000;if(p.unit==='L')q*=1000;stockIn[p.ingredient_id]=(stockIn[p.ingredient_id]||0)+q;});
-  (used||[]).forEach(u=>{stockOut[u.ingredient_id]=(stockOut[u.ingredient_id]||0)+Number(u.quantity_used);});
-  let minBatches=Infinity,bottleneck='';
-  ingredients.forEach(ing=>{const rq=BATCH_RECIPE[ing.name];if(!rq)return;const stock=(stockIn[ing.id]||0)-(stockOut[ing.id]||0);const possible=Math.floor(stock/rq);if(possible<minBatches){minBatches=possible;bottleneck=ing.name;}});
-  if(minBatches===Infinity)minBatches=0;
-  const rc=document.getElementById('runwayCard');
-  rc.style.background=minBatches<=1?'var(--red-light)':minBatches<=3?'var(--gold-light)':'var(--green-light)';
-  rc.style.borderColor=minBatches<=1?'rgba(231,76,60,0.2)':minBatches<=3?'rgba(243,156,18,0.2)':'rgba(39,174,96,0.2)';
-  document.getElementById('runwayBatches').textContent=minBatches;
-  document.getElementById('runwayBatches').className='card-val '+(minBatches<=1?'red':minBatches<=3?'gold':'green');
-  document.getElementById('runwayBottleneck').textContent=minBatches===0?`⚠️ Restock ${bottleneck}`:`Bottleneck: ${bottleneck}`;
-  document.getElementById('runwayBatches').textContent=minBatches+' batch'+(minBatches===1?'':'es');
-  document.getElementById('runwayList').innerHTML=ingredients.map(ing=>{
-    const rq=BATCH_RECIPE[ing.name];
-    const stock=Math.max(0,(stockIn[ing.id]||0)-(stockOut[ing.id]||0));
-    const batches=rq?Math.floor(stock/rq):null;
-    const noStock=stock===0;
-    const stockLabel=noStock?'<span style="color:var(--red);font-weight:600">No stock</span>':`<span>${stock.toFixed(0)}${ing.unit}</span>`;
-    const batchLabel=batches===null?'<span style="color:var(--mid);font-size:11px">filling</span>':noStock?'<span style="color:var(--red);font-weight:700">0 batches</span>':`<span style="color:${batches<=1?'var(--red)':batches<=3?'var(--gold)':'var(--green)'};font-weight:700">${batches}B</span>`;
-    return `<div class="inv-row"><div class="inv-name">${ing.name}</div><div class="inv-stock">${stockLabel}</div><div class="inv-runway">${batchLabel}</div></div>`;
-  }).join('');
-}
-
-// ══ RECIPE (BATCH) ══
-function renderBatchIngredients(){
-  const el=document.getElementById('batchIngredients');
-  if(!ingredients.length){el.innerHTML='<div style="text-align:center;padding:20px;font-size:12px;color:var(--mid)">No ingredients. Add in Admin.</div>';return;}
-  el.innerHTML=ingredients.map(ing=>`<div class="batch-ing-row"><div class="batch-ing-name">${ing.name}</div><div class="batch-ing-unit">${ing.unit}</div><input class="batch-ing-input" type="number" id="bi_${ing.id}" placeholder="0" oninput="calcBatchCost()"><div class="batch-ing-cost" id="bc_${ing.id}"></div></div>`).join('');
-}
-
-function calcBatchCost(){
-  let total=0;
-  ingredients.forEach(ing=>{
-    const inp=document.getElementById('bi_'+ing.id);
-    const costEl=document.getElementById('bc_'+ing.id);
-    if(!inp||!costEl)return;
-    const qty=parseFloat(inp.value)||0;
-    if(qty>0&&ing.price_per_unit){const c=qty*ing.price_per_unit;total+=c;costEl.textContent='₹'+c.toFixed(0);}
-    else costEl.textContent='';
+function switchExpHistory(filter){
+  currentExpHistFilter=filter;
+  ['all','ingredient','other'].forEach(f=>{
+    const btn=document.getElementById('expHist'+f.charAt(0).toUpperCase()+f.slice(1));
+    if(btn){btn.style.background=f===filter?'var(--pink)':'';btn.style.color=f===filter?'white':'';btn.style.borderColor=f===filter?'var(--pink)':'';}
   });
-  const units=parseInt(document.getElementById('batchUnits').value)||15;
-  const cpb=units>0?total/units:0;
-  document.getElementById('batchCostBar').style.display=total>0?'block':'none';
-  document.getElementById('batchTotalCost').textContent=fmt(total);
-  document.getElementById('batchCPBVal').textContent=fmt(cpb);
+  renderExpHistory();
 }
 
-async function loadLastBatch(){
-  const flavour=getChip('batchFlavour')||'Nutella';
-  const {data}=await sb.from('recipe_logs').select('*,recipe_ingredients(ingredient_id,quantity_used)').eq('flavour',flavour).order('batch_date',{ascending:false}).limit(1);
-  if(data&&data.length&&data[0].recipe_ingredients){
-    const last={};data[0].recipe_ingredients.forEach(ri=>{last[ri.ingredient_id]=ri.quantity_used;});
-    ingredients.forEach(ing=>{const inp=document.getElementById('bi_'+ing.id);if(inp&&last[ing.id])inp.value=last[ing.id];});
-    calcBatchCost();
+async function renderExpHistory(){
+  const el=document.getElementById('expHistory');
+  el.innerHTML='<div class="loading">Loading...</div>';
+  let items=[];
+  if(currentExpHistFilter!=='other'){
+    const {data:p}=await sb.from('inventory_purchases').select('*,ingredients(name,unit)').order('purchase_date',{ascending:false}).limit(30);
+    (p||[]).forEach(x=>items.push({type:'ing',date:x.purchase_date,label:x.ingredients?.name||'?',sub:`${x.quantity_bought||0}${x.unit||''} · ${x.purchased_by||'—'}`,amount:x.price_paid,id:x.id}));
   }
+  if(currentExpHistFilter!=='ingredient'){
+    const {data:e}=await sb.from('expenses').select('*').order('expense_date',{ascending:false}).limit(30);
+    (e||[]).forEach(x=>items.push({type:'other',date:x.expense_date,label:x.category+(x.note?' · '+x.note:''),sub:x.paid_by||'—',amount:x.amount,id:x.id,table:'expenses'}));
+  }
+  items.sort((a,b)=>b.date.localeCompare(a.date));
+  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">🧾</div><div class="empty-text">No expenses yet</div></div>';return;}
+  el.innerHTML=items.map(e=>`<div class="log-item"><div class="log-icon">${e.type==='ing'?'🛒':'🧾'}</div><div class="log-body"><div class="log-title">${e.label}</div><div class="log-sub">${e.date} · ${e.sub}</div></div><div class="log-right"><div class="log-amount neg">${fmt(e.amount)}</div></div></div>`).join('');
 }
 
-function loadRecipe(){document.getElementById('batchDate').value=today();renderBatchIngredients();loadBatchHistory();}
+async function loadExpenses(){
+  document.getElementById('expDate').value=today();
+  renderIngredientSelect();
+  renderExpHistory();
+}
+
+// ══ RECIPE (AUTO-SCALE) ══
+function scaleRecipe(){
+  const units=parseInt(document.getElementById('batchUnits').value)||32;
+  const scale=units/STANDARD_BATCH_UNITS;
+  let totalCost=0;
+
+  document.getElementById('scaledIngredients').innerHTML=STANDARD_RECIPE.map(ing=>{
+    const scaledQty=(ing.qty*scale);
+    const qtyDisplay=scaledQty%1===0?scaledQty:scaledQty.toFixed(1);
+    // Find ingredient price from loaded ingredients
+    const dbIng=ingredients.find(i=>i.name===ing.name);
+    let cost=0;
+    let costStr='';
+    if(dbIng&&dbIng.price_per_unit){
+      cost=scaledQty*dbIng.price_per_unit;
+      totalCost+=cost;
+      costStr=fmt(cost);
+    } else if(ing.name==='Warm Water'){
+      costStr='Free';
+    }
+    return `<div class="recipe-scaled-row">
+      <div>
+        <div class="recipe-ing-name">${ing.name}</div>
+        ${costStr?`<div class="recipe-ing-cost">${costStr}</div>`:''}
+      </div>
+      <div style="text-align:right">
+        <span class="recipe-ing-qty">${qtyDisplay}</span>
+        <span class="recipe-ing-unit">${ing.unit}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Show cost bar
+  const cpb=units>0?totalCost/units:0;
+  document.getElementById('batchTotalCost').textContent=fmt(totalCost);
+  document.getElementById('batchCPBVal').textContent=fmt(cpb)+(cpb>0?' (dough only)':'');
+}
+
+function loadRecipe(){
+  document.getElementById('batchDate').value=today();
+  scaleRecipe();
+  loadBatchHistory();
+}
 
 async function logBatch(){
-  const flavour=getChip('batchFlavour')||'Nutella';
   const units=parseInt(document.getElementById('batchUnits').value);
   const date=document.getElementById('batchDate').value;
   const loggedBy=getChip('batchLoggedBy')||currentUser;
   if(!units||!date){showToast('Fill batch details');return;}
+
+  const scale=units/STANDARD_BATCH_UNITS;
   let totalCost=0;
   const ingUsed=[];
-  ingredients.forEach(ing=>{const inp=document.getElementById('bi_'+ing.id);const qty=parseFloat(inp?.value)||0;if(qty>0){const c=ing.price_per_unit?qty*ing.price_per_unit:0;totalCost+=c;ingUsed.push({ingredient_id:ing.id,quantity_used:qty,unit:ing.unit,cost_attributed:c});}});
+
+  for(const ing of STANDARD_RECIPE){
+    const scaledQty=ing.qty*scale;
+    const dbIng=ingredients.find(i=>i.name===ing.name);
+    if(dbIng){
+      const cost=dbIng.price_per_unit?scaledQty*dbIng.price_per_unit:0;
+      totalCost+=cost;
+      ingUsed.push({ingredient_id:dbIng.id,quantity_used:scaledQty,unit:ing.unit,cost_attributed:cost});
+    }
+  }
+
   const cpb=units>0?totalCost/units:0;
-  const {data:rl,error}=await sb.from('recipe_logs').insert({flavour,units_made:units,batch_date:date,week_key:getWeekKey(date),logged_by:loggedBy,total_cost:totalCost,cost_per_unit:cpb}).select().single();
+  const {data:rl,error}=await sb.from('recipe_logs').insert({flavour:'Batch',units_made:units,batch_date:date,week_key:getWeekKey(date),logged_by:loggedBy,total_cost:totalCost,cost_per_unit:cpb}).select().single();
   if(error){showToast('Error saving batch');console.error(error);return;}
-  if(ingUsed.length>0)await sb.from('recipe_ingredients').insert(ingUsed.map(i=>({...i,recipe_log_id:rl.id})));
+  if(ingUsed.length>0) await sb.from('recipe_ingredients').insert(ingUsed.map(i=>({...i,recipe_log_id:rl.id})));
   showToast('Batch logged ✓');
-  ingredients.forEach(ing=>{const inp=document.getElementById('bi_'+ing.id);if(inp)inp.value='';});
-  document.getElementById('batchCostBar').style.display='none';
-  loadBatchHistory();loadHome();loadRunway();
+  loadBatchHistory();loadHome();
 }
 
 async function loadBatchHistory(){
   const {data}=await sb.from('recipe_logs').select('*').order('batch_date',{ascending:false}).limit(15);
   const el=document.getElementById('batchHistory');
   if(!data||!data.length){el.innerHTML='<div class="empty"><div class="empty-icon">🍩</div><div class="empty-text">No batches yet</div></div>';return;}
-  el.innerHTML=data.map(b=>`<div class="card" style="padding:14px"><div class="flex-between"><div><span class="ftag ${b.flavour?.toLowerCase()}">${b.flavour}</span><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-top:6px">${b.units_made} units</div><div style="font-size:11px;color:var(--mid);margin-top:2px">${b.batch_date} · ${b.logged_by||'—'}</div></div><div style="text-align:right"><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mid)">Per Unit</div><div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--pink)">${b.cost_per_unit?fmt(b.cost_per_unit):'—'}</div><div style="font-size:11px;color:var(--mid)">Total ${b.total_cost?fmt(b.total_cost):'—'}</div></div></div></div>`).join('');
+  el.innerHTML=data.map(b=>`<div class="card" style="padding:14px"><div class="flex-between"><div><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-top:4px">${b.units_made} units</div><div style="font-size:11px;color:var(--mid);margin-top:2px">${b.batch_date} · ${b.logged_by||'—'}</div></div><div style="text-align:right"><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mid)">Per Unit</div><div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--pink)">${b.cost_per_unit?fmt(b.cost_per_unit):'—'}</div><div style="font-size:11px;color:var(--mid)">Total ${b.total_cost?fmt(b.total_cost):'—'}</div></div></div></div>`).join('');
 }
 
 // ══ ADMIN ══
 async function loadAdmin(){
-  // Load prices from Supabase settings
   const {data:settings}=await sb.from('settings').select('*');
   if(settings){
     settings.forEach(s=>{
@@ -1540,7 +1323,7 @@ async function loadAdmin(){
       if(s.key==='price_trio'){PRICES.trio=Number(s.value);const el=document.getElementById('adminPriceTrio');if(el)el.value=s.value;}
     });
   }
-  document.getElementById('adminFlavours').innerHTML=flavours.map(f=>`<div class="log-item"><div class="log-icon">${f==='Nutella'?'🍫':f==='Custard'?'🍮':'🍩'}</div><div class="log-body"><div class="log-title">${f}</div></div>${!['Nutella','Custard','Mixed'].includes(f)?`<button class="btn btn-danger btn-sm" onclick="removeFlavour('${f}')">Remove</button>`:'<span style="font-size:10px;color:var(--mid)">Default</span>'}</div>`).join('');
+  document.getElementById('adminFlavours').innerHTML=flavours.map(f=>`<div class="log-item"><div class="log-body"><div class="log-title">${f}</div></div><button class="btn btn-danger btn-sm" onclick="removeFlavour('${f}')">Remove</button></div>`).join('');
   const {data:ings}=await sb.from('ingredients').select('*').order('name');
   ingredients=ings||[];
   document.getElementById('adminIngredients').innerHTML=ingredients.map(ing=>`<div class="log-item"><div class="log-body"><div class="log-title">${ing.name}</div><div class="log-sub">${ing.unit} · ${ing.price_per_unit?'₹'+Number(ing.price_per_unit).toFixed(4)+'/'+ing.unit:'No price yet'}</div></div><button class="btn btn-danger btn-sm" onclick="removeIngredient('${ing.id}','${ing.name}')">✕</button></div>`).join('');
@@ -1558,30 +1341,25 @@ async function savePrices(){
     sb.from('settings').upsert({key:'price_trio',value:String(t),updated_by:currentUser,updated_at:new Date().toISOString()})
   ]);
   PRICES.single=s;PRICES.pair=p;PRICES.trio=t;
-  showToast('Prices updated ✓');
-  updatePriceLabels();
+  showToast('Prices updated ✓');updatePriceLabels();
 }
 
 async function switchHistoryTab(tab){
   currentHistoryTab=tab;
   ['sales','purchases','batches','expenses'].forEach(t=>{
     const btn=document.getElementById('hTab-'+t);
-    if(btn)btn.style.background=t===tab?'var(--pink)':'';;
-    if(btn)btn.style.color=t===tab?'white':'';
-    if(btn)btn.style.borderColor=t===tab?'var(--pink)':'';
+    if(btn){btn.style.background=t===tab?'var(--pink)':'';btn.style.color=t===tab?'white':'';btn.style.borderColor=t===tab?'var(--pink)':'';}
   });
   const el=document.getElementById('adminHistory');
   el.innerHTML='<div class="loading">Loading...</div>';
-
   let data,mapped;
   if(tab==='sales'){
     const r=await sb.from('sales').select('*,sale_items(flavour,quantity)').order('sale_date',{ascending:false}).limit(50);
     data=r.data||[];
     mapped=data.map(s=>{
       const units=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;
-      const n=(s.sale_items||[]).filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
-      const c=(s.sale_items||[]).filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
-      return {icon:'💰',label:`${s.sale_date} · ${units} units${n||c?' · 🍫'+n+' 🍮'+c:''}`,sub:fmt(s.revenue_after_discount||s.total_revenue),id:s.id,table:'sales'};
+      const flavStr=(s.sale_items||[]).reduce((acc,i)=>{acc[i.flavour]=(acc[i.flavour]||0)+Number(i.quantity||0);return acc;},{});
+      return {icon:'💰',label:`${s.sale_date} · ${units} units · ${Object.entries(flavStr).map(([f,q])=>f+' '+q).join(', ')}`,sub:fmt(s.revenue_after_discount||s.total_revenue),id:s.id,table:'sales'};
     });
   } else if(tab==='purchases'){
     const r=await sb.from('inventory_purchases').select('*,ingredients(name)').order('purchase_date',{ascending:false}).limit(50);
@@ -1590,20 +1368,14 @@ async function switchHistoryTab(tab){
   } else if(tab==='batches'){
     const r=await sb.from('recipe_logs').select('*').order('batch_date',{ascending:false}).limit(50);
     data=r.data||[];
-    mapped=data.map(b=>({icon:'🍩',label:`${b.batch_date} · ${b.flavour} ×${b.units_made}`,sub:b.cost_per_unit?fmt(b.cost_per_unit)+'/u':'—',id:b.id,table:'recipe_logs'}));
+    mapped=data.map(b=>({icon:'🍩',label:`${b.batch_date} · ${b.units_made} units`,sub:b.cost_per_unit?fmt(b.cost_per_unit)+'/u':'—',id:b.id,table:'recipe_logs'}));
   } else {
     const r=await sb.from('expenses').select('*').order('expense_date',{ascending:false}).limit(50);
     data=r.data||[];
     mapped=data.map(e=>({icon:'🧾',label:`${e.expense_date} · ${e.category}${e.note?' · '+e.note:''}`,sub:fmt(e.amount),id:e.id,table:'expenses'}));
   }
-
   if(!mapped.length){el.innerHTML='<div class="empty"><div class="empty-text">No entries</div></div>';return;}
-  el.innerHTML=mapped.map(e=>`
-    <div class="log-item">
-      <div class="log-icon">${e.icon}</div>
-      <div class="log-body"><div class="log-title">${e.label}</div><div class="log-sub" style="color:var(--green);font-weight:600">${e.sub}</div></div>
-      <button class="btn btn-danger btn-sm" onclick="deleteEntry('${e.table}','${e.id}')">✕</button>
-    </div>`).join('');
+  el.innerHTML=mapped.map(e=>`<div class="log-item"><div class="log-icon">${e.icon}</div><div class="log-body"><div class="log-title">${e.label}</div><div class="log-sub" style="color:var(--green);font-weight:600">${e.sub}</div></div><button class="btn btn-danger btn-sm" onclick="deleteEntry('${e.table}','${e.id}')">✕</button></div>`).join('');
 }
 
 async function exportPDF(){
@@ -1613,75 +1385,25 @@ async function exportPDF(){
     sb.from('inventory_purchases').select('*,ingredients(name)').order('purchase_date'),
     sb.from('expenses').select('*').order('expense_date')
   ]);
-
   const totalRev=(sales||[]).reduce((a,s)=>a+Number(s.revenue_after_discount||s.total_revenue||0),0);
   const totalIng=(purchases||[]).reduce((a,p)=>a+Number(p.price_paid||0),0);
   const totalExp=(otherExp||[]).reduce((a,e)=>a+Number(e.amount||0),0);
   const totalUnits=(sales||[]).reduce((a,s)=>a+Number(s.singles||0)+Number(s.pairs||0)*2+Number(s.trios||0)*3,0);
-  let totalN=0,totalC=0;
-  (sales||[]).forEach(s=>(s.sale_items||[]).forEach(i=>{if(i.flavour==='Nutella')totalN+=Number(i.quantity||0);else totalC+=Number(i.quantity||0);}));
-
   const win=window.open('','_blank');
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bombolitoo Report</title>
-  <style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;color:#1A1A2E;font-size:13px}
-  h1{font-size:24px;margin-bottom:4px;color:#FF6B8A}
-  h2{font-size:16px;margin:24px 0 10px;border-bottom:1px solid #eee;padding-bottom:6px}
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-  .stat{background:#FFF9F7;border:1px solid #FFE8ED;border-radius:10px;padding:12px}
-  .stat-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6B6B7B;margin-bottom:4px}
-  .stat-val{font-size:22px;font-weight:700;color:#FF6B8A}
-  table{width:100%;border-collapse:collapse;font-size:12px}
-  th{background:#FF6B8A;color:white;padding:8px 10px;text-align:left}
-  td{padding:7px 10px;border-bottom:1px solid #eee}
-  tr:nth-child(even)td{background:#FFF9F7}
-  .footer{margin-top:30px;font-size:11px;color:#999;text-align:center}
-  </style></head><body>
-  <h1>🍩 Bombolitoo</h1>
-  <p style="color:#6B6B7B;margin-bottom:20px">Business Report · Generated ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</p>
-  <h2>All Time Summary</h2>
-  <div class="grid">
-    <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val">₹${totalRev.toLocaleString('en-IN')}</div></div>
-    <div class="stat"><div class="stat-label">Profit</div><div class="stat-val" style="color:#27AE60">₹${(totalRev-totalIng-totalExp).toLocaleString('en-IN')}</div></div>
-    <div class="stat"><div class="stat-label">Units Sold</div><div class="stat-val">${totalUnits}</div></div>
-    <div class="stat"><div class="stat-label">Total Spend</div><div class="stat-val" style="color:#E74C3C">₹${(totalIng+totalExp).toLocaleString('en-IN')}</div></div>
-  </div>
-  <div class="grid" style="grid-template-columns:1fr 1fr">
-    <div class="stat"><div class="stat-label">🍫 Nutella</div><div class="stat-val">${totalN} units</div></div>
-    <div class="stat"><div class="stat-label">🍮 Custard</div><div class="stat-val">${totalC} units</div></div>
-  </div>
-  <h2>Sales Log</h2>
-  <table><tr><th>Date</th><th>Location</th><th>Units</th><th>Nutella</th><th>Custard</th><th>Revenue</th></tr>
-  ${(sales||[]).map(s=>{
-    const u=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;
-    const n=(s.sale_items||[]).filter(i=>i.flavour==='Nutella').reduce((a,i)=>a+Number(i.quantity||0),0);
-    const c=(s.sale_items||[]).filter(i=>i.flavour==='Custard').reduce((a,i)=>a+Number(i.quantity||0),0);
-    return `<tr><td>${s.sale_date}</td><td>${s.location||'—'}</td><td>${u}</td><td>${n||'—'}</td><td>${c||'—'}</td><td>₹${Number(s.revenue_after_discount||s.total_revenue||0).toLocaleString('en-IN')}</td></tr>`;
-  }).join('')}
-  </table>
-  <h2>Ingredient Purchases</h2>
-  <table><tr><th>Date</th><th>Ingredient</th><th>Qty</th><th>Price Paid</th></tr>
-  ${(purchases||[]).map(p=>`<tr><td>${p.purchase_date}</td><td>${p.ingredients?.name||'?'}</td><td>${p.quantity_bought||0}${p.unit||''}</td><td>₹${Number(p.price_paid||0).toLocaleString('en-IN')}</td></tr>`).join('')}
-  </table>
-  <h2>Other Expenses</h2>
-  <table><tr><th>Date</th><th>Category</th><th>Note</th><th>Amount</th></tr>
-  ${(otherExp||[]).map(e=>`<tr><td>${e.expense_date}</td><td>${e.category}</td><td>${e.note||'—'}</td><td>₹${Number(e.amount||0).toLocaleString('en-IN')}</td></tr>`).join('')}
-  </table>
-  <div class="footer">Bombolitoo Business Tracker · Confidential</div>
-  </body></html>`);
-  win.document.close();
-  setTimeout(()=>win.print(),500);
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bombolitoo Report</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;color:#1A1A2E;font-size:13px}h1{font-size:24px;margin-bottom:4px;color:#FF6B8A}h2{font-size:16px;margin:24px 0 10px;border-bottom:1px solid #eee;padding-bottom:6px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.stat{background:#FFF9F7;border:1px solid #FFE8ED;border-radius:10px;padding:12px}.stat-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6B6B7B;margin-bottom:4px}.stat-val{font-size:22px;font-weight:700;color:#FF6B8A}table{width:100%;border-collapse:collapse;font-size:12px}th{background:#FF6B8A;color:white;padding:8px 10px;text-align:left}td{padding:7px 10px;border-bottom:1px solid #eee}tr:nth-child(even)td{background:#FFF9F7}</style></head><body><h1>🍩 Bombolitoo</h1><p style="color:#6B6B7B;margin-bottom:20px">Report · ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</p><h2>Summary</h2><div class="grid"><div class="stat"><div class="stat-label">Revenue</div><div class="stat-val">₹${totalRev.toLocaleString('en-IN')}</div></div><div class="stat"><div class="stat-label">Profit</div><div class="stat-val" style="color:#27AE60">₹${(totalRev-totalIng-totalExp).toLocaleString('en-IN')}</div></div><div class="stat"><div class="stat-label">Units</div><div class="stat-val">${totalUnits}</div></div><div class="stat"><div class="stat-label">Spend</div><div class="stat-val" style="color:#E74C3C">₹${(totalIng+totalExp).toLocaleString('en-IN')}</div></div></div><h2>Sales</h2><table><tr><th>Date</th><th>Units</th><th>Flavours</th><th>Revenue</th></tr>${(sales||[]).map(s=>{const u=(s.singles||0)+(s.pairs||0)*2+(s.trios||0)*3;const flavStr=(s.sale_items||[]).reduce((acc,i)=>{acc[i.flavour]=(acc[i.flavour]||0)+Number(i.quantity||0);return acc;},{});return `<tr><td>${s.sale_date}</td><td>${u}</td><td>${Object.entries(flavStr).map(([f,q])=>f+' '+q).join(', ')||'—'}</td><td>₹${Number(s.revenue_after_discount||s.total_revenue||0).toLocaleString('en-IN')}</td></tr>`;}).join('')}</table><h2>Ingredient Purchases</h2><table><tr><th>Date</th><th>Ingredient</th><th>Qty</th><th>Amount</th></tr>${(purchases||[]).map(p=>`<tr><td>${p.purchase_date}</td><td>${p.ingredients?.name||'?'}</td><td>${p.quantity_bought||0}${p.unit||''}</td><td>₹${Number(p.price_paid||0).toLocaleString('en-IN')}</td></tr>`).join('')}</table><h2>Other Expenses</h2><table><tr><th>Date</th><th>Category</th><th>Note</th><th>Amount</th></tr>${(otherExp||[]).map(e=>`<tr><td>${e.expense_date}</td><td>${e.category}</td><td>${e.note||'—'}</td><td>₹${Number(e.amount||0).toLocaleString('en-IN')}</td></tr>`).join('')}</table></body></html>`);
+  win.document.close();setTimeout(()=>win.print(),500);
 }
 
 async function deleteEntry(table,id){
   if(!confirm('Delete this entry?'))return;
   if(table==='sales') await sb.from('sale_items').delete().eq('sale_id',id);
+  if(table==='recipe_logs') await sb.from('recipe_ingredients').delete().eq('recipe_log_id',id);
   await sb.from(table).delete().eq('id',id);
-  showToast('Deleted ✓');
-  switchHistoryTab(currentHistoryTab);
-  loadHome();
+  showToast('Deleted ✓');switchHistoryTab(currentHistoryTab);loadHome();
 }
+
 function addFlavour(){const v=document.getElementById('newFlavourInput').value.trim();if(!v){showToast('Enter a name');return;}if(flavours.includes(v)){showToast('Already exists');return;}flavours.push(v);document.getElementById('newFlavourInput').value='';loadAdmin();showToast(v+' added ✓');}
-function removeFlavour(name){flavours=flavours.filter(f=>f!==name);loadAdmin();}
+function removeFlavour(name){if(['Nutella','Blueberry','Dark Chocolate'].includes(name)&&flavours.filter(f=>!['Nutella','Blueberry','Dark Chocolate','Custard'].includes(f)).length===0){showToast('Cannot remove core flavours');}else{flavours=flavours.filter(f=>f!==name);loadAdmin();}}
 async function addIngredient(){
   const name=document.getElementById('newIngName').value.trim();
   const unit=document.getElementById('newIngUnit').value;
@@ -1690,7 +1412,7 @@ async function addIngredient(){
   const {data}=await sb.from('ingredients').select('*').order('name');
   ingredients=data||[];
   document.getElementById('newIngName').value='';
-  loadAdmin();renderShopIngList();renderBatchIngredients();showToast(name+' added ✓');
+  loadAdmin();renderIngredientSelect();showToast(name+' added ✓');
 }
 async function removeIngredient(id,name){
   if(!confirm(`Remove ${name}?`))return;
@@ -1699,12 +1421,11 @@ async function removeIngredient(id,name){
   await sb.from('ingredients').delete().eq('id',id);
   const {data}=await sb.from('ingredients').select('*').order('name');
   ingredients=data||[];
-  loadAdmin();renderShopIngList();renderBatchIngredients();showToast(name+' removed ✓');
+  loadAdmin();renderIngredientSelect();showToast(name+' removed ✓');
 }
 
 // ══ INIT ══
 async function init(){
-  // Load prices from settings
   const {data:settings}=await sb.from('settings').select('*');
   if(settings){
     settings.forEach(s=>{
@@ -1719,7 +1440,6 @@ async function init(){
   } else {
     showUserOverlay();
   }
-  await seedIngredients();
   await loadAll();
 }
 
